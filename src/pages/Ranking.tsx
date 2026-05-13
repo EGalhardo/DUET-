@@ -1,0 +1,165 @@
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Trophy, Flag, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { cn } from '../lib/utils';
+import { storageService } from '../services/storageService';
+
+interface RankingPlayer {
+  id: number;
+  name: string;
+  score: number;
+  avatar: string;
+}
+
+const rankings: RankingPlayer[] = [
+  { id: 1, name: 'Ana Ferreira', score: 9850, avatar: 'https://i.pravatar.cc/150?u=1' },
+  { id: 2, name: 'Carlos Mendes', score: 9420, avatar: 'https://i.pravatar.cc/150?u=2' },
+  { id: 3, name: 'Sofia Lopes', score: 8990, avatar: 'https://i.pravatar.cc/150?u=3' },
+  { id: 4, name: 'Rui Santos', score: 8540, avatar: 'https://i.pravatar.cc/150?u=4' },
+  { id: 5, name: 'Marta Costa', score: 8100, avatar: 'https://i.pravatar.cc/150?u=5' },
+];
+
+export default function Ranking() {
+  const [isFavorited, setIsFavorited] = useState(false);
+  const favoriteId = 'page-ranking';
+
+  useEffect(() => {
+    const updateFavStatus = () => {
+      const favorites = storageService.getFavorites();
+      setIsFavorited(favorites.some(f => f.id === favoriteId));
+    };
+    updateFavStatus();
+    window.addEventListener('favoritesUpdated', updateFavStatus);
+    return () => window.removeEventListener('favoritesUpdated', updateFavStatus);
+  }, []);
+
+  const toggleFavorite = () => {
+    if (isFavorited) {
+      storageService.deleteFavorite(favoriteId);
+      setIsFavorited(false);
+    } else {
+      storageService.saveFavorite({
+        id: favoriteId,
+        title: 'Ranking',
+        sub: 'Ver melhores jogadores',
+        type: 'league',
+        path: '/ranking'
+      });
+      setIsFavorited(true);
+    }
+  };
+
+  return (
+    <div className="flex flex-col flex-1">
+      {/* NAV LINE */}
+      <div className="h-[46px] bg-white border-b border-gray-200 px-4 md:px-8">
+        <div className="h-full flex items-center justify-between max-w-5xl mx-auto">
+          <Link to="/" className="text-black transition-colors duration-300 hover:text-[#FFB10A]">
+            <ArrowLeft className="w-6 h-6 md:w-7 md:h-7" />
+          </Link>
+          <h2 className="text-base md:text-lg lg:text-xl font-semibold text-center">Ranking</h2>
+          <button 
+            onClick={toggleFavorite}
+            className={cn("transition-colors duration-300", isFavorited ? "text-[#FFB10A]" : "text-black hover:text-[#FFB10A]")}
+          >
+            <Heart className={cn("w-6 h-6 md:w-7 md:h-7", isFavorited && "fill-current")} />
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto w-full px-4 pt-16 pb-12">
+        <div className="text-center mb-16">
+          <img 
+            src="https://i.postimg.cc/DZRRQ8NF/Taca-58.gif" 
+            alt="Taça" 
+            className="mx-auto w-80 md:w-[480px] h-auto object-contain hover:scale-105 transition-transform duration-500"
+          />
+          <h1 className="mt-10 text-2xl md:text-3xl font-bold text-[#091747] tracking-tight">Ranking DUET</h1>
+          <p className="mt-4 text-[#364153] font-bold">Top 10 Classificados</p>
+        </div>
+
+        <div className="flex justify-center mb-8">
+          <div className="period-tabbar flex bg-gray-200 p-1 rounded-2xl w-full max-w-xs">
+            {['Recente', 'Semanal', 'Geral'].map((period, i) => (
+              <button key={period} className={cn(
+                "flex-1 py-2 text-xs font-black rounded-xl transition-all",
+                i === 0 ? "bg-[#FFB10A] text-white" : "text-[#364153] hover:text-[#091747]"
+              )}>
+                {period}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-8">
+          <Section label="Competição Nacional" icon={Flag} />
+          <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden">
+             <div className="bg-[#FFB10A] p-4 text-white font-bold flex items-center gap-3">
+               <Trophy className="w-5 h-5" />
+               <span>Torneio de Futebol</span>
+             </div>
+             
+             {/* Podium */}
+             <div className="flex items-end justify-center gap-2 p-6 bg-gray-50/50 border-b border-gray-100">
+                <PodiumPosition position={2} player={rankings[1]} />
+                <PodiumPosition position={1} player={rankings[0]} />
+                <PodiumPosition position={3} player={rankings[2]} />
+             </div>
+
+             <div className="divide-y divide-gray-200">
+               {rankings.map((player, i) => (
+                 <div key={player.id} className="flex items-center gap-4 p-4 hover:bg-orange-50/50 transition-colors">
+                   <div className={cn(
+                     "w-8 h-8 rounded-full flex items-center justify-center font-black text-xs",
+                     i === 0 ? "bg-yellow-400 text-white" : i === 1 ? "bg-gray-400 text-white" : i === 2 ? "bg-amber-600 text-white" : "bg-gray-200 text-[#364153]"
+                   )}>
+                     {i + 1}º
+                   </div>
+                   <img src={player.avatar} className="w-10 h-10 rounded-full border-2 border-white" />
+                   <span className="flex-1 font-bold text-[#091747]">{player.name}</span>
+                   <span className="bg-gray-200 px-3 py-1 rounded-full text-[10px] font-black text-[#364153]">
+                     {player.score.toLocaleString()} pts
+                   </span>
+                 </div>
+               ))}
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Section({ label, icon: Icon }: { label: string, icon: React.ElementType }) {
+  return (
+    <div className="flex items-center gap-3 mb-4">
+      <Icon className="w-5 h-5 text-[#FFB10A]" />
+      <h3 className="font-bold text-[#091747]">{label}</h3>
+      <div className="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent" />
+    </div>
+  );
+}
+
+function PodiumPosition({ position, player }: { position: number, player: RankingPlayer }) {
+  const isFirst = position === 1;
+  return (
+    <div className={cn("flex flex-col items-center", isFirst ? "mb-4" : "")}>
+      <img 
+        src={player.avatar} 
+        className={cn(
+          "rounded-full border-4 mb-2", 
+          isFirst ? "w-20 h-20 border-yellow-400" : "w-16 h-16 border-gray-200"
+        )} 
+      />
+      <span className="text-[10px] font-bold text-[#091747] truncate w-20 text-center">{player.name}</span>
+      <span className="text-[10px] font-bold text-[#FFB10A]">{player.score.toLocaleString()}</span>
+      <div className={cn(
+        "w-12 mt-2 rounded-t-xl flex items-center justify-center font-black text-white",
+        isFirst ? "h-16 bg-yellow-400" : position === 2 ? "h-12 bg-gray-300" : "h-10 bg-amber-600"
+      )}>
+        {position}
+      </div>
+    </div>
+  );
+}
