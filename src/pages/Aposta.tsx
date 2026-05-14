@@ -4,7 +4,7 @@ import { ArrowLeft, CircleDot as Football, Calendar, Trophy, Copy, CheckCircle2,
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
 
-import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES } from '../constants';
+import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES, LEAGUE_CLASSIFICATIONS } from '../constants';
 import { Match, Wallet as WalletType, UserProfile, Bet, FavoriteItem } from '../types';
 import { storageService } from '../services/storageService';
 
@@ -19,16 +19,7 @@ const ClassificationTable = ({
   awayTeam: string, 
   onBack: () => void 
 }) => {
-  const mockTable = [
-    { pos: 1, team: 'Petro Luanda', p: 12, w: 4, d: 0, l: 0, pts: 12 },
-    { pos: 2, team: '1º de Agosto', p: 12, w: 3, d: 1, l: 0, pts: 10 },
-    { pos: 3, team: 'Sagrada Esperança', p: 12, w: 3, d: 0, l: 1, pts: 9 },
-    { pos: 4, team: 'Wiliete SC', p: 12, w: 2, d: 1, l: 1, pts: 7 },
-    { pos: 5, team: 'FC Bravos do Maquis', p: 12, w: 2, d: 0, l: 2, pts: 6 },
-    { pos: 6, team: 'Interclube', p: 12, w: 1, d: 2, l: 1, pts: 5 },
-    { pos: 7, team: 'Desportivo Lunda Sul', p: 12, w: 1, d: 1, l: 2, pts: 4 },
-    { pos: 8, team: 'Académica Lobito', p: 12, w: 1, d: 0, l: 3, pts: 3 },
-  ];
+  const tableData = LEAGUE_CLASSIFICATIONS[league] || LEAGUE_CLASSIFICATIONS['Girabola'];
 
   return (
     <div className="flex flex-col gap-5 py-4">
@@ -44,13 +35,17 @@ const ClassificationTable = ({
         <table className="w-full text-[10px]">
           <thead>
             <tr className="bg-gray-50/80 border-b-2 border-gray-100">
-              <th className="px-4 py-4 text-left font-black text-gray-400 uppercase tracking-tighter">#</th>
-              <th className="px-2 py-4 text-left font-black text-gray-400 uppercase tracking-tighter">Equipa</th>
+              <th className="px-3 py-4 text-left font-black text-gray-400 uppercase tracking-tighter">#</th>
+              <th className="px-1 py-4 text-left font-black text-gray-400 uppercase tracking-tighter">Equipa</th>
+              <th className="px-1 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">J</th>
+              <th className="px-1 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">V</th>
+              <th className="px-1 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">E</th>
+              <th className="px-1 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">D</th>
               <th className="px-2 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">Pts</th>
             </tr>
           </thead>
           <tbody>
-            {mockTable.map((row, i) => {
+            {tableData.map((row, i) => {
               const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
               const rowTeam = normalize(row.team);
               const home = normalize(homeTeam);
@@ -63,14 +58,18 @@ const ClassificationTable = ({
                   "border-b border-gray-50 transition-colors", 
                   isMatchTeam ? "bg-orange-50" : (i % 2 === 0 ? "bg-white" : "bg-gray-50/20")
                 )}>
-                  <td className="px-4 py-4 font-black text-[#091747] italic">{row.pos}º</td>
-                  <td className="px-2 py-4 font-bold text-gray-900 uppercase tracking-tight">
-                    <div className="flex items-center gap-2">
-                      {row.team}
-                      {isMatchTeam && <div className="w-1.5 h-1.5 rounded-full bg-[#FFB10A] animate-pulse" />}
+                  <td className="px-3 py-4 font-black text-[#091747] italic text-[9px]">{row.pos}º</td>
+                  <td className="px-1 py-4 font-bold text-gray-900 uppercase tracking-tight text-[9px]">
+                    <div className="flex items-center gap-1">
+                      <span className="truncate max-w-[80px]">{row.team}</span>
+                      {isMatchTeam && <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-[#FFB10A] animate-pulse" />}
                     </div>
                   </td>
-                  <td className="px-4 py-4 text-center font-black text-[#091747]">{row.pts}</td>
+                  <td className="px-1 py-4 text-center font-bold text-gray-500 text-[9px]">{row.p}</td>
+                  <td className="px-1 py-4 text-center font-bold text-gray-400 text-[9px]">{row.w || 0}</td>
+                  <td className="px-1 py-4 text-center font-bold text-gray-400 text-[9px]">{row.d || 0}</td>
+                  <td className="px-1 py-4 text-center font-bold text-gray-400 text-[9px]">{row.l || 0}</td>
+                  <td className="px-2 py-4 text-center font-black text-[#091747] text-[9px]">{row.pts}</td>
                 </tr>
               );
             })}
@@ -204,6 +203,30 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
     { id: '2', name: 'Maria Santos', picks: ['B', 'B', 'A', 'X', 'A', 'B', 'X', 'A', 'B', 'X'] },
     { id: '3', name: 'Carlos Pereira', picks: ['X', 'A', 'X', 'B', 'B', 'A', 'A', 'X', 'B', 'B'] }
   ], []);
+
+  const handleClose = React.useCallback(() => {
+    setBetAction(activeTab === 'Nacional' ? 'create' : null);
+    setCreateStep('selection');
+    setCreatePassword('');
+    setConfirmPassword('');
+    setSelectedMarketsList(Array(10).fill(''));
+    setCreatedCode('');
+    setBetValue('1000');
+    setSelectedMarket('Vitória A');
+    setRoomName('');
+    setMaxParticipants('2');
+    setRoomCodeInput('');
+    setRoomNameInput('');
+    setJoiningBet(null);
+    setIsSuccess(false);
+    setAutoConfirmNacional(false);
+    setShowClassification(false);
+    setError('');
+    setSelectedUserView('me');
+    setSelectedBetId(null);
+    setShowDeleteConfirm(null);
+    onClose();
+  }, [activeTab, onClose]);
 
   const favoriteId = React.useMemo(() => match ? `match-${match.id}` : '', [match?.id]);
 
@@ -348,7 +371,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
             status: 'Open',
             password: roomCodeInput,
             roomName: roomNameInput,
-            selectedMarkets: activeTab === 'Privado' ? Array(10).fill('').map((_, i) => i < 3 ? 'A' : null) : undefined, // Mock some markets if Private
+            selectedMarkets: activeTab === 'Privado' ? Array(10).fill('').map((_, i) => i < 3 ? 'A' : null) : undefined,
             createdAt: new Date().toISOString()
           };
           
@@ -357,7 +380,8 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
           setSelectedMarket('');
           
           if (activeTab === 'Privado' && mockBet.selectedMarkets) {
-            const initialList = mockBet.selectedMarkets.map(m => m ? '' : null);
+            // Consistent with creation: '' for not-yet-filled, null for not-in-bet
+            const initialList = mockBet.selectedMarkets.map(m => m !== null ? '' : null);
             setSelectedMarketsList(initialList);
           }
           return;
@@ -365,18 +389,15 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
 
         setError('');
         setJoiningBet(existingBet);
-        // Reset selectedMarket when finding a bet to join
         setSelectedMarket('');
         
         if (activeTab === 'Privado' && existingBet.selectedMarkets) {
-          // Initialize list with empty strings for indices that have markets in the original bet
-          const initialList = existingBet.selectedMarkets.map(m => m ? '' : null);
+          const initialList = existingBet.selectedMarkets.map(m => m !== null ? '' : null);
           setSelectedMarketsList(initialList);
         }
         return;
       }
 
-      // Se já temos a aposta, processamos a entrada (pagamento)
       if (activeTab === '1 vs 1') {
         if (!selectedMarket) {
           setError('Escolhe o teu prognóstico!');
@@ -389,7 +410,12 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
       }
 
       if (activeTab === 'Privado') {
-        const allMarketsFilled = selectedMarketsList.every((res, idx) => res === null || !!res);
+        // Validation: all required markets (non-null) must have a value (non-empty string)
+        const allMarketsFilled = selectedMarketsList.every((res, idx) => {
+          if (joiningBet.selectedMarkets && joiningBet.selectedMarkets[idx] === null) return true;
+          return !!res && res !== 'PENDING';
+        });
+
         if (!allMarketsFilled) {
           setError('Por favor, preenche todos os prognósticos!');
           return;
@@ -430,7 +456,8 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
     }
 
     if (activeTab === 'Privado' && createStep === 'selection') {
-      const selectedCount = selectedMarketsList.filter(s => !!s).length;
+      // For Private creation: only those in the bet should be non-null. '' means not in bet.
+      const selectedCount = selectedMarketsList.filter(s => s === 'PENDING' || (!!s && s !== '')).length;
       if (selectedCount === 0) {
         setError('Seleciona pelo menos 1 mercado!');
         return;
@@ -441,10 +468,14 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
         setError('Por favor, escolhe o resultado (A, X ou B) para todos os mercados selecionados!');
         return;
       }
+      
+      // Final adjustment: replace '' with null for markets NOT included in the private bet
+      const finalMarkets = selectedMarketsList.map(s => s === '' ? null : s);
+      setSelectedMarketsList(finalMarkets);
     }
 
     if (activeTab === 'Nacional') {
-      const selectedCount = selectedMarketsList.filter(s => !!s).length;
+      const selectedCount = selectedMarketsList.filter(s => !!s && s !== 'PENDING').length;
       if (selectedCount < 10) {
         setError('Por favor, preenche todos os 10 prognósticos da Rodada!');
         return;
@@ -602,7 +633,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
               Ver Histórico
             </Link>
             <button 
-              onClick={onClose}
+              onClick={handleClose}
               className="w-full bg-white border-2 border-gray-100 text-gray-400 font-black py-5 rounded-[1.5rem] hover:bg-gray-50 transition-all uppercase tracking-widest text-xs"
             >
               Voltar ao Início
@@ -846,7 +877,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
               Voltar à Lista
             </button>
             <button 
-              onClick={onClose}
+              onClick={handleClose}
               className="w-full bg-white border-2 border-gray-100 text-gray-700 font-bold py-3.5 rounded-xl text-xs"
             >
               Fechar
@@ -1415,7 +1446,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute inset-0 bg-black/70 backdrop-blur-md"
           />
           <motion.div 
@@ -1447,7 +1478,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                       } else {
                         if (activeTab === 'Nacional') {
                           if (betAction === 'my_bets') setBetAction('create');
-                          else onClose();
+                          else handleClose();
                         }
                         else setBetAction(null);
                       }
@@ -1489,7 +1520,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                 )}
 
                 <button 
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="w-8 h-8 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-all font-black"
                 >
                   <X className="w-4 h-4" />

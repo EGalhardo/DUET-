@@ -38,11 +38,6 @@ export default function Header() {
         </Link>
 
         <div className="relative flex items-center gap-3 md:gap-4">
-          <div className="flex items-center gap-2.5 md:gap-3.5 mr-1 border-r border-gray-200 pr-3 md:pr-4">
-            <button className="flex items-center justify-center text-[#364153] hover:text-[#FFB10A] transition-colors p-1">
-              <Moon className="w-4 h-4 md:w-5 md:h-5" />
-            </button>
-          </div>
 
           {auth.isLoggedIn && (
             <div className="hidden md:flex flex-col items-end mr-1">
