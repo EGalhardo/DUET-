@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 export default function Afiliado() {
   const [copied, setCopied] = React.useState(false);
-  const link = "https://duetacademico.com/afiliado?ref=123456789";
+  const link = "https://duetdesportivo.com/afiliado?ref=123456789";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(link);

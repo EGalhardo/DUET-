@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Star, Zap, Pencil, Trash2, Trophy, Info, Check, X, Heart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { storageService } from '../services/storageService';
 import { cn } from '../lib/utils';
 import { FavoriteItem } from '../types';

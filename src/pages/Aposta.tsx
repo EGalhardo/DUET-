@@ -1,10 +1,10 @@
 import React from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft, CircleDot as Football, Calendar, Trophy, Copy, CheckCircle2, AlertCircle, X, Loader2, Plus, Users, Shield, Check, ChevronDown, Trash2, List, Share2, Mail, MessageSquare, Heart, Lock } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
 
-import { MATCH_DATA, COMPETITION_LOGOS } from '../constants';
+import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES } from '../constants';
 import { Match, Wallet as WalletType, UserProfile, Bet, FavoriteItem } from '../types';
 import { storageService } from '../services/storageService';
 
@@ -158,7 +158,10 @@ const MatchCard = React.memo(({ match, onClick }: { match: Match, onClick: (m: M
         ))}
       </div>
 
-      <button className="w-full bg-[#FFB10A] hover:bg-[#FFC000] text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98]">
+      <button 
+        id={`match-entrar-${match.id}`}
+        className="w-full bg-[#FFB10A] hover:bg-[#FFC000] text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98]"
+      >
         Entrar
       </button>
     </motion.div>
@@ -265,9 +268,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
         <motion.img 
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          src={COMPETITION_LOGOS[match.league] || COMPETITION_LOGOS['Girabola']} 
+          src={getCompetitionLogo(match.league)} 
           alt={match.league}
-          className="h-16 w-16 object-contain"
+          className="h-24 w-24 md:h-28 md:w-28 object-contain"
         />
       </div>
       <div className="flex items-center justify-around gap-2">
@@ -1410,7 +1413,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 300, mass: 0.8 }}
-            className="relative w-full max-w-lg bg-white rounded-t-[2.5rem] md:rounded-[3rem] p-6 md:p-8 flex flex-col h-[90vh] md:h-auto md:max-h-[85vh] overflow-hidden border border-gray-200"
+            className="relative w-full max-w-lg bg-white rounded-t-[2.5rem] md:rounded-[3rem] p-6 md:p-8 flex flex-col h-[80vh] md:h-auto md:max-h-[85vh] overflow-hidden border border-gray-200"
           >
             {/* DRAG HANDLE FOR MOBILE */}
             <div className="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-400 rounded-full md:hidden" />
@@ -1579,7 +1582,8 @@ export default function Aposta() {
   React.useEffect(() => {
     const matchId = searchParams.get('matchId');
     if (matchId) {
-      const match = MATCH_DATA.find(m => m.id.toString() === matchId);
+      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES];
+      const match = allMatches.find(m => m.id.toString() === matchId);
       if (match) {
         setSelectedMatch(match);
         setIsModalOpen(true);
@@ -1669,13 +1673,18 @@ export default function Aposta() {
       {/* SIMPLE HEADER */}
       <div className="h-[46px] lg:h-[52px] bg-white border-b border-white px-4 md:px-8 sticky top-0 z-50">
         <div className="h-full max-w-5xl mx-auto flex items-center justify-between">
-          <Link to={`/liga/${category}`} className="text-gray-400 hover:text-[#FFB10A] transition-colors">
+          <Link 
+            id="aposta-back-button"
+            to={`/liga/${category}`} 
+            className="text-gray-400 hover:text-[#FFB10A] transition-colors"
+          >
             <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6" />
           </Link>
           <h1 className="text-base md:text-lg lg:text-xl font-semibold text-center truncate px-4">
             {topic || 'Duet Aposta'}
           </h1>
           <button 
+            id="aposta-favorite-button"
             onClick={toggleLeagueFavorite}
             className={cn("transition-colors duration-300 p-1 rounded-lg", isLeagueFavorited ? "text-[#FFB10A]" : "text-gray-400 hover:text-[#FFB10A]")}
           >
@@ -1689,6 +1698,7 @@ export default function Aposta() {
         <div className="flex items-center justify-between border-b border-gray-100">
           {(['1 vs 1', 'Privado', 'Nacional'] as const).map((tab) => (
             <button
+              id={`aposta-tab-${tab.toLowerCase().replace(/\s+/g, '-')}`}
               key={tab}
               onClick={() => {
                 setActiveTab(tab);
@@ -1715,13 +1725,18 @@ export default function Aposta() {
       </div>
 
       <div className="max-w-6xl mx-auto w-full px-4 pt-4 md:pt-8">
-        <div className="flex justify-center my-12">
+        <div className="flex justify-center my-10 lg:my-12">
           <motion.img 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            src={(topic && COMPETITION_LOGOS[topic]) || COMPETITION_LOGOS['Girabola']} 
+            src={getCompetitionLogo(topic)} 
             alt={topic || 'Angola Girabola'} 
-            className="w-full max-w-[28rem] lg:max-w-[32rem] h-auto object-contain"
+            className={cn(
+              "h-auto object-contain",
+              category === 'basket' || category === 'f1'
+                ? "w-full max-w-[21rem] md:max-w-[25.5rem] lg:max-w-[29.5rem]"
+                : "w-full max-w-[24rem] md:max-w-[28rem] lg:max-w-[32rem]"
+            )}
           />
         </div>
       </div>
@@ -1732,7 +1747,17 @@ export default function Aposta() {
 
       <div className="max-w-6xl mx-auto w-full px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-16">
-          {MATCH_DATA.map((match) => (
+          {(
+            topic === 'Girabola' || topic === 'Taça de Angola' ? GIRABOLA_MATCHES :
+            topic === 'BundesLiga' || topic === 'Bundesliga' || topic === 'Taça da Alemanha' || topic === 'DFB Pokal' ? BUNDESLIGA_MATCHES :
+            topic === 'La Liga' || topic === 'Taça de Espanha' || topic === 'Copa del Rey' ? LALIGA_MATCHES :
+            topic === 'Ligue 1' || topic === 'Taça de França' || topic === 'Copa da França' ? LIGUE1_MATCHES :
+            topic === 'Eredivisie' || topic === 'Evedivie' || topic === 'Taça da Holanda' || topic === 'KNVB Beker' ? EREDIVISIE_MATCHES :
+            topic === 'Premier League' || topic === 'PremierLeague' || topic === 'Taça de Inglaterra' || topic === 'FA Cup' ? PREMIERLEAGUE_MATCHES :
+            topic === 'Serie A' || topic === 'Série A' || topic === 'Taça de Itália' || topic === 'TIM Cup' ? SERIEA_MATCHES :
+            topic === 'Liga Nos' || topic === 'Liga NOS' || topic === 'Taça de Portugal' ? LIGANOS_MATCHES :
+            MATCH_DATA
+          ).map((match) => (
             <MatchCard key={match.id} match={match} onClick={handleOpenModal} />
           ))}
         </div>

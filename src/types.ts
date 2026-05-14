@@ -75,11 +75,11 @@ export interface CategoryDetail {
   labels: { 
     practice: string; 
     private: string; 
-    community: string; 
+    community?: string; 
   };
   cards: {
     practice: LeagueOption[];
     private: LeagueOption[];
-    community: LeagueOption[];
+    community?: LeagueOption[];
   };
 }

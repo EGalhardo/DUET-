@@ -33,7 +33,7 @@ export default function Header() {
           <img 
             src="https://i.postimg.cc/Pr21PzHM/DUET-LOGO.png" 
             alt="DUET Logo" 
-            className="h-8 md:h-10 lg:h-11 w-auto object-contain"
+            className="h-12 md:h-10 lg:h-11 w-auto object-contain"
           />
         </Link>
 

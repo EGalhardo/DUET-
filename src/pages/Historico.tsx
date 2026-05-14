@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Trophy, Clock, CircleDot as Football, Shield, Users, Eye, Trash2, X, AlertTriangle, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { storageService } from '../services/storageService';
 import { MATCH_DATA } from '../constants';
 import { Bet } from '../types';
@@ -247,7 +247,7 @@ export default function Historico() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-md bg-white rounded-3xl overflow-hidden"
+              className="relative w-full max-w-sm bg-white rounded-3xl overflow-hidden"
             >
               <div className="bg-[#FFB10A] p-6 text-white text-center">
                 <button 
