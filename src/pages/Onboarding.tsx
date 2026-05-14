@@ -7,26 +7,20 @@ const slides = [
   {
     title: "Duelos 1 vs 1",
     description: "Desafie os seus amigos diretamente e prove quem é o verdadeiro mestre das Apostas desportivas",
-    image: "https://i.postimg.cc/nLbbZxq9/1-vs-1.png",
+    image: "https://i.postimg.cc/MZhBTPWS/1-vs-1.png",
     step: 1
   },
   {
     title: "Apostas Privadas",
     description: "Crie grupos de amigos e leve a competição para um nível emocionante.",
-    image: "https://i.postimg.cc/vHkCLyqV/Privado.png",
+    image: "https://i.postimg.cc/xjbkWvKj/Privado.png",
     step: 2
   },
   {
     title: "Apostas Nacionais",
     description: "Aposta a nível nacional e mostre o seu talento no maior palco de apostas de Angola.",
-    image: "https://i.postimg.cc/j5MFWYnM/Nacional.png",
+    image: "https://i.postimg.cc/BvV6zbb2/Nacional.png",
     step: 3
-  },
-  {
-    title: "Pronto para a Vitória?",
-    description: "Regista-te agora e descobre as ferramentas que vão transformar a tua forma de apostar e ganhar.",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1000&auto=format&fit=crop",
-    step: 4
   }
 ];
 
@@ -37,6 +31,12 @@ export default function Onboarding() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Preload images to avoid slow loading during transitions
+    slides.forEach(slide => {
+      const img = new Image();
+      img.src = slide.image;
+    });
+
     if (loading) {
       const interval = setInterval(() => {
         setProgress(prev => {
@@ -45,9 +45,9 @@ export default function Onboarding() {
             setTimeout(() => setLoading(false), 500);
             return 100;
           }
-          return prev + 2;
+          return prev + 5; // Faster loading bar for better UX
         });
-      }, 100);
+      }, 50);
       return () => clearInterval(interval);
     }
   }, [loading]);
@@ -105,48 +105,60 @@ export default function Onboarding() {
     <div className="fixed inset-0 bg-white flex flex-col p-6 z-[200] overflow-y-auto">
       <div className="max-w-md mx-auto w-full flex flex-col min-h-full items-center justify-center py-10">
         {/* Step Counter Bubble */}
-        <div className="mb-8 bg-blue-50 text-[#091747] text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-blue-100">
-          Passo {slide.step} de 4
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 bg-[#FFB10A]/10 text-[#FFB10A] text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest border border-[#FFB10A]/20"
+        >
+          Passo {slide.step} de {slides.length}
+        </motion.div>
 
         {/* Image Section - No container, just the image */}
         <div className="w-full flex items-center justify-center flex-1 max-h-[400px]">
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full flex items-center justify-center"
-          >
-            <img 
-              src={slide.image} 
-              alt={slide.title} 
-              className="max-w-full max-h-[380px] object-contain mx-auto drop-shadow-2xl" 
-            />
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSlide}
+              initial={{ opacity: 0, scale: 0.8, rotate: -2 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              exit={{ opacity: 0, scale: 0.8, rotate: 2 }}
+              transition={{ type: "spring", damping: 20, stiffness: 100 }}
+              className="w-full flex items-center justify-center"
+            >
+              <img 
+                src={slide.image} 
+                alt={slide.title} 
+                className="max-w-full max-h-[380px] object-contain mx-auto drop-shadow-[0_20px_50px_rgba(255,177,10,0.15)]" 
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Content Section */}
         <div className="w-full text-center mt-10 space-y-6">
-          <motion.div
-            key={`content-${currentSlide}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="px-4 space-y-3"
-          >
-            <h2 className="text-4xl font-black text-[#091747] uppercase tracking-tighter italic leading-none">
-              {slide.title}
-            </h2>
-            <p className="text-sm font-medium text-gray-500 leading-relaxed max-w-[300px] mx-auto">
-              {slide.description}
-            </p>
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`content-${currentSlide}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="px-4 space-y-3"
+            >
+              <h2 className="text-4xl font-black text-[#091747] uppercase tracking-tighter italic leading-none">
+                {slide.title}
+              </h2>
+              <p className="text-sm font-medium text-gray-500 leading-relaxed max-w-[300px] mx-auto">
+                {slide.description}
+              </p>
+            </motion.div>
+          </AnimatePresence>
 
           {/* Progress Bar */}
           <div className="w-full px-8 mt-4">
             <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden border border-gray-50">
               <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${(slide.step / 4) * 100}%` }}
+                initial={false}
+                animate={{ width: `${(slide.step / slides.length) * 100}%` }}
+                transition={{ type: "spring", damping: 20, stiffness: 100 }}
                 className="h-full bg-[#FFB10A]"
               />
             </div>
