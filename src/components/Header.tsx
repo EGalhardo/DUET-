@@ -39,12 +39,6 @@ export default function Header() {
 
         <div className="relative flex items-center gap-3 md:gap-4">
           <div className="flex items-center gap-2.5 md:gap-3.5 mr-1 border-r border-gray-200 pr-3 md:pr-4">
-            <div className="flex items-center gap-1 cursor-pointer group">
-              <Globe className="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-              <span className="text-[9px] md:text-[10px] font-black text-[#091747] uppercase tracking-wider">AO</span>
-              <ChevronDown className="w-2.5 h-2.5 md:w-3 md:h-3 text-gray-400" />
-            </div>
-            
             <button className="flex items-center justify-center text-[#364153] hover:text-[#FFB10A] transition-colors p-1">
               <Moon className="w-4 h-4 md:w-5 md:h-5" />
             </button>

@@ -62,7 +62,7 @@ export default function Home() {
           <img 
             src="https://i.postimg.cc/9XT19dr9/l-OGOMARCA-OFICIAL-2.gif" 
             alt="DUET Logo" 
-            className="object-contain mx-auto w-72 h-72 md:w-[28rem] md:h-[28rem] lg:w-[36rem] lg:h-[36rem]"
+            className="object-contain mx-auto w-[21rem] h-[21rem] md:w-[28rem] md:h-[28rem] lg:w-[36rem] lg:h-[36rem]"
           />
         </motion.div>
 
