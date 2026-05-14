@@ -15,7 +15,7 @@ const LeagueCard = React.memo(({ card, category, fallbackImage }: { card: League
     className="group block transition-transform active:scale-95"
   >
     <div className={cn(
-      "aspect-[1.6/1] rounded-3xl border border-gray-200 bg-white overflow-hidden flex items-center justify-center p-4 group-hover:border-[#FFB10A] transition-all shadow-sm",
+      "aspect-[1.6/1] rounded-xl md:rounded-3xl border border-gray-200 bg-white overflow-hidden flex items-center justify-center p-4 group-hover:border-[#FFB10A] transition-all shadow-sm",
       category === 'f1' && "aspect-video"
     )}>
       <img 
