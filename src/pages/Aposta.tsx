@@ -262,20 +262,22 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
   const currentStepIndex = steps.indexOf(createStep);
 
   const matchHeader = (
-    <div className="flex flex-col gap-6 py-6 px-1 mb-2 shrink-0">
-      {/* Competiton Logo Header */}
-      <div className="flex justify-center mb-4">
-        <motion.img 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          src={getCompetitionLogo(match.league)} 
-          alt={match.league}
-          className="h-24 w-24 md:h-28 md:w-28 object-contain"
-        />
+    <div className="flex flex-col gap-4 py-4 px-1 mb-2 shrink-0">
+      {/* Competiton Name Header */}
+      <div className="flex justify-center mb-2">
+        <motion.div 
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="px-4 py-1.5 bg-[#091747]/5 border border-[#091747]/10 rounded-full"
+        >
+          <span className="text-[10px] md:text-xs font-black text-[#091747] uppercase tracking-widest italic">
+            {match.league}
+          </span>
+        </motion.div>
       </div>
       <div className="flex items-center justify-around gap-2">
         <div className="flex flex-col items-center flex-1 max-w-[120px]">
-          <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center bg-gray-50 rounded-2xl p-2 mb-3 shadow-inner">
+          <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-gray-50 rounded-xl p-2 mb-2 shadow-inner">
             <motion.img 
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -284,23 +286,23 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
               className="w-full h-full object-contain" 
             />
           </div>
-          <span className="font-bold text-gray-900 text-center text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamA.name}</span>
+          <span className="font-bold text-gray-900 text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamA.name}</span>
         </div>
         
         <div className="flex flex-col items-center justify-center gap-1">
-          <div className="px-3 py-1 bg-orange-50 rounded-full border border-orange-100 mb-1">
-            <span className="text-[10px] text-[#FFB10A] font-black uppercase tracking-[0.1em]">
+          <div className="px-2 py-0.5 bg-orange-50 rounded-full border border-orange-100">
+            <span className="text-[9px] text-[#FFB10A] font-black uppercase tracking-[0.1em]">
               VS
             </span>
           </div>
-          <div className="text-xs text-gray-500 font-bold bg-white px-3 py-1 rounded-lg border border-gray-100 flex items-center gap-1">
-            <Calendar className="w-3 h-3 text-gray-400" />
+          <div className="text-[10px] text-gray-500 font-bold bg-white px-2 py-0.5 rounded-lg border border-gray-100 flex items-center gap-1">
+            <Calendar className="w-2.5 h-2.5 text-gray-400" />
             {match.time}
           </div>
         </div>
 
         <div className="flex flex-col items-center flex-1 max-w-[120px]">
-          <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center bg-gray-50 rounded-2xl p-2 mb-3 shadow-inner">
+          <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-gray-50 rounded-xl p-2 mb-2 shadow-inner">
             <motion.img 
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -309,7 +311,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
               className="w-full h-full object-contain" 
             />
           </div>
-          <span className="font-bold text-gray-900 text-center text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamB.name}</span>
+          <span className="font-bold text-gray-900 text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamB.name}</span>
         </div>
       </div>
     </div>
@@ -721,7 +723,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
             <h4 className="text-xs font-black text-green-700 mb-1 uppercase italic">Tuas Apostas Ativas</h4>
             <p className="text-[10px] text-gray-900 font-black uppercase tracking-tight">Vê os teus desafios ou elimina os que não queres</p>
           </div>
-          <div className="flex flex-col gap-3 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="flex flex-col gap-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
             {userBets.map((bet) => {
               const betMatch = MATCH_DATA.find(m => m.id === bet.matchId) || match;
               
@@ -784,9 +786,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
       if (!bet) return null;
 
       return (
-        <div className="flex flex-col gap-6 py-2 pb-10">
-          <div className="bg-white p-6 rounded-[2.5rem] border-2 border-gray-200">
-            <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-4 py-1 pb-6">
+          <div className="bg-white p-4 rounded-3xl border-2 border-gray-200">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4 text-[#FFB10A]" strokeWidth={3} />
                 <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest italic">Resumo do Desafio</span>
@@ -794,58 +796,58 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
               <span className="text-[10px] font-black text-[#091747] bg-white px-3 py-1 rounded-full uppercase tracking-widest border-2 border-gray-200">Aberto</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="bg-gray-50 p-3 rounded-2xl border-2 border-gray-100">
                 <p className="text-[9px] font-black text-gray-600 uppercase tracking-tighter mb-1">A tua escolha</p>
-                <p className="text-sm font-black text-[#091747]">{bet.market}</p>
+                <p className="text-xs md:text-sm font-black text-[#091747]">{bet.market}</p>
               </div>
-              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
+              <div className="bg-gray-50 p-3 rounded-2xl border-2 border-gray-100">
                 <p className="text-[9px] font-black text-gray-600 uppercase tracking-tighter mb-1">Valor Apostado</p>
-                <p className="text-sm font-black text-[#FFB10A]">{bet.amount.toLocaleString()} KZ</p>
+                <p className="text-xs md:text-sm font-black text-[#FFB10A]">{bet.amount.toLocaleString()} KZ</p>
               </div>
             </div>
 
             {bet.autoConfirmThreshold && (
-              <div className="bg-orange-50 p-4 rounded-2xl border-2 border-[#FFB10A]/20 flex items-start gap-2 mb-6">
-                <Shield className="w-4 h-4 text-[#FFB10A] shrink-0" strokeWidth={3} />
-                <p className="text-[10px] text-orange-700 font-black uppercase tracking-tight leading-tight">
+              <div className="bg-orange-50 p-3 rounded-xl border-2 border-[#FFB10A]/20 flex items-start gap-2 mb-4">
+                <Shield className="w-3.5 h-3.5 text-[#FFB10A] shrink-0" strokeWidth={3} />
+                <p className="text-[9px] text-orange-700 font-black uppercase tracking-tight leading-tight">
                   Aposta Inteligente: Só confirma se o prémio ultrapassar {bet.autoConfirmThreshold.toLocaleString()} KZ.
                 </p>
               </div>
             )}
 
-            <div className="bg-blue-50/50 p-6 rounded-[2rem] border-2 border-dashed border-blue-400">
-              <p className="text-[10px] text-blue-700 uppercase font-black tracking-widest text-center mb-2 italic">Desafio: {bet.roomName || 'Sala Sem Nome'}</p>
-              <p className="text-[10px] text-blue-700 uppercase font-black tracking-widest text-center mb-2 italic">Senha do Desafio</p>
-              <div className="flex items-center justify-between bg-white p-4 rounded-2xl border-2 border-blue-200">
-                <span className="text-2xl font-mono font-black text-[#091747] tracking-wider">{bet.password || '---'}</span>
+            <div className="bg-blue-50/50 p-4 rounded-3xl border-2 border-dashed border-blue-400">
+              <p className="text-[9px] text-blue-700 uppercase font-black tracking-widest text-center mb-1.5 italic">Desafio: {bet.roomName || 'Sala Sem Nome'}</p>
+              <p className="text-[9px] text-blue-700 uppercase font-black tracking-widest text-center mb-1.5 italic">Senha do Desafio</p>
+              <div className="flex items-center justify-between bg-white p-3 rounded-xl border-2 border-blue-200">
+                <span className="text-xl md:text-2xl font-mono font-black text-[#091747] tracking-wider">{bet.password || '---'}</span>
                 <button 
                   onClick={() => {
                     if (bet.password) navigator.clipboard.writeText(bet.password);
                   }}
-                  className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white active:scale-95 transition-all"
+                  className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white active:scale-95 transition-all"
                 >
-                  <Copy className="w-5 h-5" />
+                  <Copy className="w-4 h-4" />
                 </button>
               </div>
-              <p className="text-[10px] text-blue-800 mt-3 font-black text-center px-4 uppercase tracking-tighter">Envia esta senha ao teu colega para ele aceitar o desafio!</p>
+              <p className="text-[9px] text-blue-800 mt-2.5 font-black text-center px-4 uppercase tracking-tighter">Envia esta senha ao teu colega para ele aceitar o desafio!</p>
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5">
             <button 
               onClick={() => {
                 setBetAction('my_bets');
                 setSelectedBetId(null);
               }}
-              className="w-full bg-[#091747] text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-[#0d2166] transition-all"
+              className="w-full bg-[#091747] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-[#0d2166] transition-all text-xs"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3.5 h-3.5" />
               Voltar à Lista
             </button>
             <button 
               onClick={onClose}
-              className="w-full bg-white border-2 border-gray-100 text-gray-700 font-bold py-4 rounded-2xl"
+              className="w-full bg-white border-2 border-gray-100 text-gray-700 font-bold py-3.5 rounded-xl text-xs"
             >
               Fechar
             </button>
@@ -910,23 +912,27 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
             <div className="bg-white border-2 border-orange-500 p-4 rounded-2xl flex items-start gap-3 mb-2">
                 <AlertCircle className="w-5 h-5 text-[#FFB10A] shrink-0 mt-0.5" strokeWidth={3} />
                 <p className="text-[10px] text-gray-900 leading-relaxed font-black uppercase tracking-tight">
-                  O teu adversário escolheu <span className="text-[#FFB10A] italic">{joiningBet.market}</span>. Escolhe um dos resultados restantes!
+                  O teu adversário escolheu <span className="text-[#FFB10A] italic">{joiningBet.market === 'Vitória A' ? match.teamA.name : joiningBet.market === 'Vitória B' ? match.teamB.name : joiningBet.market}</span>. Escolhe um dos resultados restantes!
                 </p>
               </div>
 
               <div>
                 <label className="text-[10px] font-black text-gray-900 mb-4 block uppercase tracking-widest px-2 italic">O teu Prognóstico</label>
                 <div className="grid grid-cols-3 gap-3">
-                  {['Vitória A', 'Empate', 'Vitória B'].map(m => {
-                    const isOccupied = m === joiningBet.market;
+                  {[
+                    { id: 'Vitória A', label: `Vitória ${match.teamA.name}` },
+                    { id: 'Empate', label: 'Empate' },
+                    { id: 'Vitória B', label: `Vitória ${match.teamB.name}` }
+                  ].map(({ id, label }) => {
+                    const isOccupied = id === joiningBet.market;
                     return (
                       <button 
-                        key={m}
+                        key={id}
                         disabled={isOccupied}
-                        onClick={() => setSelectedMarket(m)}
+                        onClick={() => setSelectedMarket(id)}
                         className={cn(
                           "py-6 px-2 rounded-2xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 relative",
-                          selectedMarket === m 
+                          selectedMarket === id 
                             ? "bg-[#091747] border-[#091747] text-white" 
                             : isOccupied
                               ? "bg-gray-100 border-gray-200 opacity-40 cursor-not-allowed"
@@ -935,15 +941,15 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                       >
                         <div className={cn(
                           "w-4 h-4 rounded-full border-2 flex items-center justify-center",
-                          selectedMarket === m ? "border-white" : "border-gray-300"
+                          selectedMarket === id ? "border-white" : "border-gray-300"
                         )}>
-                          {selectedMarket === m && <div className="w-2 h-2 rounded-full bg-white" />}
+                          {selectedMarket === id && <div className="w-2 h-2 rounded-full bg-white" />}
                           {isOccupied && <X className="w-3 h-3 text-red-600" strokeWidth={3} />}
                         </div>
                         <span className={cn(
-                          "text-[10px] font-black uppercase tracking-tight",
-                          selectedMarket === m ? "text-white" : "text-gray-900"
-                        )}>{m}</span>
+                          "text-[10px] font-black uppercase tracking-tight text-center leading-tight",
+                          selectedMarket === id ? "text-white" : "text-gray-900"
+                        )}>{label}</span>
                         {isOccupied && <span className="absolute -top-2 bg-red-600 text-white text-[7px] font-black px-2 py-0.5 rounded-full">OCUPADO</span>}
                       </button>
                     );
@@ -1027,9 +1033,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                       </div>
                       <div className="grid grid-cols-3 gap-2">
                         {[
-                          { id: 'A', label: 'Vence A' },
+                          { id: 'A', label: `Vence ${match.teamA.name}` },
                           { id: 'X', label: 'Empate' },
-                          { id: 'B', label: 'Vence B' }
+                          { id: 'B', label: `Vence ${match.teamB.name}` }
                         ].map((opt) => {
                           const isSelected = viewingUser ? (viewingUser.picks[idx] === opt.id) : (res === opt.id);
 
@@ -1043,7 +1049,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                                 setSelectedMarketsList(newPreds);
                               }}
                               className={cn(
-                                "py-3 rounded-[1rem] text-[10px] font-black border-2 transition-all uppercase tracking-tight",
+                                "py-3 px-1 rounded-[1.2rem] text-[9px] font-black border-2 transition-all uppercase tracking-tight text-center leading-tight line-clamp-2",
                                 isSelected 
                                   ? (viewingUser ? "bg-blue-600 border-blue-600 text-white" : "bg-[#091747] border-[#091747] text-white")
                                   : "bg-white border-gray-100 text-gray-400 hover:border-[#FFB10A] opacity-60"
@@ -1121,17 +1127,21 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
               <div>
                 <label className="text-[10px] font-black text-gray-400 mb-3 block uppercase tracking-widest px-1 italic">Prognóstico</label>
                 <div className="grid grid-cols-3 gap-2">
-                  {['Vitória A', 'Empate', 'Vitória B'].map(m => (
+                  {[
+                    { id: 'Vitória A', label: `Vitória ${match.teamA.name}` },
+                    { id: 'Empate', label: 'Empate' },
+                    { id: 'Vitória B', label: `Vitória ${match.teamB.name}` }
+                  ].map(({ id, label }) => (
                     <button 
-                      key={m}
-                      onClick={() => setSelectedMarket(m)}
+                      key={id}
+                      onClick={() => setSelectedMarket(id)}
                       className={cn(
-                        "py-4 rounded-xl border-2 text-[10px] font-bold transition-all active:scale-95 flex flex-col items-center justify-center gap-2",
-                        selectedMarket === m ? "bg-[#091747] border-[#091747] text-white shadow-lg" : "bg-white border-white text-gray-600 hover:border-[#FFB10A]"
+                        "py-4 px-1 rounded-xl border-2 text-[9px] font-bold transition-all active:scale-95 flex flex-col items-center justify-center gap-2 text-center leading-tight line-clamp-2",
+                        selectedMarket === id ? "bg-[#091747] border-[#091747] text-white shadow-lg" : "bg-white border-white text-gray-600 hover:border-[#FFB10A]"
                       )}
                     >
-                      <Football className={cn("w-4 h-4", selectedMarket === m ? "text-white" : "text-[#FFB10A]")} strokeWidth={2.5} />
-                      {m}
+                      <Football className={cn("w-4 h-4", selectedMarket === id ? "text-white" : "text-[#FFB10A]")} strokeWidth={2.5} />
+                      {label}
                     </button>
                   ))}
                 </div>
@@ -1169,7 +1179,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                 <h4 className="text-[11px] font-black text-[#FFB10A] uppercase tracking-widest mb-1 italic relative z-10">Seleção de Mercados</h4>
                 <p className="text-[10px] text-gray-300 font-bold uppercase tracking-tight leading-relaxed relative z-10">Escolhe os mercados que estarão disponíveis para o desafio.</p>
               </div>
-              <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 gap-2">
                 {Array(10).fill(0).map((_, i) => (
                   <button 
                     key={i} 
@@ -1180,28 +1190,28 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                       setSelectedMarketsList(newPreds);
                     }}
                     className={cn(
-                      "flex items-center gap-4 p-4 rounded-2xl border-2 transition-all text-left",
+                      "flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left",
                       selectedMarketsList[i] 
                         ? "bg-white border-[#FFB10A] shadow-md scale-[1.01]" 
                         : "bg-gray-50 border-gray-100 opacity-70 hover:opacity-100"
                     )}
                   >
                     <div className={cn(
-                      "w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all",
+                      "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all",
                       selectedMarketsList[i] 
                         ? "bg-[#FFB10A] border-[#FFB10A]" 
                         : "bg-white border-gray-300"
                     )}>
-                      {selectedMarketsList[i] && <Check className="w-3.5 h-3.5 text-white stroke-[4px]" />}
+                      {selectedMarketsList[i] && <Check className="w-2.5 h-2.5 text-white stroke-[4px]" />}
                     </div>
                     <div className="flex flex-col">
                       <span className={cn(
-                        "text-[11px] font-black uppercase tracking-tight",
+                        "text-[10px] font-black uppercase tracking-tight",
                         selectedMarketsList[i] ? "text-[#091747]" : "text-gray-500"
                       )}>
                         Mercado {i + 1}
                       </span>
-                      <span className="text-[8px] text-gray-400 font-bold uppercase">Disponível para todos</span>
+                      <span className="text-[7px] text-gray-400 font-bold uppercase">Disponível para todos</span>
                     </div>
                   </button>
                 ))}
@@ -1249,9 +1259,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       {[
-                        { id: 'A', label: 'Vence A' },
+                        { id: 'A', label: `Vence ${match.teamA.name}` },
                         { id: 'X', label: 'Empate' },
-                        { id: 'B', label: 'Vence B' }
+                        { id: 'B', label: `Vence ${match.teamB.name}` }
                       ].map((opt) => (
                         <button
                           key={opt.id}
@@ -1261,7 +1271,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                             setSelectedMarketsList(newPreds);
                           }}
                           className={cn(
-                            "py-2.5 rounded-xl text-[9px] font-black border-2 transition-all uppercase tracking-tight",
+                            "py-2.5 px-1 rounded-xl text-[8px] font-black border-2 transition-all uppercase tracking-tight text-center leading-tight line-clamp-2",
                             res === opt.id
                               ? "bg-[#091747] border-[#091747] text-white"
                               : "bg-gray-50 border-gray-50 text-gray-500 hover:border-[#FFB10A]"
@@ -1321,24 +1331,24 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
               </p>
             </div>
 
-            <div className="flex flex-col gap-4">
-              <label className="text-[10px] font-black text-gray-400 mb-0 block uppercase tracking-widest px-2 italic">Teus Prognósticos</label>
+            <div className="flex flex-col gap-3">
+              <label className="text-[9px] font-black text-gray-400 mb-0 block uppercase tracking-widest px-2 italic">Teus Prognósticos</label>
               {[
-                { title: 'Vencedor (1X2)', optA: 'CASA / EMPATE', optB: 'FORA / EMPATE' },
+                { title: 'Vencedor (1X2)', optA: `${match.teamA.name} / EMPATE`, optB: `${match.teamB.name} / EMPATE` },
                 { title: 'Golos Total', optA: '+ DE 2.5', optB: '- DE 2.5' },
                 { title: 'Ambas Marcam', optA: 'SIM', optB: 'NÃO' },
-                { title: 'Intervalo', optA: 'VENCE CASA', optB: 'EMPATE/FORA' },
+                { title: 'Intervalo', optA: `VENCE ${match.teamA.name}`, optB: `EMPATE/${match.teamB.name}` },
                 { title: 'Escanteios', optA: '+ DE 8.5', optB: '- DE 8.5' },
-                { title: 'Primeiro Golo', optA: 'CASA', optB: 'FORA/SEM' },
+                { title: 'Primeiro Golo', optA: `${match.teamA.name}`, optB: `${match.teamB.name}/SEM` },
                 { title: 'Cartões', optA: '+ DE 3.5', optB: '- DE 3.5' },
-                { title: 'Handicap (0:1)', optA: 'CASA (+1)', optB: 'FORA (-1)' },
+                { title: 'Handicap (0:1)', optA: `${match.teamA.name} (+1)`, optB: `${match.teamB.name} (-1)` },
                 { title: 'Golos 1ª Parte', optA: 'SIM', optB: 'NÃO' },
-                { title: 'Último Golo', optA: 'CASA', optB: 'FORA' }
+                { title: 'Último Golo', optA: `${match.teamA.name}`, optB: `${match.teamB.name}` }
               ].map((m, i) => (
-                <div key={i} className="flex flex-col gap-4 p-5 bg-white border-2 border-gray-100 rounded-3xl hover:border-[#FFB10A]/30 transition-all">
-                  <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-lg bg-orange-50 text-[#FFB10A] text-[10px] font-black flex items-center justify-center border border-orange-100">{i + 1}</span>
-                    <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">{m.title}</span>
+                <div key={i} className="flex flex-col gap-3 p-4 bg-white border-2 border-gray-100 rounded-2xl hover:border-[#FFB10A]/30 transition-all">
+                  <div className="flex items-center gap-2">
+                    <span className="w-5 h-5 rounded bg-orange-50 text-[#FFB10A] text-[9px] font-black flex items-center justify-center border border-orange-100">{i + 1}</span>
+                    <span className="text-[9px] font-black text-[#091747] uppercase tracking-widest italic">{m.title}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <button 
@@ -1348,7 +1358,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                         setSelectedMarketsList(newPreds);
                       }}
                       className={cn(
-                        "py-3.5 text-[9px] font-black rounded-xl border-2 transition-all active:scale-95 px-3 uppercase tracking-tighter", 
+                        "py-2.5 text-[8px] font-black rounded-lg border-2 transition-all active:scale-95 px-2 uppercase tracking-tighter", 
                         selectedMarketsList[i] === 'A' ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-lg" : "bg-gray-50 border-gray-50 text-gray-500 hover:border-[#FFB10A]"
                       )}
                     >
@@ -1361,7 +1371,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                         setSelectedMarketsList(newPreds);
                       }}
                       className={cn(
-                        "py-3.5 text-[9px] font-black rounded-xl border-2 transition-all active:scale-95 px-3 uppercase tracking-tighter", 
+                        "py-2.5 text-[8px] font-black rounded-lg border-2 transition-all active:scale-95 px-2 uppercase tracking-tighter", 
                         selectedMarketsList[i] === 'B' ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-lg" : "bg-gray-50 border-gray-50 text-gray-500 hover:border-[#FFB10A]"
                       )}
                     >
@@ -1413,13 +1423,13 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 300, mass: 0.8 }}
-            className="relative w-full max-w-lg bg-white rounded-t-[2.5rem] md:rounded-[3rem] p-6 md:p-8 flex flex-col h-[80vh] md:h-auto md:max-h-[85vh] overflow-hidden border border-gray-200"
+            className="relative w-full max-w-lg bg-white rounded-t-[2.5rem] md:rounded-[3rem] p-4 md:p-8 flex flex-col h-[85vh] md:h-auto md:max-h-[90vh] overflow-hidden border border-gray-200 shadow-xl"
           >
             {/* DRAG HANDLE FOR MOBILE */}
             <div className="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-400 rounded-full md:hidden" />
 
-            <div className="flex items-center justify-between mb-6 mt-2 shrink-0">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between mb-4 mt-1 shrink-0">
+              <div className="flex items-center gap-2">
                 {((betAction && !isSuccess) || showDeleteConfirm) && !showClassification && (
                   <button 
                     onClick={() => {
@@ -1442,13 +1452,13 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                         else setBetAction(null);
                       }
                     }}
-                    className="w-10 h-10 rounded-2xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-colors"
+                    className="w-8 h-8 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-colors"
                   >
-                    <ArrowLeft className="w-5 h-5 stroke-[3px]" />
+                    <ArrowLeft className="w-4 h-4 stroke-[3px]" />
                   </button>
                 )}
                 <div>
-                  <h2 className="text-xl font-black text-[#091747] uppercase tracking-tighter leading-none italic">
+                  <h2 className="text-lg font-black text-[#091747] uppercase tracking-tighter leading-none italic">
                     {showDeleteConfirm ? 'Eliminar' : 
                      isSuccess ? 'Confirmado' :
                      betAction === 'join' ? 'Entrar' : 
@@ -1456,7 +1466,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                      betAction === 'bet_details' ? 'Detalhes' :
                      activeTab === 'Nacional' ? 'Nacional' : `Criar ${activeTab}`}
                   </h2>
-                  <p className="text-[10px] font-black text-gray-900 uppercase tracking-widest mt-1">
+                  <p className="text-[9px] font-black text-gray-900 uppercase tracking-widest mt-0.5">
                     {match.league}
                   </p>
                 </div>
@@ -1467,22 +1477,22 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                   <button 
                     onClick={() => setShowClassification(!showClassification)}
                     className={cn(
-                      "w-10 h-10 rounded-2xl border-2 transition-all flex items-center justify-center shadow-sm",
+                      "w-8 h-8 rounded-xl border-2 transition-all flex items-center justify-center shadow-sm",
                       showClassification 
                         ? "bg-[#091747] border-[#091747] text-white" 
                         : "bg-white border-gray-200 text-gray-900 hover:bg-gray-50"
                     )}
                     title="Classificação"
                   >
-                    <List className="w-5 h-5 stroke-[2.5px]" />
+                    <List className="w-4 h-4 stroke-[2.5px]" />
                   </button>
                 )}
 
                 <button 
                   onClick={onClose}
-                  className="w-10 h-10 rounded-2xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-all font-black"
+                  className="w-8 h-8 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-all font-black"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -1544,7 +1554,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                         setCreateStep('details');
                       }
                     }}
-                    className="w-full bg-[#FFB10A] text-white font-black py-4 rounded-[1.5rem] transition-all active:scale-[0.98] uppercase tracking-widest text-xs"
+                    className="w-full bg-[#FFB10A] text-white font-black py-3.5 rounded-2xl transition-all active:scale-[0.98] uppercase tracking-widest text-xs"
                   >
                     Próximo Passo
                   </button>
@@ -1552,7 +1562,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
                   <button 
                     onClick={handleBet}
                     className={cn(
-                      "w-full text-white font-black py-4 rounded-[1.5rem] transition-all active:scale-[0.98] uppercase tracking-widest text-xs",
+                      "w-full text-white font-black py-3.5 rounded-2xl transition-all active:scale-[0.98] uppercase tracking-widest text-xs",
                       getActionClass()
                     )}
                   >
