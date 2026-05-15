@@ -7,8 +7,8 @@ export interface User {
 export interface Match {
   id: number;
   league: string;
-  teamA: { name: string; logo: string };
-  teamB: { name: string; logo: string };
+  teamA: { name: string; logo: string; record?: string };
+  teamB: { name: string; logo: string; record?: string };
   date: string;
   time: string;
   odds: { winA: number; draw: number; winB: number };
@@ -16,6 +16,7 @@ export interface Match {
   status?: 'ao_vivo' | 'terminou' | 'breve';
   scoreA?: number;
   scoreB?: number;
+  broadcast?: string;
 }
 
 export interface Category {

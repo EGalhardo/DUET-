@@ -4,7 +4,7 @@ import { ArrowLeft, CircleDot as Football, Calendar, Trophy, Copy, CheckCircle2,
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
 
-import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES, LEAGUE_CLASSIFICATIONS } from '../constants';
+import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES, LEAGUE_CLASSIFICATIONS, NBA_MATCHES } from '../constants';
 import { Match, Wallet as WalletType, UserProfile, Bet, FavoriteItem } from '../types';
 import { storageService } from '../services/storageService';
 
@@ -61,7 +61,7 @@ const ClassificationTable = ({
                   <td className="px-3 py-4 font-black text-[#091747] italic text-[9px]">{row.pos}º</td>
                   <td className="px-1 py-4 font-bold text-gray-900 uppercase tracking-tight text-[9px]">
                     <div className="flex items-center gap-1">
-                      <span className="truncate max-w-[80px]">{row.team}</span>
+                      <span className="truncate max-w-[100px]">{row.team}</span>
                       {isMatchTeam && <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-[#FFB10A] animate-pulse" />}
                     </div>
                   </td>
@@ -90,7 +90,85 @@ const ClassificationTable = ({
   );
 };
 
-const MatchCard = React.memo(({ match, onClick }: { match: Match, onClick: (m: Match) => void }) => {
+const MatchCard = React.memo(({ match, onClick, category }: { match: Match, onClick: (m: Match) => void, category?: string }) => {
+  const isBasketball = category === 'basket' || match.league === 'NBA' || match.league === 'Unitel Basket';
+
+  if (isBasketball) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        onClick={() => onClick(match)}
+        className="bg-white rounded-lg border-2 border-gray-200 p-6 cursor-pointer hover:shadow-md transition-all relative overflow-hidden"
+      >
+        {/* TOP: LEAGUE, DATE AND TIME */}
+        <div className="flex flex-col items-center gap-1 mb-6">
+          <div className="px-3 py-1 bg-[#091747]/5 border border-[#091747]/10 rounded-full">
+            <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">
+              {match.league}
+            </span>
+          </div>
+          <div className="text-gray-900 font-black text-sm md:text-base italic uppercase tracking-tighter text-center mt-1">
+            {(() => {
+              const [day, month, year] = match.date.split('/').map(Number);
+              const dateObj = new Date(year, month - 1, day);
+              const weekday = dateObj.toLocaleDateString('pt-PT', { weekday: 'short' }).replace('.', '');
+              const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+              const hour = match.time.split(':')[0];
+              return `${capitalizedWeekday}. ${match.date}, ${hour}h`;
+            })()}
+          </div>
+        </div>
+
+        {/* CENTER: TEAMS SECTION */}
+        <div className="flex items-start justify-center relative min-h-[120px]">
+          {/* Vertical Divider */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gray-200 -translate-x-1/2" />
+
+          {/* Left Team (Home) */}
+          <div className="flex-1 flex flex-col items-center pr-4">
+            <div className="flex items-center gap-3 mb-4">
+              <img src={match.teamA.logo} alt={match.teamA.name} className="w-12 h-12 md:w-16 md:h-16 object-contain" />
+              {match.teamA.record && (
+                <span className="text-gray-700 text-[11px] md:text-xs font-black italic uppercase tracking-widest">
+                  {match.teamA.record}
+                </span>
+              )}
+            </div>
+            <span className="font-black text-[#091747] text-center text-sm md:text-base leading-tight uppercase italic">
+              {match.teamA.name}
+            </span>
+          </div>
+
+          {/* Right Team (Away) */}
+          <div className="flex-1 flex flex-col items-center pl-4">
+            <div className="flex items-center gap-3 mb-4">
+              {match.teamB.record && (
+                <span className="text-gray-700 text-[11px] md:text-xs font-black italic uppercase tracking-widest">
+                  {match.teamB.record}
+                </span>
+              )}
+              <img src={match.teamB.logo} alt={match.teamB.name} className="w-12 h-12 md:w-16 md:h-16 object-contain" />
+            </div>
+            <span className="font-black text-[#091747] text-center text-sm md:text-base leading-tight uppercase italic">
+              {match.teamB.name}
+            </span>
+          </div>
+        </div>
+
+        {/* FOOTER: ENTRAR BUTTON */}
+        <div className="mt-6 -mx-[19px] px-[5px]">
+          <button 
+            id={`match-entrar-${match.id}`}
+            className="w-full py-3 bg-[#FFB10A] text-white rounded-lg font-black text-xs uppercase tracking-widest hover:bg-[#e69f09] transition-colors shadow-lg shadow-orange-200"
+          >
+            Entrar
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div 
       initial={{ opacity: 0, x: -20 }}
@@ -174,9 +252,10 @@ interface BettingModalProps {
   onClose: () => void;
   match: Match | null;
   activeTab: string;
+  category?: string;
 }
 
-const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) => {
+const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingModalProps) => {
   const [betAction, setBetAction] = React.useState<'create' | 'join' | 'my_bets' | 'bet_details' | null>(null);
   const [selectedBetId, setSelectedBetId] = React.useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState<string | null>(null);
@@ -284,59 +363,137 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
   const steps = activeTab === 'Privado' ? ['password', 'selection', 'details'] : (activeTab === '1 vs 1' ? ['password', 'details'] : ['details']);
   const currentStepIndex = steps.indexOf(createStep);
 
+  const isBasketball = category === 'basket' || (match && (match.league === 'NBA' || match.league === 'Unitel Basket'));
+
   const matchHeader = (
     <div className="flex flex-col gap-4 py-4 px-1 mb-2 shrink-0">
-      {/* Competiton Name Header */}
-      <div className="flex justify-center mb-2">
-        <motion.div 
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="px-4 py-1.5 bg-[#091747]/5 border border-[#091747]/10 rounded-full"
-        >
-          <span className="text-[10px] md:text-xs font-black text-[#091747] uppercase tracking-widest italic">
-            {match.league}
-          </span>
-        </motion.div>
-      </div>
-      <div className="flex items-center justify-around gap-2">
-        <div className="flex flex-col items-center flex-1 max-w-[120px]">
-          <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-gray-50 rounded-xl p-2 mb-2 shadow-inner">
-            <motion.img 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              src={match.teamA.logo} 
-              alt={match.teamA.name} 
-              className="w-full h-full object-contain" 
-            />
+      {isBasketball ? (
+        <>
+          {/* BASKETBALL HEADER */}
+          <div className="flex flex-col items-center gap-1 mb-4">
+            <div className="px-3 py-1 bg-[#091747]/5 border border-[#091747]/10 rounded-full">
+              <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">
+                {match.league}
+              </span>
+            </div>
+            <div className="flex justify-center items-center relative w-full mt-1">
+              <div className="text-gray-900 font-black text-xl italic uppercase tracking-tighter">
+                {match.time}
+              </div>
+              {match.broadcast && (
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest italic">
+                  {match.broadcast}
+                </div>
+              )}
+            </div>
           </div>
-          <span className="font-bold text-gray-900 text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamA.name}</span>
-        </div>
-        
-        <div className="flex flex-col items-center justify-center gap-1">
-          <div className="px-2 py-0.5 bg-orange-50 rounded-full border border-orange-100">
-            <span className="text-[9px] text-[#FFB10A] font-black uppercase tracking-[0.1em]">
-              VS
-            </span>
-          </div>
-          <div className="text-[10px] text-gray-500 font-bold bg-white px-2 py-0.5 rounded-lg border border-gray-100 flex items-center gap-1">
-            <Calendar className="w-2.5 h-2.5 text-gray-400" />
-            {match.time}
-          </div>
-        </div>
 
-        <div className="flex flex-col items-center flex-1 max-w-[120px]">
-          <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-gray-50 rounded-xl p-2 mb-2 shadow-inner">
-            <motion.img 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              src={match.teamB.logo} 
-              alt={match.teamB.name} 
-              className="w-full h-full object-contain" 
-            />
+          <div className="flex items-start justify-center relative min-h-[100px] mt-4">
+            {/* Vertical Divider */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gray-200 -translate-x-1/2" />
+
+            {/* Left Team (Home) */}
+            <div className="flex-1 flex flex-col items-center pr-4">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-gray-50 rounded-xl p-2 shadow-inner">
+                  <motion.img 
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    src={match.teamA.logo} 
+                    alt={match.teamA.name} 
+                    className="w-full h-full object-contain" 
+                  />
+                </div>
+                {match.teamA.record && (
+                  <span className="text-gray-700 text-[10px] md:text-xs font-black italic uppercase tracking-widest leading-none">
+                    {match.teamA.record}
+                  </span>
+                )}
+              </div>
+              <span className="font-black text-[#091747] text-center text-[10px] md:text-xs uppercase tracking-tight leading-tight italic">
+                {match.teamA.name}
+              </span>
+            </div>
+
+            {/* Right Team (Away) */}
+            <div className="flex-1 flex flex-col items-center pl-4">
+              <div className="flex items-center gap-3 mb-2">
+                {match.teamB.record && (
+                  <span className="text-gray-700 text-[10px] md:text-xs font-black italic uppercase tracking-widest leading-none">
+                    {match.teamB.record}
+                  </span>
+                )}
+                <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-gray-50 rounded-xl p-2 shadow-inner">
+                  <motion.img 
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    src={match.teamB.logo} 
+                    alt={match.teamB.name} 
+                    className="w-full h-full object-contain" 
+                  />
+                </div>
+              </div>
+              <span className="font-black text-[#091747] text-center text-[10px] md:text-xs uppercase tracking-tight leading-tight italic">
+                {match.teamB.name}
+              </span>
+            </div>
           </div>
-          <span className="font-bold text-gray-900 text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamB.name}</span>
-        </div>
-      </div>
+        </>
+      ) : (
+        <>
+          {/* FOOTBALL HEADER (Original) */}
+          <div className="flex justify-center mb-2">
+            <motion.div 
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="px-4 py-1.5 bg-[#091747]/5 border border-[#091747]/10 rounded-full"
+            >
+              <span className="text-[10px] md:text-xs font-black text-[#091747] uppercase tracking-widest italic">
+                {match.league}
+              </span>
+            </motion.div>
+          </div>
+          <div className="flex items-center justify-around gap-2">
+            <div className="flex flex-col items-center flex-1 max-w-[120px]">
+              <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-gray-50 rounded-xl p-2 mb-2 shadow-inner">
+                <motion.img 
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  src={match.teamA.logo} 
+                  alt={match.teamA.name} 
+                  className="w-full h-full object-contain" 
+                />
+              </div>
+              <span className="font-bold text-gray-900 text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamA.name}</span>
+            </div>
+            
+            <div className="flex flex-col items-center justify-center gap-1">
+              <div className="px-2 py-0.5 bg-orange-50 rounded-full border border-orange-100">
+                <span className="text-[9px] text-[#FFB10A] font-black uppercase tracking-[0.1em]">
+                  VS
+                </span>
+              </div>
+              <div className="text-[10px] text-gray-500 font-bold bg-white px-2 py-0.5 rounded-lg border border-gray-100 flex items-center gap-1">
+                <Calendar className="w-2.5 h-2.5 text-gray-400" />
+                {match.time}
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center flex-1 max-w-[120px]">
+              <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-gray-50 rounded-xl p-2 mb-2 shadow-inner">
+                <motion.img 
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  src={match.teamB.logo} 
+                  alt={match.teamB.name} 
+                  className="w-full h-full object-contain" 
+                />
+              </div>
+              <span className="font-bold text-gray-900 text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamB.name}</span>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 
@@ -1504,7 +1661,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab }: BettingModalProps) 
               </div>
 
               <div className="flex items-center gap-2">
-                {!isSuccess && !showDeleteConfirm && (
+                {!isSuccess && !showDeleteConfirm && LEAGUE_CLASSIFICATIONS[match.league] && (
                   <button 
                     onClick={() => setShowClassification(!showClassification)}
                     className={cn(
@@ -1623,7 +1780,7 @@ export default function Aposta() {
   React.useEffect(() => {
     const matchId = searchParams.get('matchId');
     if (matchId) {
-      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES];
+      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES, ...NBA_MATCHES];
       const match = allMatches.find(m => m.id.toString() === matchId);
       if (match) {
         setSelectedMatch(match);
@@ -1787,20 +1944,69 @@ export default function Aposta() {
       </h1>
 
       <div className="max-w-6xl mx-auto w-full px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-16">
-          {(
-            topic === 'Girabola' || topic === 'Taça de Angola' ? GIRABOLA_MATCHES :
-            topic === 'BundesLiga' || topic === 'Bundesliga' || topic === 'Taça da Alemanha' || topic === 'DFB Pokal' ? BUNDESLIGA_MATCHES :
-            topic === 'La Liga' || topic === 'Taça de Espanha' || topic === 'Copa del Rey' ? LALIGA_MATCHES :
-            topic === 'Ligue 1' || topic === 'Taça de França' || topic === 'Copa da França' ? LIGUE1_MATCHES :
-            topic === 'Eredivisie' || topic === 'Evedivie' || topic === 'Taça da Holanda' || topic === 'KNVB Beker' ? EREDIVISIE_MATCHES :
-            topic === 'Premier League' || topic === 'PremierLeague' || topic === 'Taça de Inglaterra' || topic === 'FA Cup' ? PREMIERLEAGUE_MATCHES :
-            topic === 'Serie A' || topic === 'Série A' || topic === 'Taça de Itália' || topic === 'TIM Cup' ? SERIEA_MATCHES :
-            topic === 'Liga Nos' || topic === 'Liga NOS' || topic === 'Taça de Portugal' ? LIGANOS_MATCHES :
-            MATCH_DATA
-          ).map((match) => (
-            <MatchCard key={match.id} match={match} onClick={handleOpenModal} />
-          ))}
+        <div className="flex flex-col gap-8 pb-16">
+          {(() => {
+            const matches = 
+              topic === 'Girabola' || topic === 'Taça de Angola' ? GIRABOLA_MATCHES :
+              topic === 'BundesLiga' || topic === 'Bundesliga' || topic === 'Taça da Alemanha' || topic === 'DFB Pokal' ? BUNDESLIGA_MATCHES :
+              topic === 'La Liga' || topic === 'Taça de Espanha' || topic === 'Copa del Rey' ? LALIGA_MATCHES :
+              topic === 'Ligue 1' || topic === 'Taça de França' || topic === 'Copa da França' ? LIGUE1_MATCHES :
+              topic === 'Eredivisie' || topic === 'Evedivie' || topic === 'Taça da Holanda' || topic === 'KNVB Beker' ? EREDIVISIE_MATCHES :
+              topic === 'Premier League' || topic === 'PremierLeague' || topic === 'Taça de Inglaterra' || topic === 'FA Cup' ? PREMIERLEAGUE_MATCHES :
+              topic === 'Serie A' || topic === 'Série A' || topic === 'Taça de Itália' || topic === 'TIM Cup' ? SERIEA_MATCHES :
+              topic === 'Liga Nos' || topic === 'Liga NOS' || topic === 'Taça de Portugal' ? LIGANOS_MATCHES :
+              topic === 'NBA' || topic === 'NBA EUA Leste' ? NBA_MATCHES :
+              category === 'basket' ? NBA_MATCHES :
+              MATCH_DATA;
+
+            if (category === 'basket') {
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {matches.map((match) => (
+                    <MatchCard key={match.id} match={match} onClick={handleOpenModal} category={category} />
+                  ))}
+                </div>
+              );
+            }
+
+            // Agrupar por data para mostrar o cabeçalho "Seg, 15 Mar"
+            const groupedMatches: Record<string, Match[]> = {};
+            matches.forEach(m => {
+              if (!groupedMatches[m.date]) groupedMatches[m.date] = [];
+              groupedMatches[m.date].push(m);
+            });
+
+            return Object.entries(groupedMatches).map(([date, dateMatches]) => {
+              // Formatar data: "Seg, 15 Mar"
+              const getDayName = (dateStr: string) => {
+                const [day, month, year] = dateStr.split('/').map(Number);
+                const dateObj = new Date(year, month - 1, day);
+                const weekday = dateObj.toLocaleDateString('pt-PT', { weekday: 'short' }).replace('.', '');
+                const dayNum = dateObj.toLocaleDateString('pt-PT', { day: '2-digit' });
+                const monthName = dateObj.toLocaleDateString('pt-PT', { month: 'short' }).replace('.', '');
+                return `${weekday}, ${dayNum} ${monthName}`;
+              };
+
+              return (
+                <div key={date} className="flex flex-col gap-4">
+                  <div className="flex items-center gap-4">
+                    <h3 className={cn(
+                      "text-xl font-black uppercase tracking-tight",
+                      category === 'basket' ? "text-gray-800" : "text-gray-600"
+                    )}>
+                      {category === 'basket' ? getDayName(date) : date}
+                    </h3>
+                    <div className="h-[2px] bg-gray-200 flex-1 rounded-full" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {dateMatches.map((match) => (
+                      <MatchCard key={match.id} match={match} onClick={handleOpenModal} category={category} />
+                    ))}
+                  </div>
+                </div>
+              );
+            });
+          })()}
         </div>
       </div>
 
@@ -1809,6 +2015,7 @@ export default function Aposta() {
         onClose={() => setIsModalOpen(false)} 
         match={selectedMatch} 
         activeTab={activeTab} 
+        category={category}
       />
     </div>
   );

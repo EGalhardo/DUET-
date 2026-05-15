@@ -544,6 +544,14 @@ export const LEAGUE_CLASSIFICATIONS: Record<string, any[]> = {
     { pos: 17, team: 'Vizela', p: 31, w: 4, d: 10, l: 17, pts: 22 },
     { pos: 18, team: 'Paços de Ferreira', p: 31, w: 5, d: 5, l: 21, pts: 20 },
   ],
+  'NBA': [
+    { pos: 1, team: 'Celtics', p: 36, w: 28, d: 0, l: 8, pts: 64 },
+    { pos: 2, team: 'Lakers', p: 36, w: 24, d: 0, l: 12, pts: 60 },
+    { pos: 3, team: 'Warriors', p: 36, w: 22, d: 0, l: 14, pts: 58 },
+    { pos: 4, team: 'Hornets', p: 37, w: 19, d: 0, l: 18, pts: 56 },
+    { pos: 5, team: 'Kings', p: 38, w: 15, d: 0, l: 23, pts: 53 },
+    { pos: 6, team: 'Nets', p: 36, w: 11, d: 0, l: 25, pts: 47 },
+  ],
 };
 
 export const GIRABOLA_CLUBS = [
@@ -1266,5 +1274,56 @@ export const TACADAALEMANHA_MATCHES: Match[] = [
     status: 'breve',
     scoreA: 0,
     scoreB: 0
+  }
+];
+
+export const NBA_CLUBS = [
+  { name: 'Kings', logo: 'https://upload.wikimedia.org/wikipedia/en/c/c7/Sacramento_Kings_logo.svg', record: '15-23' },
+  { name: 'Hornets', logo: 'https://upload.wikimedia.org/wikipedia/en/c/c4/Charlotte_Hornets_%282014%29_logo.svg', record: '19-18' },
+  { name: 'Lakers', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Los_Angeles_Lakers_logo.svg', record: '24-12' },
+  { name: 'Warriors', logo: 'https://upload.wikimedia.org/wikipedia/en/0/01/Golden_State_Warriors_logo.svg', record: '22-14' },
+  { name: 'Celtics', logo: 'https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg', record: '28-8' },
+  { name: 'Nets', logo: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Brooklyn_Nets_newlogo.svg', record: '11-25' }
+];
+
+export const NBA_MATCHES: Match[] = [
+  {
+    id: 2001,
+    league: "NBA",
+    teamA: NBA_CLUBS[0], // Kings
+    teamB: NBA_CLUBS[1], // Hornets
+    date: "15/03/2026",
+    time: "23:00",
+    odds: { winA: 1.95, draw: 0, winB: 1.85 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'NBATV C+A'
+  },
+  {
+    id: 2002,
+    league: "NBA",
+    teamA: NBA_CLUBS[2], // Lakers
+    teamB: NBA_CLUBS[3], // Warriors
+    date: "15/03/2026",
+    time: "02:00",
+    odds: { winA: 1.70, draw: 0, winB: 2.20 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'NBA TV'
+  },
+  {
+    id: 2003,
+    league: "NBA",
+    teamA: NBA_CLUBS[4], // Celtics
+    teamB: NBA_CLUBS[5], // Nets
+    date: "16/03/2026",
+    time: "01:30",
+    odds: { winA: 1.25, draw: 0, winB: 4.50 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'ESPN'
   }
 ];
