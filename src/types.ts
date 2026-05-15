@@ -57,7 +57,9 @@ export interface Bet {
   roomCode?: string;
   password?: string;
   roomName?: string;
+  maxParticipants?: number;
   selectedMarkets?: (string | null)[];
+  marketType?: string;
   autoConfirmThreshold?: number;
   createdAt: string;
 }
