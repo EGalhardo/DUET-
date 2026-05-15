@@ -160,6 +160,10 @@ const MatchCard = React.memo(({ match, onClick, category }: { match: Match, onCl
         <div className="mt-6 -mx-[19px] px-[5px]">
           <button 
             id={`match-entrar-${match.id}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick(match);
+            }}
             className="w-full py-3 bg-[#FFB10A] text-white rounded-lg font-black text-xs uppercase tracking-widest hover:bg-[#e69f09] transition-colors shadow-lg shadow-orange-200"
           >
             Entrar
@@ -237,6 +241,10 @@ const MatchCard = React.memo(({ match, onClick, category }: { match: Match, onCl
 
       <button 
         id={`match-entrar-${match.id}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick(match);
+        }}
         className="w-full bg-[#FFB10A] hover:bg-[#FFC000] text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98]"
       >
         Entrar
@@ -670,20 +678,23 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       */
 
       // Entrar na aposta encontrada
-      // Removed wallet update for dev mode
-      /*
+      const amountToJoin = joiningBet.amount;
+      if (wallet.balance < amountToJoin) {
+        setError('Saldo insuficiente!');
+        return;
+      }
+
       storageService.updateWallet({ 
-        balance: wallet.balance - joiningBet.amount,
-        blocked_balance: wallet.blocked_balance + joiningBet.amount
+        balance: wallet.balance - amountToJoin,
+        blocked_balance: wallet.blocked_balance + amountToJoin
       });
-      */
 
       storageService.saveBet({
         id: Date.now().toString(),
         matchId: match.id,
         category: activeTab as any,
         market: activeTab === '1 vs 1' ? selectedMarket : joiningBet.market,
-        amount: joiningBet.amount,
+        amount: amountToJoin,
         status: 'Open',
         password: roomCodeInput,
         roomName: roomNameInput,
@@ -722,21 +733,16 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       }
     }
 
-    /* REMOVED FOR DEV MODE:
     if (amount > wallet.balance) {
       setError('Saldo insuficiente!');
       return;
     }
-    */
 
     // Processar Transação
-    // Removed wallet update for dev mode
-    /*
     storageService.updateWallet({ 
       balance: wallet.balance - amount,
       blocked_balance: wallet.blocked_balance + amount
     });
-    */
 
     storageService.saveBet({
       id: Date.now().toString(),
@@ -1398,23 +1404,6 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
           <div className="flex flex-col gap-6 py-2">
             {matchHeader}
 
-            <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 mb-2 shadow-sm">
-              <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest text-center italic">Lotação da Sala</label>
-              <div className="relative overflow-hidden">
-                <motion.div 
-                  key="fixed-3"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  className="w-full bg-gray-100/50 border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
-                >
-                  <Lock className="w-4 h-4 text-gray-400" />
-                  <span>3</span>
-                  <span className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Atletas</span>
-                </motion.div>
-              </div>
-              <p className="text-[8px] text-gray-500 mt-3 font-bold text-center uppercase tracking-tight italic">Este modo de jogo requer uma lotação específica de atletas.</p>
-            </div>
-
             <div className="bg-orange-50/50 rounded-[2rem] p-6 border-2 border-orange-100 flex flex-col gap-6 shadow-sm">
               {!isBasketball && (
                 <div>
@@ -1498,6 +1487,23 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 shadow-sm">
+              <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest text-center italic">Lotação da Sala</label>
+              <div className="relative overflow-hidden">
+                <motion.div 
+                  key="fixed-3"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="w-full bg-gray-100/50 border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
+                >
+                  <Lock className="w-4 h-4 text-gray-400" />
+                  <span>3</span>
+                  <span className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Atletas</span>
+                </motion.div>
+              </div>
+              <p className="text-[8px] text-gray-500 mt-3 font-bold text-center uppercase tracking-tight italic">Este modo de jogo requer uma lotação específica de atletas.</p>
             </div>
           </div>
         );
@@ -2091,53 +2097,13 @@ export default function Aposta() {
               category === 'basket' ? NBA_MATCHES :
               MATCH_DATA;
 
-            if (category === 'basket') {
-              return (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {matches.map((match) => (
-                    <MatchCard key={match.id} match={match} onClick={handleOpenModal} category={category} />
-                  ))}
-                </div>
-              );
-            }
-
-            // Agrupar por data para mostrar o cabeçalho "Seg, 15 Mar"
-            const groupedMatches: Record<string, Match[]> = {};
-            matches.forEach(m => {
-              if (!groupedMatches[m.date]) groupedMatches[m.date] = [];
-              groupedMatches[m.date].push(m);
-            });
-
-            return Object.entries(groupedMatches).map(([date, dateMatches]) => {
-              // Formatar data: "Seg, 15 Mar"
-              const getDayName = (dateStr: string) => {
-                const [day, month, year] = dateStr.split('/').map(Number);
-                const dateObj = new Date(year, month - 1, day);
-                const weekday = dateObj.toLocaleDateString('pt-PT', { weekday: 'short' }).replace('.', '');
-                const dayNum = dateObj.toLocaleDateString('pt-PT', { day: '2-digit' });
-                const monthName = dateObj.toLocaleDateString('pt-PT', { month: 'short' }).replace('.', '');
-                return `${weekday}, ${dayNum} ${monthName}`;
-              };
-
-              return (
-                <div key={date} className="flex flex-col gap-4">
-                  <div className="flex items-center gap-4">
-                    <h3 className={cn(
-                      "text-xl font-black uppercase tracking-tight",
-                      category === 'basket' ? "text-gray-800" : "text-gray-600"
-                    )}>
-                      {category === 'basket' ? getDayName(date) : date}
-                    </h3>
-                    <div className="h-[2px] bg-gray-200 flex-1 rounded-full" />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {dateMatches.map((match) => (
-                      <MatchCard key={match.id} match={match} onClick={handleOpenModal} category={category} />
-                    ))}
-                  </div>
-                </div>
-              );
-            });
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {matches.map((match) => (
+                  <MatchCard key={match.id} match={match} onClick={handleOpenModal} category={category} />
+                ))}
+              </div>
+            );
           })()}
         </div>
       </div>

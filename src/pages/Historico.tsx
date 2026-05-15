@@ -247,72 +247,72 @@ export default function Historico() {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-sm bg-white rounded-3xl overflow-hidden"
+              className="relative w-full max-w-[320px] bg-white rounded-3xl overflow-hidden shadow-2xl"
             >
-              <div className="bg-[#FFB10A] p-6 text-white text-center">
+              <div className="bg-[#FFB10A] py-5 px-6 text-white text-center">
                 <button 
                   onClick={() => setViewBet(null)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                  className="absolute top-3 right-3 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
-                <div className="w-16 h-16 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                  <Trophy className="w-8 h-8 text-[#FFB10A]" />
+                <div className="w-12 h-12 bg-white rounded-xl mx-auto mb-3 flex items-center justify-center">
+                  <Trophy className="w-6 h-6 text-[#FFB10A]" />
                 </div>
-                <h3 className="text-xl font-black uppercase tracking-tight">Detalhes de Aposta</h3>
-                <p className="text-white/80 text-xs font-bold uppercase tracking-widest mt-1">ID: {viewBet.id}</p>
+                <h3 className="text-lg font-black uppercase tracking-tight">Detalhes de Aposta</h3>
+                <p className="text-white/80 text-[10px] font-bold uppercase tracking-widest mt-0.5">ID: {viewBet.id}</p>
               </div>
 
-              <div className="p-6 space-y-6">
+              <div className="p-5 space-y-4 font-sans">
                 {(() => {
                   const match = MATCH_DATA.find(m => m.id === viewBet.matchId);
                   if (!match) return null;
                   return (
                     <>
-                      <div className="flex items-center justify-between gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                      <div className="flex items-center justify-between gap-4 p-3 bg-gray-50 rounded-2xl border border-gray-100">
                         <div className="flex flex-col items-center flex-1">
-                          <img src={match.teamA.logo} alt={match.teamA.name} className="w-12 h-12 object-contain mb-2" />
-                          <span className="font-bold text-gray-800 text-center text-[10px] uppercase">{match.teamA.name}</span>
+                          <img src={match.teamA.logo} alt={match.teamA.name} className="w-10 h-10 object-contain mb-1.5" />
+                          <span className="font-bold text-gray-800 text-center text-[9px] uppercase leading-tight line-clamp-1">{match.teamA.name}</span>
                         </div>
                         <div className="flex flex-col items-center">
-                          <span className="text-gray-500 font-black text-lg italic tracking-widest">VS</span>
-                          <span className="text-[10px] font-bold text-gray-600 mt-1">{match.time}</span>
+                          <span className="text-gray-400 font-black text-sm italic tracking-widest">VS</span>
+                          <span className="text-[9px] font-bold text-gray-500 mt-0.5">{match.time}</span>
                         </div>
                         <div className="flex flex-col items-center flex-1">
-                          <img src={match.teamB.logo} alt={match.teamB.name} className="w-12 h-12 object-contain mb-2" />
-                          <span className="font-bold text-gray-800 text-center text-[10px] uppercase">{match.teamB.name}</span>
+                          <img src={match.teamB.logo} alt={match.teamB.name} className="w-10 h-10 object-contain mb-1.5" />
+                          <span className="font-bold text-gray-800 text-center text-[9px] uppercase leading-tight line-clamp-1">{match.teamB.name}</span>
                         </div>
                       </div>
 
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                          <span className="text-gray-600 text-xs font-bold uppercase tracking-tight">Sala</span>
-                          <span className="text-gray-800 text-sm font-black">{viewBet.roomName || 'Sala Sem Nome'}</span>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
+                          <span className="text-gray-500 text-[10px] font-black uppercase tracking-tight">Sala</span>
+                          <span className="text-gray-800 text-xs font-black">{viewBet.roomName || 'Sala Sem Nome'}</span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                          <span className="text-gray-600 text-xs font-bold uppercase tracking-tight">Mercado</span>
-                          <span className="text-gray-800 text-sm font-black">{viewBet.market}</span>
+                        <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
+                          <span className="text-gray-500 text-[10px] font-black uppercase tracking-tight">Mercado</span>
+                          <span className="text-gray-800 text-xs font-black">{viewBet.market}</span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                          <span className="text-gray-600 text-xs font-bold uppercase tracking-tight">Categoria</span>
-                          <span className="text-gray-800 text-sm font-black">{viewBet.category}</span>
+                        <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
+                          <span className="text-gray-500 text-[10px] font-black uppercase tracking-tight">Categoria</span>
+                          <span className="text-gray-800 text-xs font-black">{viewBet.category}</span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                          <span className="text-gray-600 text-xs font-bold uppercase tracking-tight">Montante</span>
-                          <span className="text-gray-800 text-sm font-black">{viewBet.amount.toLocaleString()} KZ</span>
+                        <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
+                          <span className="text-gray-500 text-[10px] font-black uppercase tracking-tight">Montante</span>
+                          <span className="text-gray-800 text-xs font-black">{viewBet.amount.toLocaleString()} KZ</span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                          <span className="text-gray-600 text-xs font-bold uppercase tracking-tight">Status</span>
-                          <div className="flex items-center gap-2">
+                        <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
+                          <span className="text-gray-500 text-[10px] font-black uppercase tracking-tight">Status</span>
+                          <div className="flex items-center gap-1.5">
                             <div className={cn(
-                              "w-2 h-2 rounded-full",
+                              "w-1.5 h-1.5 rounded-full",
                               viewBet.status === 'Open' ? "bg-blue-400" :
                               viewBet.status === 'Won' ? "bg-green-500" :
                               viewBet.status === 'Lost' ? "bg-red-500" :
                               "bg-gray-500"
                             )} />
                             <span className={cn(
-                              "text-sm font-black uppercase tracking-widest",
+                              "text-xs font-black uppercase tracking-widest",
                               viewBet.status === 'Open' ? "text-blue-400" :
                               viewBet.status === 'Won' ? "text-green-500" :
                               viewBet.status === 'Lost' ? "text-red-500" :
@@ -320,9 +320,9 @@ export default function Historico() {
                             )}>{viewBet.status}</span>
                           </div>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                          <span className="text-gray-600 text-xs font-bold uppercase tracking-tight">Data de Criação</span>
-                          <span className="text-gray-800 text-sm font-black">{new Date(viewBet.createdAt).toLocaleString()}</span>
+                        <div className="flex justify-between items-center py-1.5 border-b border-gray-50">
+                          <span className="text-gray-500 text-[10px] font-black uppercase tracking-tight">Data de Criação</span>
+                          <span className="text-gray-800 text-xs font-black">{new Date(viewBet.createdAt).toLocaleDateString()} {new Date(viewBet.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                       </div>
                     </>
@@ -331,7 +331,7 @@ export default function Historico() {
 
                 <button 
                   onClick={() => setViewBet(null)}
-                  className="w-full py-4 bg-[#FFB10A] text-white font-black rounded-2xl"
+                  className="w-full py-3.5 bg-[#FFB10A] text-white text-xs font-black rounded-2xl shadow-lg active:scale-[0.98] transition-all uppercase tracking-widest"
                 >
                   FECHAR
                 </button>
