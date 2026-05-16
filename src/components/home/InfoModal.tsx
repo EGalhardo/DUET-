@@ -38,16 +38,16 @@ const InfoModal: React.FC<InfoModalProps> = React.memo(({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-lg bg-[#F8FAFC] rounded-3xl overflow-hidden shadow-2xl border border-white/20"
+            className="relative w-full max-w-[calc(100vw-2rem)] sm:max-w-lg bg-[#F8FAFC] rounded-3xl overflow-hidden shadow-2xl border border-white/20"
           >
             {/* Header - Now Yellow and Centered */}
-            <div className="bg-[#FFB10A] p-8 text-white relative flex flex-col items-center text-center">
-              <h3 className="text-2xl font-black uppercase tracking-[0.2em] mb-1">{category.title}</h3>
+            <div className="bg-[#FFB10A] p-6 md:p-8 text-white relative flex flex-col items-center text-center">
+              <h3 className="text-xl md:text-2xl font-black uppercase tracking-[0.2em] mb-1">{category.title}</h3>
               <p className="text-white/70 text-xs font-bold uppercase tracking-widest">Ligas e Competições Disponíveis</p>
             </div>
 
             {/* Content Swiper Style */}
-            <div className="max-h-[60vh] overflow-y-auto p-6 space-y-8 scrollbar-hide">
+            <div className="max-h-[50vh] md:max-h-[60vh] overflow-y-auto p-4 md:p-6 space-y-6 md:space-y-8 scrollbar-hide">
               {Object.entries(detail.cards).map(([type, items]) => (
                 <div key={type} className="space-y-4">
                   <div className="flex items-center gap-3 border-b border-gray-200 pb-2">
@@ -80,7 +80,7 @@ const InfoModal: React.FC<InfoModalProps> = React.memo(({
             </div>
 
             {/* Footer - Two Buttons Side by Side (Swapped Pos) */}
-            <div className="p-5 bg-white border-t border-gray-100 grid grid-cols-2 gap-3">
+            <div className="p-4 md:p-5 bg-white border-t border-gray-100 grid grid-cols-2 gap-3">
                <button 
                 id="modal-entrar-btn"
                 onClick={() => onEntrar(category.path)}
