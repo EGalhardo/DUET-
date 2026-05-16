@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppProvider } from './context/AppContext';
 import Layout from './components/Layout';
+import ImagePreloader from './components/ImagePreloader';
 import Ranking from './pages/Ranking';
 
 // Lazy load components for better performance and scalability
@@ -117,6 +118,7 @@ const AppRoutes = () => {
 export default function App() {
   return (
     <AppProvider>
+      <ImagePreloader />
       <Router>
         <AppRoutes />
       </Router>

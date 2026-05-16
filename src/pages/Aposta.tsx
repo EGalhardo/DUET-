@@ -4,295 +4,12 @@ import { ArrowLeft, CircleDot as Football, Calendar, Trophy, Copy, CheckCircle2,
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
 
-import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES, LEAGUE_CLASSIFICATIONS, NBA_MATCHES } from '../constants';
+import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES, LEAGUE_CLASSIFICATIONS, NBA_MATCHES, UNITEL_BASKET_MATCHES, ACB_MATCHES, VTB_MATCHES, GREEK_BASKET_MATCHES, ITALY_BASKET_MATCHES, JEEP_ELITE_MATCHES, BBL_MATCHES } from '../constants';
 import { Match, Wallet as WalletType, UserProfile, Bet, FavoriteItem } from '../types';
 import { storageService } from '../services/storageService';
-
-const ClassificationTable = ({ 
-  league, 
-  homeTeam, 
-  awayTeam, 
-  onBack 
-}: { 
-  league: string, 
-  homeTeam: string, 
-  awayTeam: string, 
-  onBack: () => void 
-}) => {
-  const tableData = LEAGUE_CLASSIFICATIONS[league] || LEAGUE_CLASSIFICATIONS['Girabola'];
-
-  return (
-    <div className="flex flex-col gap-5 py-4">
-      <div className="bg-[#091747] text-white p-5 rounded-[2rem] flex items-center justify-between shadow-lg relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-24 h-24 bg-[#FFB10A]/10 rounded-full blur-2xl" />
-        <h4 className="text-[11px] font-black uppercase tracking-widest italic flex items-center gap-2 relative z-10">
-          <Trophy className="w-4 h-4 text-[#FFB10A]" />
-          Tabela: {league}
-        </h4>
-      </div>
-      
-      <div className="bg-white border-2 border-gray-100 rounded-[2.5rem] overflow-hidden shadow-sm">
-        <table className="w-full text-[10px]">
-          <thead>
-            <tr className="bg-gray-50/80 border-b-2 border-gray-100">
-              <th className="px-3 py-4 text-left font-black text-gray-400 uppercase tracking-tighter">#</th>
-              <th className="px-1 py-4 text-left font-black text-gray-400 uppercase tracking-tighter">Equipa</th>
-              <th className="px-1 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">J</th>
-              <th className="px-1 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">V</th>
-              <th className="px-1 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">E</th>
-              <th className="px-1 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">D</th>
-              <th className="px-2 py-4 text-center font-black text-gray-400 uppercase tracking-tighter">Pts</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((row, i) => {
-              const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-              const rowTeam = normalize(row.team);
-              const home = normalize(homeTeam);
-              const away = normalize(awayTeam);
-              
-              const isMatchTeam = rowTeam.includes(home) || rowTeam.includes(away) || home.includes(rowTeam) || away.includes(rowTeam);
-              
-              return (
-                <tr key={i} className={cn(
-                  "border-b border-gray-50 transition-colors", 
-                  isMatchTeam ? "bg-orange-50" : (i % 2 === 0 ? "bg-white" : "bg-gray-50/20")
-                )}>
-                  <td className="px-3 py-4 font-black text-[#091747] italic text-[9px]">{row.pos}º</td>
-                  <td className="px-1 py-4 font-bold text-gray-900 uppercase tracking-tight text-[9px]">
-                    <div className="flex items-center gap-1">
-                      <span className="truncate max-w-[120px] md:max-w-none">{row.team}</span>
-                      {isMatchTeam && <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-[#FFB10A] animate-pulse" />}
-                    </div>
-                  </td>
-                  <td className="px-1 py-4 text-center font-bold text-gray-500 text-[9px]">{row.p}</td>
-                  <td className="px-1 py-4 text-center font-bold text-gray-400 text-[9px]">{row.w || 0}</td>
-                  <td className="px-1 py-4 text-center font-bold text-gray-400 text-[9px]">{row.d || 0}</td>
-                  <td className="px-1 py-4 text-center font-bold text-gray-400 text-[9px]">{row.l || 0}</td>
-                  <td className="px-2 py-4 text-center font-black text-[#091747] text-[9px]">{row.pts}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="mt-2 flex flex-col gap-3">
-        <button 
-          onClick={onBack}
-          className="w-full bg-[#091747] text-white font-black py-5 rounded-[1.5rem] flex items-center justify-center gap-2 hover:bg-black transition-all uppercase tracking-widest text-xs"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Voltar aos Detalhes
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const MatchCard = React.memo(({ match, onClick, category }: { match: Match, onClick: (m: Match) => void, category?: string }) => {
-  const isBasketball = category === 'basket' || match.league === 'NBA' || match.league === 'Unitel Basket';
-
-  if (isBasketball) {
-    return (
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        onClick={() => onClick(match)}
-        className="bg-white rounded-lg border-2 border-gray-200 p-6 cursor-pointer hover:shadow-md transition-all relative overflow-hidden"
-      >
-        {/* TOP: LEAGUE, DATE AND TIME */}
-        <div className="flex flex-col items-center gap-1 mb-6">
-          <div className="px-3 py-1 bg-[#091747]/5 border border-[#091747]/10 rounded-full">
-            <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">
-              {match.league}
-            </span>
-          </div>
-          <div className="text-gray-900 font-black text-sm md:text-base italic uppercase tracking-tighter text-center mt-1">
-            {(() => {
-              const [day, month, year] = match.date.split('/').map(Number);
-              const dateObj = new Date(year, month - 1, day);
-              const weekday = dateObj.toLocaleDateString('pt-PT', { weekday: 'short' }).replace('.', '');
-              const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-              const hour = match.time.split(':')[0];
-              return `${capitalizedWeekday}. ${match.date}, ${hour}h`;
-            })()}
-          </div>
-        </div>
-
-        {/* CENTER: TEAMS SECTION */}
-        <div className="flex items-start justify-center relative min-h-[120px]">
-          {/* Vertical Divider */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gray-200 -translate-x-1/2" />
-
-          {/* Left Team (Home) */}
-          <div className="flex-1 flex flex-col items-center pr-4">
-            <div className="flex items-center gap-3 mb-4">
-              <img src={match.teamA.logo} alt={match.teamA.name} className="w-12 h-12 md:w-16 md:h-16 object-contain" />
-              {match.teamA.record && (
-                <span className="text-gray-700 text-[11px] md:text-xs font-black italic uppercase tracking-widest">
-                  {match.teamA.record}
-                </span>
-              )}
-            </div>
-            <span className="font-black text-[#091747] text-center text-xs md:text-sm leading-tight uppercase italic whitespace-nowrap truncate w-full">
-              {match.teamA.name}
-            </span>
-          </div>
-
-          {/* Right Team (Away) */}
-          <div className="flex-1 flex flex-col items-center pl-4">
-            <div className="flex items-center gap-3 mb-4">
-              {match.teamB.record && (
-                <span className="text-gray-700 text-[11px] md:text-xs font-black italic uppercase tracking-widest">
-                  {match.teamB.record}
-                </span>
-              )}
-              <img src={match.teamB.logo} alt={match.teamB.name} className="w-12 h-12 md:w-16 md:h-16 object-contain" />
-            </div>
-            <span className="font-black text-[#091747] text-center text-xs md:text-sm leading-tight uppercase italic whitespace-nowrap truncate w-full">
-              {match.teamB.name}
-            </span>
-          </div>
-        </div>
-
-        {/* FOOTER: ENTRAR BUTTON */}
-        <div className="mt-6 -mx-[19px] px-[5px]">
-          <button 
-            id={`match-entrar-${match.id}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick(match);
-            }}
-            className="w-full py-3 bg-[#FFB10A] text-white rounded-lg font-black text-xs uppercase tracking-widest hover:bg-[#e69f09] transition-colors shadow-lg shadow-orange-200"
-          >
-            Entrar
-          </button>
-        </div>
-      </motion.div>
-    );
-  }
-
-  return (
-    <motion.div 
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      onClick={() => onClick(match)}
-      className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6 cursor-pointer hover:border-[#FFB10A] transition-all"
-    >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 text-sm font-bold text-[#364153]">
-          <Football className="w-4 h-4 text-[#FFB10A]" />
-          <span>{match.league}</span>
-        </div>
-        {match.status === 'ao_vivo' && (
-          <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
-            AO VIVO
-          </span>
-        )}
-        {match.status === 'terminou' && (
-          <span className="bg-gray-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-            TERMINOU
-          </span>
-        )}
-        {match.status === 'breve' && (
-          <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-            BREVE
-          </span>
-        )}
-      </div>
-
-      <div className="flex items-center justify-between gap-4 mb-6">
-        <div className="flex flex-col items-center flex-1 overflow-hidden">
-          <img src={match.teamA.logo} alt={match.teamA.name} className="w-12 h-12 md:w-16 md:h-16 object-contain mb-2" />
-          <span className="font-bold text-gray-800 text-center text-xs md:text-sm whitespace-nowrap truncate w-full">{match.teamA.name}</span>
-        </div>
-        
-        <div className="flex flex-col items-center">
-          <div className="mt-2 text-[10px] md:text-xs text-center text-[#364153] font-bold bg-white border border-gray-200 px-2 py-1 rounded whitespace-nowrap">
-            <Calendar className="w-3 h-3 inline mr-1 text-[#FFB10A]" />
-            {match.date} • {match.time}
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center flex-1 overflow-hidden">
-          <img src={match.teamB.logo} alt={match.teamB.name} className="w-12 h-12 md:w-16 md:h-16 object-contain mb-2" />
-          <span className="font-bold text-gray-800 text-center text-xs md:text-sm whitespace-nowrap truncate w-full">{match.teamB.name}</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-2 md:gap-4 mb-6">
-        {[
-          { label: match.scoreA !== undefined ? match.scoreA.toString() : '', odd: match.odds.winA },
-          { label: '-', odd: match.odds.draw },
-          { label: match.scoreB !== undefined ? match.scoreB.toString() : '', odd: match.odds.winB }
-        ].map((option, i) => (
-          <div key={i} className="flex flex-col items-center justify-center p-2 rounded-xl border border-gray-200 bg-white min-h-[4.5rem]">
-            <span className={cn(
-              "text-center line-clamp-1 h-full flex items-center justify-center",
-              option.label !== '' ? "text-2xl font-black text-[#091747]" : "text-[10px] font-bold text-[#364153]"
-            )}>
-              {option.label}
-            </span>
-            {option.label !== ':' && <span className="font-bold text-gray-800"></span>}
-          </div>
-        ))}
-      </div>
-
-      <button 
-        id={`match-entrar-${match.id}`}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick(match);
-        }}
-        className="w-full bg-[#FFB10A] hover:bg-[#FFC000] text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98]"
-      >
-        Entrar
-      </button>
-    </motion.div>
-  );
-});
-
-MatchCard.displayName = 'MatchCard';
-
-const FOOTBALL_MARKETS: Record<string, { id: string, label: (m: Match) => string }[]> = {
-  'Resultado Final': [
-    { id: 'Vitória A', label: (match: Match) => `Vitória ${match.teamA.name}` },
-    { id: 'Empate', label: () => 'Empate' },
-    { id: 'Vitória B', label: (match: Match) => `Vitória ${match.teamB.name}` }
-  ],
-  'Ambas Equipas Marcam': [
-    { id: 'Sim', label: () => 'Sim' },
-    { id: 'Não', label: () => 'Não' }
-  ],
-  'Total de Golos': [
-    { id: '+2.5 Golos', label: () => '+2.5 Golos' },
-    { id: '-2.5 Golos', label: () => '-2.5 Golos' }
-  ],
-  'Primeira Equipa a Marcar': [
-    { id: 'Equipa A', label: (match: Match) => match.teamA.name },
-    { id: 'Equipa B', label: (match: Match) => match.teamB.name },
-    { id: 'Nenhuma', label: () => 'Nenhuma' }
-  ],
-  'Dupla Hipótese': [
-    { id: '1X', label: () => '1X (Vence A ou Empata)' },
-    { id: '12', label: () => '12 (Vence A ou B)' },
-    { id: 'X2', label: () => 'X2 (Vence B ou Empata)' }
-  ]
-};
-
-const PRIVATE_MARKETS = [
-  { name: "Resultado Final", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'X', label: 'Empate' }, { id: 'B', label: m.teamB.name }] },
-  { name: "Ambas Marcam", options: () => [{ id: 'Sim', label: 'Sim' }, { id: 'Não', label: 'Não' }] },
-  { name: "Mais/Menos 2.5 Golos", options: () => [{ id: 'Mais', label: 'Mais de 2.5' }, { id: 'Menos', label: 'Menos de 2.5' }] },
-  { name: "Primeira Equipa a Marcar", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }, { id: 'Nenhum', label: 'Nenhum' }] },
-  { name: "Resultado ao Intervalo", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'X', label: 'Empate' }, { id: 'B', label: m.teamB.name }] },
-  { name: "Total de Cantos", options: () => [{ id: 'Mais', label: 'Mais de 8.5' }, { id: 'Menos', label: 'Menos de 8.5' }] },
-  { name: "Total de Cartões", options: () => [{ id: 'Mais', label: 'Mais de 3.5' }, { id: 'Menos', label: 'Menos de 3.5' }] },
-  { name: "Equipa com Mais Cantos", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }, { id: 'Igual', label: 'Igual' }] },
-  { name: "Equipa com Mais Remates à Baliza", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }, { id: 'Igual', label: 'Igual' }] },
-  { name: "Posse de Bola", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }, { id: 'Igual', label: 'Igual' }] },
-];
+import ClassificationTable from '../components/bets/ClassificationTable';
+import MatchCard from '../components/bets/MatchCard';
+import { FOOTBALL_MARKETS, PRIVATE_MARKETS, BASKETBALL_PRIVATE_MARKETS } from '../constants/markets';
 
 interface BettingModalProps {
   isOpen: boolean;
@@ -454,137 +171,84 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
   const steps = activeTab === 'Privado' ? ['password', 'selection', 'details'] : (activeTab === '1 vs 1' ? ['password', 'details'] : ['details']);
   const currentStepIndex = steps.indexOf(createStep);
 
-  const isBasketball = category === 'basket' || (match && (match.league === 'NBA' || match.league === 'Unitel Basket'));
+  const isBasketball = category === 'basket' || (match && (match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha'));
 
   const matchHeader = (
     <div className="flex flex-col gap-4 py-4 px-1 mb-2 shrink-0">
-      {isBasketball ? (
-        <>
-          {/* BASKETBALL HEADER */}
-          <div className="flex flex-col items-center gap-1 mb-4">
-            <div className="px-3 py-1 bg-[#091747]/5 border border-[#091747]/10 rounded-full">
-              <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">
-                {match.league}
-              </span>
-            </div>
-            <div className="flex justify-center items-center relative w-full mt-1">
-              <div className="text-gray-900 font-black text-xl italic uppercase tracking-tighter">
-                {match.time}
-              </div>
-              {match.broadcast && (
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest italic">
-                  {match.broadcast}
-                </div>
-              )}
-            </div>
-          </div>
+      {/* LEAGUE & BROADCAST */}
+      <div className="flex flex-col items-center gap-1.5 focus-within:">
+        <motion.div 
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="px-4 py-1 bg-[#091747]/5 border border-[#091747]/10 rounded-full"
+        >
+          <span className="text-[10px] md:text-xs font-black text-[#091747] uppercase tracking-widest italic text-center">
+            {match.league}
+          </span>
+        </motion.div>
+        {match.broadcast && (
+          <span className="text-[9px] font-black text-gray-400 shadow-sm uppercase tracking-[0.2em] italic">
+            {match.broadcast}
+          </span>
+        )}
+      </div>
 
-          <div className="flex items-start justify-center relative min-h-[100px] mt-4">
-            {/* Vertical Divider */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gray-200 -translate-x-1/2" />
-
-            {/* Left Team (Home) */}
-            <div className="flex-1 flex flex-col items-center pr-4 overflow-hidden">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-white p-2">
-                  <motion.img 
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    src={match.teamA.logo} 
-                    alt={match.teamA.name} 
-                    className="w-full h-full object-contain" 
-                  />
-                </div>
-                {match.teamA.record && (
-                  <span className="text-gray-700 text-[10px] md:text-xs font-black italic uppercase tracking-widest leading-none">
-                    {match.teamA.record}
-                  </span>
-                )}
-              </div>
-              <span className="font-black text-[#091747] text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight italic whitespace-nowrap truncate w-full">
-                {match.teamA.name}
-              </span>
-            </div>
-
-            {/* Right Team (Away) */}
-            <div className="flex-1 flex flex-col items-center pl-4 overflow-hidden">
-              <div className="flex items-center gap-3 mb-2">
-                {match.teamB.record && (
-                  <span className="text-gray-700 text-[10px] md:text-xs font-black italic uppercase tracking-widest leading-none">
-                    {match.teamB.record}
-                  </span>
-                )}
-                <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-white p-2">
-                  <motion.img 
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    src={match.teamB.logo} 
-                    alt={match.teamB.name} 
-                    className="w-full h-full object-contain" 
-                  />
-                </div>
-              </div>
-              <span className="font-black text-[#091747] text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight italic whitespace-nowrap truncate w-full">
-                {match.teamB.name}
-              </span>
-            </div>
+      <div className="flex items-center justify-around gap-2 mt-1">
+        {/* Team A */}
+        <div className="flex flex-col items-center flex-1 max-w-[130px] overflow-hidden">
+          <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center bg-white p-2 mb-2 shadow-sm rounded-2xl border border-gray-50">
+            <motion.img 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              src={match.teamA.logo} 
+              alt={match.teamA.name} 
+              className="w-full h-full object-contain" 
+            />
           </div>
-        </>
-      ) : (
-        <>
-          {/* FOOTBALL HEADER (Original) */}
-          <div className="flex justify-center mb-2">
-            <motion.div 
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="px-4 py-1.5 bg-[#091747]/5 border border-[#091747]/10 rounded-full"
-            >
-              <span className="text-[10px] md:text-xs font-black text-[#091747] uppercase tracking-widest italic">
-                {match.league}
-              </span>
-            </motion.div>
+          <span className="font-black text-[#091747] text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight italic whitespace-nowrap truncate w-full">
+            {match.teamA.name}
+          </span>
+          {isBasketball && match.teamA.record && (
+            <span className="text-[8px] font-black text-gray-400 mt-0.5 uppercase tracking-tighter">
+              {match.teamA.record}
+            </span>
+          )}
+        </div>
+        
+        {/* Divider / Time */}
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className="px-3 py-1 bg-orange-50 rounded-full border border-orange-100 shadow-sm">
+            <span className="text-[11px] text-[#FFB10A] font-black uppercase tracking-[0.2em] italic">
+              VS
+            </span>
           </div>
-          <div className="flex items-center justify-around gap-2">
-            <div className="flex flex-col items-center flex-1 max-w-[120px] overflow-hidden">
-              <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-white p-2 mb-2">
-                <motion.img 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  src={match.teamA.logo} 
-                  alt={match.teamA.name} 
-                  className="w-full h-full object-contain" 
-                />
-              </div>
-              <span className="font-bold text-gray-900 text-center text-[8px] md:text-[9px] uppercase tracking-tight leading-tight whitespace-nowrap truncate w-full">{match.teamA.name}</span>
-            </div>
-            
-            <div className="flex flex-col items-center justify-center gap-1">
-              <div className="px-2 py-0.5 bg-orange-50 rounded-full border border-orange-100">
-                <span className="text-[9px] text-[#FFB10A] font-black uppercase tracking-[0.1em]">
-                  VS
-                </span>
-              </div>
-              <div className="text-[10px] text-gray-500 font-bold bg-white px-2 py-0.5 rounded-lg border border-gray-100 flex items-center gap-1">
-                <Calendar className="w-2.5 h-2.5 text-gray-400" />
-                {match.time}
-              </div>
-            </div>
+          <div className="text-[10px] text-[#091747] font-black bg-white px-3 py-1 rounded-lg border border-gray-100 flex items-center gap-1 shadow-sm">
+            <Calendar className="w-2.5 h-2.5 text-[#FFB10A]" strokeWidth={3} />
+            {match.time}
+          </div>
+        </div>
 
-            <div className="flex flex-col items-center flex-1 max-w-[120px] overflow-hidden">
-              <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-white p-2 mb-2">
-                <motion.img 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  src={match.teamB.logo} 
-                  alt={match.teamB.name} 
-                  className="w-full h-full object-contain" 
-                />
-              </div>
-              <span className="font-bold text-gray-900 text-center text-[8px] md:text-[9px] uppercase tracking-tight leading-tight whitespace-nowrap truncate w-full">{match.teamB.name}</span>
-            </div>
+        {/* Team B */}
+        <div className="flex flex-col items-center flex-1 max-w-[130px] overflow-hidden">
+          <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center bg-white p-2 mb-2 shadow-sm rounded-2xl border border-gray-50">
+            <motion.img 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              src={match.teamB.logo} 
+              alt={match.teamB.name} 
+              className="w-full h-full object-contain" 
+            />
           </div>
-        </>
-      )}
+          <span className="font-black text-[#091747] text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight italic whitespace-nowrap truncate w-full">
+            {match.teamB.name}
+          </span>
+          {isBasketball && match.teamB.record && (
+            <span className="text-[8px] font-black text-gray-400 mt-0.5 uppercase tracking-tighter">
+              {match.teamB.record}
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   );
 
@@ -1258,6 +922,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
 
         const viewingUser = inscribedUsers.find(u => u.id === selectedUserView);
         const displayPicks = viewingUser ? viewingUser.picks : selectedMarketsList;
+        const currentPrivateMarkets = isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS;
 
         return (
           <div className="flex flex-col gap-6 py-4">
@@ -1304,20 +969,22 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                     return null;
                   }
 
+                  if (!currentPrivateMarkets[idx]) return null;
+
                   return (
                     <div key={idx} className={cn(
                       "bg-white border-2 rounded-[2rem] p-5 flex flex-col gap-4 transition-all",
                       viewingUser ? "border-blue-100 bg-blue-50/10" : "border-gray-200"
                     )}>
                       <div className="flex items-center justify-between px-1">
-                        <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">{PRIVATE_MARKETS[idx].name}</span>
+                        <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">{currentPrivateMarkets[idx].name}</span>
                         {viewingUser && <span className="text-[8px] font-black bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full uppercase tracking-widest">Inscrito</span>}
                       </div>
                       <div className={cn(
                         "grid gap-2",
-                        PRIVATE_MARKETS[idx].options(match).length === 2 ? "grid-cols-2" : "grid-cols-3"
+                        currentPrivateMarkets[idx].options(match).length === 2 ? "grid-cols-2" : "grid-cols-3"
                       )}>
-                        {PRIVATE_MARKETS[idx].options(match).map((opt) => {
+                        {currentPrivateMarkets[idx].options(match).map((opt) => {
                           const isSelected = viewingUser ? (viewingUser.picks[idx] === opt.id) : (res === opt.id);
 
                           return (
@@ -1430,17 +1097,36 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                 </div>
               )}
 
-              <div>
-                <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest px-2 italic">O teu Prognóstico: {isBasketball ? 'Resultado Final' : marketType}</label>
+              <div id="basketball-market-prognostic-container">
+                <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest px-2 italic">O teu Prognóstico: {!isBasketball ? marketType : ''}</label>
+                {isBasketball && (
+                  <div className="relative mb-3">
+                    <select 
+                      id="basketball-market-select"
+                      value={marketType}
+                      onChange={(e) => {
+                        setMarketType(e.target.value);
+                        setSelectedMarket('');
+                      }}
+                      className="w-full bg-white border-2 border-white rounded-xl py-3.5 px-5 text-xs font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all appearance-none tracking-widest shadow-sm uppercase italic"
+                    >
+                      <option value="Resultado Final">Resultado Final</option>
+                      <option value="pontos marcados">pontos marcados</option>
+                      <option value="assistências">assistências</option>
+                      <option value="ressaltos">ressaltos</option>
+                      <option value="MVP da partida">MVP da partida</option>
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" strokeWidth={3} />
+                  </div>
+                )}
                 <div className={cn(
                   "grid gap-2",
-                  isBasketball ? "grid-cols-3" : (FOOTBALL_MARKETS[marketType]?.length === 2 ? "grid-cols-2" : "grid-cols-3")
+                  isBasketball ? "grid-cols-2" : (FOOTBALL_MARKETS[marketType]?.length === 2 ? "grid-cols-2" : "grid-cols-3")
                 )}>
                   {(isBasketball 
                     ? [
-                        { id: 'Vitória A', label: `Vitória ${match.teamA.name}` },
-                        { id: 'Empate', label: 'Empate' },
-                        { id: 'Vitória B', label: `Vitória ${match.teamB.name}` }
+                        { id: 'Vitória A', label: match.teamA.name },
+                        { id: 'Vitória B', label: match.teamB.name }
                       ]
                     : FOOTBALL_MARKETS[marketType] || []
                   ).map(({ id, label }) => {
@@ -1509,6 +1195,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
         );
       case 'Privado':
         if (createStep === 'selection') {
+          const currentPrivateMarkets = isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS;
           return (
             <div className="flex flex-col gap-6 py-2">
               <div className="bg-[#091747] rounded-3xl p-6 text-white overflow-hidden relative">
@@ -1517,7 +1204,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                 <p className="text-[10px] text-gray-300 font-bold uppercase tracking-tight leading-relaxed relative z-10">Escolhe os mercados que estarão disponíveis para o desafio.</p>
               </div>
               <div className="grid grid-cols-1 gap-2">
-                {Array(10).fill(0).map((_, i) => (
+                {currentPrivateMarkets.map((market, i) => (
                   <button 
                     key={i} 
                     onClick={() => {
@@ -1546,7 +1233,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                         "text-[10px] font-black uppercase tracking-tight",
                         selectedMarketsList[i] ? "text-[#091747]" : "text-gray-900"
                       )}>
-                        {PRIVATE_MARKETS[i].name}
+                        {market.name}
                       </span>
                       <span className="text-[7px] text-gray-500 font-bold uppercase">Disponível para todos</span>
                     </div>
@@ -1557,6 +1244,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
           );
         }
 
+        const currentPrivateMarkets = isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS;
         return (
           <div className="flex flex-col gap-6 py-2">
             <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 mb-2 shadow-sm">
@@ -1581,46 +1269,49 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             <div className="flex flex-col gap-4">
               <label className="text-[10px] font-black text-gray-600 mb-0 block uppercase tracking-widest px-2 italic">Mercado de Aposta ({selectedMarketsList.filter(s => !!s).length})</label>
               <div className="flex flex-col gap-3">
-                {selectedMarketsList.map((res, idx) => res && (
-                  <div key={idx} className="bg-white border-2 border-gray-200 rounded-3xl p-5 flex flex-col gap-4 transition-all hover:border-[#FFB10A]/30 shadow-sm">
-                    <div className="flex items-center justify-between px-1">
-                      <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">{PRIVATE_MARKETS[idx].name}</span>
-                      <button 
-                        onClick={() => {
-                          const newPreds = [...selectedMarketsList];
-                          newPreds[idx] = '';
-                          setSelectedMarketsList(newPreds);
-                        }}
-                        className="text-red-500 hover:text-red-700 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" strokeWidth={3} />
-                      </button>
-                    </div>
-                    <div className={cn(
-                      "grid gap-2",
-                      PRIVATE_MARKETS[idx].options(match).length === 2 ? "grid-cols-2" : "grid-cols-3"
-                    )}>
-                      {PRIVATE_MARKETS[idx].options(match).map((opt) => (
-                        <button
-                          key={opt.id}
+                {selectedMarketsList.map((res, idx) => {
+                   if (!res || !currentPrivateMarkets[idx]) return null;
+                   return (
+                    <div key={idx} className="bg-white border-2 border-gray-200 rounded-3xl p-5 flex flex-col gap-4 transition-all hover:border-[#FFB10A]/30 shadow-sm">
+                      <div className="flex items-center justify-between px-1">
+                        <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">{currentPrivateMarkets[idx].name}</span>
+                        <button 
                           onClick={() => {
                             const newPreds = [...selectedMarketsList];
-                            newPreds[idx] = opt.id;
+                            newPreds[idx] = '';
                             setSelectedMarketsList(newPreds);
                           }}
-                          className={cn(
-                            "py-3 px-1 rounded-2xl text-[8px] md:text-[9px] font-black border-2 transition-all uppercase tracking-tight text-center leading-tight whitespace-nowrap truncate",
-                            res === opt.id
-                              ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-md"
-                              : "bg-white border-gray-100 text-gray-900 hover:border-[#FFB10A]"
-                          )}
+                          className="text-red-500 hover:text-red-700 transition-colors"
                         >
-                          {opt.label}
+                          <Trash2 className="w-4 h-4" strokeWidth={3} />
                         </button>
-                      ))}
+                      </div>
+                      <div className={cn(
+                        "grid gap-2",
+                        currentPrivateMarkets[idx].options(match).length === 2 ? "grid-cols-2" : "grid-cols-3"
+                      )}>
+                        {currentPrivateMarkets[idx].options(match).map((opt) => (
+                          <button
+                            key={opt.id}
+                            onClick={() => {
+                              const newPreds = [...selectedMarketsList];
+                              newPreds[idx] = opt.id;
+                              setSelectedMarketsList(newPreds);
+                            }}
+                            className={cn(
+                              "py-3 px-1 rounded-2xl text-[8px] md:text-[9px] font-black border-2 transition-all uppercase tracking-tight text-center leading-tight whitespace-nowrap truncate",
+                              res === opt.id
+                                ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-md"
+                                : "bg-white border-gray-100 text-gray-900 hover:border-[#FFB10A]"
+                            )}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -1918,7 +1609,7 @@ export default function Aposta() {
   React.useEffect(() => {
     const matchId = searchParams.get('matchId');
     if (matchId) {
-      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES, ...NBA_MATCHES];
+      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES, ...NBA_MATCHES, ...UNITEL_BASKET_MATCHES, ...ACB_MATCHES, ...VTB_MATCHES, ...GREEK_BASKET_MATCHES, ...ITALY_BASKET_MATCHES, ...JEEP_ELITE_MATCHES, ...BBL_MATCHES];
       const match = allMatches.find(m => m.id.toString() === matchId);
       if (match) {
         setSelectedMatch(match);
@@ -2086,15 +1777,22 @@ export default function Aposta() {
           {(() => {
             const matches = 
               topic === 'Girabola' || topic === 'Taça de Angola' ? GIRABOLA_MATCHES :
-              topic === 'BundesLiga' || topic === 'Bundesliga' || topic === 'Taça da Alemanha' || topic === 'DFB Pokal' ? BUNDESLIGA_MATCHES :
-              topic === 'La Liga' || topic === 'Taça de Espanha' || topic === 'Copa del Rey' ? LALIGA_MATCHES :
-              topic === 'Ligue 1' || topic === 'Taça de França' || topic === 'Copa da França' ? LIGUE1_MATCHES :
-              topic === 'Eredivisie' || topic === 'Evedivie' || topic === 'Taça da Holanda' || topic === 'KNVB Beker' ? EREDIVISIE_MATCHES :
-              topic === 'Premier League' || topic === 'PremierLeague' || topic === 'Taça de Inglaterra' || topic === 'FA Cup' ? PREMIERLEAGUE_MATCHES :
-              topic === 'Serie A' || topic === 'Série A' || topic === 'Taça de Itália' || topic === 'TIM Cup' ? SERIEA_MATCHES :
-              topic === 'Liga Nos' || topic === 'Liga NOS' || topic === 'Taça de Portugal' ? LIGANOS_MATCHES :
+              topic?.toLowerCase() === 'bundesliga' || topic === 'Taça da Alemanha' || topic === 'DFB Pokal' ? BUNDESLIGA_MATCHES :
+              topic?.toLowerCase() === 'la liga' || topic === 'Taça de Espanha' || topic === 'Copa del Rey' ? LALIGA_MATCHES :
+              topic?.toLowerCase() === 'ligue 1' || topic === 'Taça de França' || topic === 'Copa da França' ? LIGUE1_MATCHES :
+              topic?.toLowerCase() === 'eredivisie' || topic === 'Taça da Holanda' || topic === 'KNVB Beker' ? EREDIVISIE_MATCHES :
+              topic?.toLowerCase() === 'premier league' || topic?.toLowerCase() === 'premierleague' || topic === 'Taça de Inglaterra' || topic === 'FA Cup' ? PREMIERLEAGUE_MATCHES :
+              topic?.toLowerCase() === 'serie a' || topic?.toLowerCase() === 'série a' || topic === 'Taça de Itália' || topic === 'TIM Cup' ? SERIEA_MATCHES :
+              topic?.toLowerCase() === 'liga nos' || topic?.toLowerCase() === 'liga nos' || topic === 'Taça de Portugal' ? LIGANOS_MATCHES :
               topic === 'NBA' || topic === 'NBA EUA Leste' ? NBA_MATCHES :
-              category === 'basket' ? NBA_MATCHES :
+              topic === 'Unitel Basket' ? UNITEL_BASKET_MATCHES :
+              topic === 'Liga ACB' || topic === 'ACB' ? ACB_MATCHES :
+              topic === 'VTB United League' || topic === 'VTB' || topic === 'Liga VTB' ? VTB_MATCHES :
+              topic === 'Basket League' || topic === 'Filathli' ? GREEK_BASKET_MATCHES :
+              topic === 'Serie A Basket' || topic === 'LBA' ? ITALY_BASKET_MATCHES :
+              topic === 'Jeep Elite' || topic === 'LNB' ? JEEP_ELITE_MATCHES :
+              topic === 'BBL Alemanha' || topic === 'BBL' ? BBL_MATCHES :
+              category === 'basket' ? UNITEL_BASKET_MATCHES :
               MATCH_DATA;
 
             return (

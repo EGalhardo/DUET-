@@ -38,6 +38,15 @@ export default function Definicoes() {
               <ToggleItem label="Sons" sub="Ativar sons da aplicação." defaultChecked />
               <ToggleItem label="Vibração" sub="Feedback tátil em interações." defaultChecked />
               <ToggleItem label="Modo Compacto" sub="Reduz espaçamentos para ver mais conteúdo." />
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-[#091747]">Modo Offline</p>
+                  <p className="text-[10px] text-[#FFB10A] font-bold">Ativado (Imagens Guardadas)</p>
+                </div>
+                <div className="w-11 h-6 rounded-full bg-[#FFC000] flex items-center px-1">
+                  <div className="w-4 h-4 bg-white rounded-full translate-x-5" />
+                </div>
+              </div>
             </div>
 
             <div className="h-px bg-gray-100" />

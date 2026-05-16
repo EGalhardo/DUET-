@@ -78,6 +78,58 @@ export const MATCH_DATA: Match[] = [
     status: 'breve',
     scoreA: 0,
     scoreB: 0
+  },
+  {
+    id: 3001,
+    league: "Unitel Basket",
+    teamA: { name: 'Petro de Luanda', logo: 'https://i.postimg.cc/Cnntg6fx/PETRO-LUANDA-ANGOLA.png' },
+    teamB: { name: '1º de Agosto', logo: 'https://i.postimg.cc/rRRbkYR7/1-AGOSTO-ANGOLA.png' },
+    date: "20/05/2026",
+    time: "18:00",
+    odds: { winA: 1.85, draw: 0, winB: 1.95 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'TPA / Unitel'
+  },
+  {
+    id: 3002,
+    league: "Unitel Basket",
+    teamA: { name: 'GD Interclube', logo: 'https://i.postimg.cc/bSSMhF2j/GD-INTERCLUBE-ANGOLA.png' },
+    teamB: { name: 'ASA (Aviação)', logo: 'https://i.postimg.cc/8ff3Snf2/AS-Aviacao-ANGOLA.png' },
+    date: "20/05/2026",
+    time: "16:00",
+    odds: { winA: 1.70, draw: 0, winB: 2.10 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'TPA 1'
+  },
+  {
+    id: 3003,
+    league: "Unitel Basket",
+    teamA: { name: 'Vila Clotilde', logo: 'https://i.postimg.cc/gLL5WB6x/VILA-CLOLTIDE-ANGOLA.png' },
+    teamB: { name: 'Petro de Luanda B', logo: 'https://i.postimg.cc/SYY5htzs/PETRO-LUANDA-B-ANGOLA.png' },
+    date: "21/05/2026",
+    time: "19:00",
+    odds: { winA: 2.05, draw: 0, winB: 1.75 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'TPA'
+  },
+  {
+    id: 3004,
+    league: "Unitel Basket",
+    teamA: { name: '1º de Agosto Acad.', logo: 'https://i.postimg.cc/mz5qKGhs/1-AGOSTO-ACAD-ANGOLA.png' },
+    teamB: { name: 'Desportivo do Kwanza', logo: 'https://i.postimg.cc/YLLVHymM/CF-Desportivo-Kwanza-ANGOLA.png' },
+    date: "21/05/2026",
+    time: "15:00",
+    odds: { winA: 1.50, draw: 0, winB: 2.50 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Unitel TV'
   }
 ];
 
@@ -563,6 +615,62 @@ export const LEAGUE_CLASSIFICATIONS: Record<string, any[]> = {
     { pos: 4, team: 'Hornets', p: 37, w: 19, d: 0, l: 18, pts: 56 },
     { pos: 5, team: 'Kings', p: 38, w: 15, d: 0, l: 23, pts: 53 },
     { pos: 6, team: 'Nets', p: 36, w: 11, d: 0, l: 25, pts: 47 },
+  ],
+  'Unitel Basket': [
+    { pos: 1, team: 'Petro de Luanda', p: 15, w: 14, d: 0, l: 1, pts: 29 },
+    { pos: 2, team: '1º de Agosto', p: 15, w: 13, d: 0, l: 2, pts: 28 },
+    { pos: 3, team: 'Interclube', p: 15, w: 12, d: 0, l: 3, pts: 27 },
+    { pos: 4, team: 'Vila Clotilde', p: 15, w: 10, d: 0, l: 5, pts: 25 },
+    { pos: 5, team: 'ASA', p: 15, w: 9, d: 0, l: 6, pts: 24 },
+    { pos: 6, team: 'Jesus Cristo Basket', p: 15, w: 7, d: 0, l: 8, pts: 22 },
+  ],
+  'Liga ACB': [
+    { pos: 1, team: 'Real Madrid', p: 30, w: 25, d: 0, l: 5, pts: 55 },
+    { pos: 2, team: 'Unicaja', p: 30, w: 24, d: 0, l: 6, pts: 54 },
+    { pos: 3, team: 'Barcelona', p: 30, w: 21, d: 0, l: 9, pts: 51 },
+    { pos: 4, team: 'Tenerife', p: 30, w: 19, d: 0, l: 11, pts: 49 },
+    { pos: 5, team: 'Gran Canaria', p: 30, w: 18, d: 0, l: 12, pts: 48 },
+    { pos: 6, team: 'Valencia', p: 30, w: 18, d: 0, l: 12, pts: 48 },
+  ],
+  'VTB United League': [
+    { pos: 1, team: 'CSKA Moscow', p: 26, w: 22, d: 0, l: 4, pts: 48 },
+    { pos: 2, team: 'UNICS Kazan', p: 26, w: 20, d: 0, l: 6, pts: 46 },
+    { pos: 3, team: 'Zenit', p: 26, w: 17, d: 0, l: 9, pts: 43 },
+    { pos: 4, team: 'Lokomotiv Kuban', p: 26, w: 16, d: 0, l: 10, pts: 42 },
+    { pos: 5, team: 'Enisey', p: 26, w: 13, d: 0, l: 13, pts: 39 },
+    { pos: 6, team: 'Parma', p: 26, w: 12, d: 0, l: 14, pts: 38 },
+  ],
+  'Basket League': [
+    { pos: 1, team: 'Panathinaikos', p: 22, w: 21, d: 0, l: 1, pts: 43 },
+    { pos: 2, team: 'Olympiacos', p: 22, w: 20, d: 0, l: 2, pts: 42 },
+    { pos: 3, team: 'Peristeri', p: 22, w: 15, d: 0, l: 7, pts: 37 },
+    { pos: 4, team: 'Promitheas', p: 22, w: 13, d: 0, l: 9, pts: 35 },
+    { pos: 5, team: 'Aris', p: 22, w: 12, d: 0, l: 10, pts: 34 },
+    { pos: 6, team: 'AEK', p: 22, w: 9, d: 0, l: 13, pts: 31 },
+  ],
+  'Serie A Basket': [
+    { pos: 1, team: 'Brescia', p: 25, w: 18, d: 0, l: 7, pts: 36 },
+    { pos: 2, team: 'Virtus Bologna', p: 25, w: 17, d: 0, l: 8, pts: 34 },
+    { pos: 3, team: 'Olimpia Milano', p: 25, w: 17, d: 0, l: 8, pts: 34 },
+    { pos: 4, team: 'Venezia', p: 25, w: 16, d: 0, l: 9, pts: 32 },
+    { pos: 5, team: 'Reggiana', p: 25, w: 14, d: 0, l: 11, pts: 28 },
+    { pos: 6, team: 'Napoli', p: 25, w: 13, d: 0, l: 12, pts: 26 },
+  ],
+  'Jeep Elite': [
+    { pos: 1, team: 'Monaco', p: 28, w: 25, d: 0, l: 3, pts: 53 },
+    { pos: 2, team: 'Paris Basket', p: 28, w: 21, d: 0, l: 7, pts: 49 },
+    { pos: 3, team: 'ASVEL', p: 28, w: 20, d: 0, l: 8, pts: 48 },
+    { pos: 4, team: 'JL Bourg', p: 28, w: 19, d: 0, l: 9, pts: 47 },
+    { pos: 5, team: 'Nanterre 92', p: 28, w: 17, d: 0, l: 11, pts: 45 },
+    { pos: 6, team: 'Cholet', p: 28, w: 15, d: 0, l: 13, pts: 43 },
+  ],
+  'BBL Alemanha': [
+    { pos: 1, team: 'Bayern München', p: 27, w: 23, d: 0, l: 4, pts: 46 },
+    { pos: 2, team: 'ALBA Berlin', p: 27, w: 21, d: 0, l: 6, pts: 42 },
+    { pos: 3, team: 'Chemnitz 99', p: 27, w: 19, d: 0, l: 8, pts: 38 },
+    { pos: 4, team: 'ratiopharm Ulm', p: 27, w: 17, d: 0, l: 10, pts: 34 },
+    { pos: 5, team: 'Ludwigsburg', p: 27, w: 16, d: 0, l: 11, pts: 32 },
+    { pos: 6, team: 'Bonn', p: 27, w: 16, d: 0, l: 11, pts: 32 },
   ],
 };
 
@@ -1337,5 +1445,499 @@ export const NBA_MATCHES: Match[] = [
     scoreA: 0,
     scoreB: 0,
     broadcast: 'ESPN'
+  }
+];
+
+export const UNITEL_BASKET_CLUBS = [
+  { name: 'Petro de Luanda', logo: 'https://i.postimg.cc/Cnntg6fx/PETRO-LUANDA-ANGOLA.png' },
+  { name: '1º de Agosto', logo: 'https://i.postimg.cc/rRRbkYR7/1-AGOSTO-ANGOLA.png' },
+  { name: 'GD Interclube', logo: 'https://i.postimg.cc/bSSMhF2j/GD-INTERCLUBE-ANGOLA.png' },
+  { name: 'ASA (Aviação)', logo: 'https://i.postimg.cc/8ff3Snf2/AS-Aviacao-ANGOLA.png' },
+  { name: 'Vila Clotilde', logo: 'https://i.postimg.cc/gLL5WB6x/VILA-CLOLTIDE-ANGOLA.png' },
+  { name: 'Petro de Luanda B', logo: 'https://i.postimg.cc/SYY5htzs/PETRO-LUANDA-B-ANGOLA.png' },
+  { name: '1º de Agosto Acad.', logo: 'https://i.postimg.cc/mz5qKGhs/1-AGOSTO-ACAD-ANGOLA.png' },
+  { name: 'Desportivo do Kwanza', logo: 'https://i.postimg.cc/YLLVHymM/CF-Desportivo-Kwanza-ANGOLA.png' },
+  { name: 'Jesus Cristo Basket', logo: 'https://i.postimg.cc/0KK3sHJ9/JESUS-CRISTO-ANGOLA.png' }
+];
+
+export const VTB_CLUBS = [
+  { name: 'BK Himki', logo: 'https://i.postimg.cc/VdGxCnzc/BK-himki-RUSSIA.png' },
+  { name: 'Enisey', logo: 'https://i.postimg.cc/kB10bK75/enisey-logo-RUSSIA.png' },
+  { name: 'Nizhny Novgorod', logo: 'https://i.postimg.cc/CzP3qkwF/Nizhny-Novgorod-logo-RUSSIA.png' },
+  { name: 'Parma Basket', logo: 'https://i.postimg.cc/SJTBMCmm/Parma-Basket-logo-RUSSIA.png' },
+  { name: 'Lokomotiv Kuban', logo: 'https://i.postimg.cc/N5J3HmQj/PBC-Lokomotiv-Kuban-logo-RUSSIA.png' },
+  { name: 'Tsmoki-Minsk', logo: 'https://i.postimg.cc/3kkPCNwQ/Tsmoki-Minsk-RUSSIA.png' },
+  { name: 'Unics Kazan', logo: 'https://i.postimg.cc/WddQ6z4j/Unics-kazan-RUSSIA.png' },
+  { name: 'Zenit St Petersburg', logo: 'https://i.postimg.cc/9DDvt0fC/Zenit-S-Petersburgo-RUSSIA.png' }
+];
+
+export const ITALY_BASKET_CLUBS = [
+  { name: 'Dinamo Sassari', logo: 'https://i.postimg.cc/p956wSbb/Dinamo-Sassari-logo-ITALIA.png' },
+  { name: 'Vanoli Cremona', logo: 'https://i.postimg.cc/5YcRbm1R/Guerino-Vanoli-Basket-ITALIA.png' },
+  { name: 'Pallacanestro Cantù', logo: 'https://i.postimg.cc/xJr4nPYs/Logo-Pallacanestro-Cantu-ITALIA.png' },
+  { name: 'Reggio Emilia', logo: 'https://i.postimg.cc/ZBkM4LZQ/Logo-Pallacanestro-Reggiana-ITALIA.png' },
+  { name: 'Pallacanestro Trieste', logo: 'https://i.postimg.cc/vgRNbvMk/Logo-Pallacanestro-Trieste-ITALIA.png' },
+  { name: 'Brindisi', logo: 'https://i.postimg.cc/7GvWwNDj/New-Basket-Brindisi-logo-2017-ITALIA.png' },
+  { name: 'Olimpia Milano', logo: 'https://i.postimg.cc/G805djrW/olimpia-milano-logo-ITALIA.png' },
+  { name: 'Pallacanestro Varese', logo: 'https://i.postimg.cc/KkXHx5xS/Pallacanestro-Varese-logo-ITALIA.png' },
+  { name: 'Virtus Roma', logo: 'https://i.postimg.cc/PpGRTMTG/Pallacanestro-Virtus-Roma-ITALIA.png' },
+  { name: 'Fortitudo Bologna', logo: 'https://i.postimg.cc/BLWV4C40/sport-basket-fortitudo-bologna-logo-ITALIA.png' },
+  { name: 'Reyer Venezia', logo: 'https://i.postimg.cc/S20vkGk4/SSP-Reyer-Venezia-ITALIA.png' },
+  { name: 'Treviso Basket', logo: 'https://i.postimg.cc/R6rD4T44/Treviso-Basket-logo-ITALIA.png' },
+  { name: 'Victoria Libertas', logo: 'https://i.postimg.cc/BLWV4C4J/Victoria-Libertas-ITALIA.png' }
+];
+
+export const JEEP_ELITE_CLUBS = [
+  { name: 'AS Monaco', logo: 'https://i.postimg.cc/hh89GR9n/AS-Monaco-FRANCA.png' },
+  { name: 'BCM Gravelines', logo: 'https://i.postimg.cc/tYXFZv5Q/BCM-Gravelines-Dunkerque-FRANCA.png' },
+  { name: 'Boulazac Basket', logo: 'https://i.postimg.cc/KRZtkpNy/Boulazac-Basket-Dordogne-FRANCA.png' },
+  { name: 'Cholet Basket', logo: 'https://i.postimg.cc/QVgpMZp8/Cholet-Basket-FRANCA.png' },
+  { name: 'Chorale Roanne', logo: 'https://i.postimg.cc/9zPGfHGC/Chorale-Roanne-FRANCA.png' },
+  { name: 'Elan Bearnais Pau', logo: 'https://i.postimg.cc/rK850ZJk/Elan-Bearnais-Pau-Orthez-FRANCA.png' },
+  { name: 'Elan Chalon', logo: 'https://i.postimg.cc/PPt1pV4H/Elan-Chalon-FRANCA.png' },
+  { name: 'ESSM Le Portel', logo: 'https://i.postimg.cc/mtb7zpwB/ESSM-Le-Portel-FRANCA.png' },
+  { name: 'Skyliners', logo: 'https://i.postimg.cc/Wh20FYn2/Fraport-Skyliners-ALEMANHA.png' },
+  { name: 'JDA Dijon', logo: 'https://i.postimg.cc/ZCT6Bscb/JDA-Dijon-FRANCA.png' },
+  { name: 'JL Bourg', logo: 'https://i.postimg.cc/HVpbcv2W/JL-Bourg-Basket-FRANCA.png' },
+  { name: 'Le Mans', logo: 'https://i.postimg.cc/KRZtkpNv/Le-Mans-Sarthe-Basket-FRANCA.png' },
+  { name: 'Boulogne-Levallois', logo: 'https://i.postimg.cc/hfSVzZrt/Levallois-Metropolitans-FRANCA.png' },
+  { name: 'Limoges CSP', logo: 'https://i.postimg.cc/MvW1M3DG/Limoges-CSP-FRANCA.png' },
+  { name: 'Nanterre 92', logo: 'https://i.postimg.cc/PPt1pV4N/Nanterre-92-FRANCA.png' },
+  { name: 'Champagne Basket', logo: 'https://i.postimg.cc/BXq2L7gX/Reims-Champagne-Basket-logo-FRANCA.png' }
+];
+
+export const BBL_CLUBS = [
+  { name: 'ALBA Berlin', logo: 'https://i.postimg.cc/jnjdKfzp/ALBA-Berlin-ALEMANHA.png' },
+  { name: 'Baskets Bonn', logo: 'https://i.postimg.cc/Lgs6RPtF/Baskets-Bonn-ALEMANHA.png' },
+  { name: 'BG Göttingen', logo: 'https://i.postimg.cc/ZvqKZN8Z/BG-Gottingen-ALEMANHA.png' },
+  { name: 'Brose Bamberg', logo: 'https://i.postimg.cc/m1r2R9YZ/Brose-Bamberg-ALEMANHA.png' },
+  { name: 'Crailsheim Merlins', logo: 'https://i.postimg.cc/jnjdKfHx/Crailsheim-Merlins-ALEMANHA.png' },
+  { name: 'Giessen 46ers', logo: 'https://i.postimg.cc/Wq4bjZG1/Giessen-46ers-ALEMANHA.png' },
+  { name: 'Hamburg Towers', logo: 'https://i.postimg.cc/V0NL1tqN/Hamburg-Towers-ALEMANHA.png' },
+  { name: 'Löwen Braunschweig', logo: 'https://i.postimg.cc/vxmHMnrB/Lowen-Braunschweig-ALEMANHA.png' },
+  { name: 'medi Bayreuth', logo: 'https://i.postimg.cc/1Vz5PFG4/medi-Bayreuth-ALEMANHA.png' },
+  { name: 'MHP Riesen Ludwigsburg', logo: 'https://i.postimg.cc/vxmHMnrc/MHP-Riesen-Ludwigsburg-ALEMANHA.png' },
+  { name: 'Mitteldeutscher BC', logo: 'https://i.postimg.cc/64Q5wZr8/Mitteldeutscher-BC-ALEMANHA.png' },
+  { name: 'ratiopharm Ulm', logo: 'https://i.postimg.cc/q67M0Ksh/ratiopharm-Ulm-ALEMANHA.png' },
+  { name: 's Oliver Würzburg', logo: 'https://i.postimg.cc/PvqrhDWv/s-Oliver-Wurzburg-ALEMANHA.png' }
+];
+
+export const ACB_CLUBS = [
+  { name: 'CB Miraflores', logo: 'https://i.postimg.cc/bSdGN1zz/CB-MIRAFLORES-ESPANHA.png' },
+  { name: 'CB Murcia', logo: 'https://i.postimg.cc/XBXZ79Vv/CB-Murcia-logo-ESPANHA.png' },
+  { name: 'Estudiantes', logo: 'https://i.postimg.cc/rRzdF584/ESTUDIANTES-ESPANHA.png' },
+  { name: 'FC Barcelona', logo: 'https://i.postimg.cc/H8jJsbpr/fc-barcelona-basketball-logo-ESPANHA.png' },
+  { name: 'Gran Canaria', logo: 'https://i.postimg.cc/q6gtM2kR/GRAN-CANARIA-ESPANHA.png' },
+  { name: 'ICL Manresa', logo: 'https://i.postimg.cc/6TQ40xCf/ICL-Manresa-logo-ESPANHA.png' },
+  { name: 'RetaBet Bilbao', logo: 'https://i.postimg.cc/z3fHjYT7/LOGOTIPO-RETABET-BILBAO-BASKET-ESPANHA.png' },
+  { name: 'Montakit Fuenlabrada', logo: 'https://i.postimg.cc/235LwNn2/Montakit-Fuenlabrada-ESPANHA.png' },
+  { name: 'MoraBanc Andorra', logo: 'https://i.postimg.cc/14zVH1Dv/Mora-Banc-Andorra-Logo-ESPANHA.png' },
+  { name: 'Obradoiro', logo: 'https://i.postimg.cc/Wt4qnc09/OBRADOIRO-ESPANHA.png' },
+  { name: 'Real Betis', logo: 'https://i.postimg.cc/hhGQrRVw/Real-Betis-Energia-Plus-ESPANHA.png' },
+  { name: 'Real Madrid', logo: 'https://i.postimg.cc/dD0ZBcGx/REAL-MADRID-BASKET-ESPANHA.png' },
+  { name: 'Gipuzkoa', logo: 'https://i.postimg.cc/7bLJVrSj/SAN-SEBASTIAN-GIPUZKOA-ESPANHA.png' },
+  { name: 'Saski Baskonia', logo: 'https://i.postimg.cc/c6JtmGfp/Saski-Baskonia-ESPANHA.png' },
+  { name: 'Tenerife', logo: 'https://i.postimg.cc/pyd5ZMDM/TENERIFE-ESPANHA.png' },
+  { name: 'Unicaja', logo: 'https://i.postimg.cc/8sCfHghV/UNICAJA-ESPANHA.png' },
+  { name: 'Valencia Basket', logo: 'https://i.postimg.cc/YjSL3B17/valencia-basket-logo-png-ESPANHA.png' },
+  { name: 'Zaragoza', logo: 'https://i.postimg.cc/HjL821Qp/ZARAGOZA-ESPANHA.png' }
+];
+
+export const UNITEL_BASKET_MATCHES: Match[] = [
+  {
+    id: 3001,
+    league: "Unitel Basket",
+    teamA: UNITEL_BASKET_CLUBS[0],
+    teamB: UNITEL_BASKET_CLUBS[1],
+    date: "20/05/2026",
+    time: "18:00",
+    odds: { winA: 1.85, draw: 0, winB: 1.95 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'TPA / Unitel'
+  },
+  {
+    id: 3002,
+    league: "Unitel Basket",
+    teamA: UNITEL_BASKET_CLUBS[2],
+    teamB: UNITEL_BASKET_CLUBS[3],
+    date: "20/05/2026",
+    time: "16:00",
+    odds: { winA: 1.70, draw: 0, winB: 2.10 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'TPA 1'
+  },
+  {
+    id: 3003,
+    league: "Unitel Basket",
+    teamA: UNITEL_BASKET_CLUBS[4],
+    teamB: UNITEL_BASKET_CLUBS[5],
+    date: "21/05/2026",
+    time: "19:00",
+    odds: { winA: 2.05, draw: 0, winB: 1.75 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'TPA'
+  },
+  {
+    id: 3004,
+    league: "Unitel Basket",
+    teamA: UNITEL_BASKET_CLUBS[6],
+    teamB: UNITEL_BASKET_CLUBS[7],
+    date: "21/05/2026",
+    time: "15:00",
+    odds: { winA: 1.50, draw: 0, winB: 2.50 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Unitel TV'
+  }
+];
+
+export const ACB_MATCHES: Match[] = [
+  {
+    id: 4001,
+    league: "Liga ACB",
+    teamA: ACB_CLUBS[11], // Real Madrid
+    teamB: ACB_CLUBS[3], // Barcelona
+    date: "22/05/2026",
+    time: "20:00",
+    odds: { winA: 1.80, draw: 0, winB: 2.05 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Movistar+'
+  },
+  {
+    id: 4002,
+    league: "Liga ACB",
+    teamA: ACB_CLUBS[16], // Valencia
+    teamB: ACB_CLUBS[15], // Unicaja
+    date: "22/05/2026",
+    time: "18:30",
+    odds: { winA: 1.75, draw: 0, winB: 2.15 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Movistar+'
+  },
+  {
+    id: 4003,
+    league: "Liga ACB",
+    teamA: ACB_CLUBS[13], // Baskonia
+    teamB: ACB_CLUBS[14], // Tenerife
+    date: "23/05/2026",
+    time: "19:00",
+    odds: { winA: 1.65, draw: 0, winB: 2.30 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Movistar+'
+  },
+  {
+    id: 4004,
+    league: "Liga ACB",
+    teamA: ACB_CLUBS[4], // Gran Canaria
+    teamB: ACB_CLUBS[17], // Zaragoza
+    date: "23/05/2026",
+    time: "17:00",
+    odds: { winA: 1.55, draw: 0, winB: 2.60 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Movistar+'
+  }
+];
+
+export const GREEK_BASKET_CLUBS = [
+  { name: 'AEK BC', logo: 'https://i.postimg.cc/kDd60trf/A-E-K-BC-GRECIA.png' },
+  { name: 'Aris BC', logo: 'https://i.postimg.cc/LhMYcZdc/Aris-BC-GRECIA.png' },
+  { name: 'Lavrio', logo: 'https://i.postimg.cc/7byGFT88/GS-Lavrio-GRECIA.png' },
+  { name: 'Iraklis', logo: 'https://i.postimg.cc/rzL0Bt63/Iraklis-B-C-GRECIA.png' },
+  { name: 'Kolossos Rodou', logo: 'https://i.postimg.cc/8sVJ2rQ8/Kolossos-Rodou-BC-GRECIA.png' },
+  { name: 'Larisa', logo: 'https://i.postimg.cc/Rqz6kn5z/Larisa-BC-GRECIA.png' },
+  { name: 'Panionios', logo: 'https://i.postimg.cc/XX0GRyS3/Panionios-BC-Logo-GRECIA.png' },
+  { name: 'Panathinaikos', logo: 'https://i.postimg.cc/DmKJ9bkn/paobcopap-card-GRECIA.png' },
+  { name: 'PAOK BC', logo: 'https://i.postimg.cc/MX8MCj2W/paokbc-logo-GRECIA.png' },
+  { name: 'Peristeri', logo: 'https://i.postimg.cc/t7HZKVQq/PERISTERI-BC-GRECIA.png' },
+  { name: 'Promitheas Patras', logo: 'https://i.postimg.cc/xqSJwbDj/Promitheas-Patras-GRECIA.png' }
+];
+
+export const GREEK_BASKET_MATCHES: Match[] = [
+  {
+    id: 6001,
+    league: "Basket League",
+    teamA: GREEK_BASKET_CLUBS[7], // Panathinaikos
+    teamB: GREEK_BASKET_CLUBS[0], // AEK
+    date: "26/05/2026",
+    time: "20:00",
+    odds: { winA: 1.25, draw: 0, winB: 3.80 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'ERT'
+  },
+  {
+    id: 6002,
+    league: "Basket League",
+    teamA: GREEK_BASKET_CLUBS[8], // PAOK
+    teamB: GREEK_BASKET_CLUBS[1], // Aris
+    date: "26/05/2026",
+    time: "18:00",
+    odds: { winA: 1.85, draw: 0, winB: 1.95 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'ERT'
+  },
+  {
+    id: 6003,
+    league: "Basket League",
+    teamA: GREEK_BASKET_CLUBS[10], // Promitheas
+    teamB: GREEK_BASKET_CLUBS[9], // Peristeri
+    date: "27/05/2026",
+    time: "19:30",
+    odds: { winA: 1.70, draw: 0, winB: 2.15 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'ERT Sports'
+  },
+  {
+    id: 6004,
+    league: "Basket League",
+    teamA: GREEK_BASKET_CLUBS[4], // Kolossos
+    teamB: GREEK_BASKET_CLUBS[2], // Lavrio
+    date: "27/05/2026",
+    time: "16:00",
+    odds: { winA: 1.55, draw: 0, winB: 2.45 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'ERT'
+  }
+];
+
+export const VTB_MATCHES: Match[] = [
+  {
+    id: 5001,
+    league: "VTB United League",
+    teamA: VTB_CLUBS[6], // Unics Kazan
+    teamB: VTB_CLUBS[7], // Zenit St Petersburg
+    date: "24/05/2026",
+    time: "19:00",
+    odds: { winA: 1.85, draw: 0, winB: 1.95 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Match TV'
+  },
+  {
+    id: 5002,
+    league: "VTB United League",
+    teamA: VTB_CLUBS[4], // Lokomotiv Kuban
+    teamB: VTB_CLUBS[0], // BK Himki
+    date: "24/05/2026",
+    time: "17:00",
+    odds: { winA: 1.70, draw: 0, winB: 2.15 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Match TV'
+  },
+  {
+    id: 5003,
+    league: "VTB United League",
+    teamA: VTB_CLUBS[2], // Nizhny Novgorod
+    teamB: VTB_CLUBS[3], // Parma Basket
+    date: "25/05/2026",
+    time: "18:00",
+    odds: { winA: 1.75, draw: 0, winB: 2.10 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'VTB TV'
+  },
+  {
+    id: 5004,
+    league: "VTB United League",
+    teamA: VTB_CLUBS[1], // Enisey
+    teamB: VTB_CLUBS[5], // Tsmoki-Minsk
+    date: "25/05/2026",
+    time: "16:00",
+    odds: { winA: 1.60, draw: 0, winB: 2.40 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'VTB TV'
+  }
+];
+
+export const ITALY_BASKET_MATCHES: Match[] = [
+  {
+    id: 7001,
+    league: "Serie A Basket",
+    teamA: ITALY_BASKET_CLUBS[6], // Milano
+    teamB: ITALY_BASKET_CLUBS[10], // Venezia
+    date: "28/05/2026",
+    time: "20:30",
+    odds: { winA: 1.40, draw: 0, winB: 3.10 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Eurosport'
+  },
+  {
+    id: 7002,
+    league: "Serie A Basket",
+    teamA: ITALY_BASKET_CLUBS[0], // Sassari
+    teamB: ITALY_BASKET_CLUBS[5], // Brindisi
+    date: "28/05/2026",
+    time: "18:00",
+    odds: { winA: 1.75, draw: 0, winB: 2.15 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Eurosport 2'
+  },
+  {
+    id: 7003,
+    league: "Serie A Basket",
+    teamA: ITALY_BASKET_CLUBS[9], // Fortitudo
+    teamB: ITALY_BASKET_CLUBS[8], // Virtus Roma
+    date: "29/05/2026",
+    time: "19:00",
+    odds: { winA: 1.85, draw: 0, winB: 1.95 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Rai Sport'
+  },
+  {
+    id: 7004,
+    league: "Serie A Basket",
+    teamA: ITALY_BASKET_CLUBS[7], // Varese
+    teamB: ITALY_BASKET_CLUBS[2], // Cantú
+    date: "29/05/2026",
+    time: "17:00",
+    odds: { winA: 1.65, draw: 0, winB: 2.30 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Eurosport Player'
+  }
+];
+
+export const JEEP_ELITE_MATCHES: Match[] = [
+  {
+    id: 8001,
+    league: "Jeep Elite",
+    teamA: JEEP_ELITE_CLUBS[0], // Monaco
+    teamB: JEEP_ELITE_CLUBS[10], // JL Bourg
+    date: "01/06/2026",
+    time: "20:00",
+    odds: { winA: 1.35, draw: 0, winB: 3.20 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'LNB TV'
+  },
+  {
+    id: 8002,
+    league: "Jeep Elite",
+    teamA: JEEP_ELITE_CLUBS[14], // Nanterre
+    teamB: JEEP_ELITE_CLUBS[3], // Cholet
+    date: "01/06/2026",
+    time: "18:00",
+    odds: { winA: 1.70, draw: 0, winB: 2.15 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'LNB TV'
+  },
+  {
+    id: 8003,
+    league: "Jeep Elite",
+    teamA: JEEP_ELITE_CLUBS[12], // Boulogne-Levallois
+    teamB: JEEP_ELITE_CLUBS[13], // Limoges
+    date: "02/06/2026",
+    time: "19:00",
+    odds: { winA: 1.65, draw: 0, winB: 2.30 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'LNB TV'
+  },
+  {
+    id: 8004,
+    league: "Jeep Elite",
+    teamA: JEEP_ELITE_CLUBS[11], // Le Mans
+    teamB: JEEP_ELITE_CLUBS[1], // Gravelines
+    date: "02/06/2026",
+    time: "17:00",
+    odds: { winA: 1.55, draw: 0, winB: 2.50 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'LNB TV'
+  }
+];
+
+export const BBL_MATCHES: Match[] = [
+  {
+    id: 9001,
+    league: "BBL Alemanha",
+    teamA: BBL_CLUBS[0], // ALBA Berlin
+    teamB: BBL_CLUBS[3], // Brose Bamberg
+    date: "04/06/2026",
+    time: "19:00",
+    odds: { winA: 1.25, draw: 0, winB: 3.80 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Magenta Sport'
+  },
+  {
+    id: 9002,
+    league: "BBL Alemanha",
+    teamA: BBL_CLUBS[1], // Baskets Bonn
+    teamB: BBL_CLUBS[9], // Ludwigsburg
+    date: "04/06/2026",
+    time: "17:30",
+    odds: { winA: 1.85, draw: 0, winB: 1.95 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Magenta Sport'
+  },
+  {
+    id: 9003,
+    league: "BBL Alemanha",
+    teamA: BBL_CLUBS[6], // Hamburg Towers
+    teamB: BBL_CLUBS[11], // ratiopharm Ulm
+    date: "05/06/2026",
+    time: "20:00",
+    odds: { winA: 2.10, draw: 0, winB: 1.70 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'Magenta Sport'
+  },
+  {
+    id: 9004,
+    league: "BBL Alemanha",
+    teamA: BBL_CLUBS[4], // Crailsheim Merlins
+    teamB: BBL_CLUBS[12], // Wurzburg
+    date: "05/06/2026",
+    time: "18:00",
+    odds: { winA: 1.90, draw: 0, winB: 1.85 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'BBL TV'
   }
 ];
