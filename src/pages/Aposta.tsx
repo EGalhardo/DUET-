@@ -61,7 +61,7 @@ const ClassificationTable = ({
                   <td className="px-3 py-4 font-black text-[#091747] italic text-[9px]">{row.pos}º</td>
                   <td className="px-1 py-4 font-bold text-gray-900 uppercase tracking-tight text-[9px]">
                     <div className="flex items-center gap-1">
-                      <span className="truncate max-w-[100px]">{row.team}</span>
+                      <span className="truncate max-w-[120px] md:max-w-none">{row.team}</span>
                       {isMatchTeam && <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-[#FFB10A] animate-pulse" />}
                     </div>
                   </td>
@@ -135,7 +135,7 @@ const MatchCard = React.memo(({ match, onClick, category }: { match: Match, onCl
                 </span>
               )}
             </div>
-            <span className="font-black text-[#091747] text-center text-sm md:text-base leading-tight uppercase italic">
+            <span className="font-black text-[#091747] text-center text-xs md:text-sm leading-tight uppercase italic whitespace-nowrap truncate w-full">
               {match.teamA.name}
             </span>
           </div>
@@ -150,7 +150,7 @@ const MatchCard = React.memo(({ match, onClick, category }: { match: Match, onCl
               )}
               <img src={match.teamB.logo} alt={match.teamB.name} className="w-12 h-12 md:w-16 md:h-16 object-contain" />
             </div>
-            <span className="font-black text-[#091747] text-center text-sm md:text-base leading-tight uppercase italic">
+            <span className="font-black text-[#091747] text-center text-xs md:text-sm leading-tight uppercase italic whitespace-nowrap truncate w-full">
               {match.teamB.name}
             </span>
           </div>
@@ -203,21 +203,21 @@ const MatchCard = React.memo(({ match, onClick, category }: { match: Match, onCl
       </div>
 
       <div className="flex items-center justify-between gap-4 mb-6">
-        <div className="flex flex-col items-center flex-1">
+        <div className="flex flex-col items-center flex-1 overflow-hidden">
           <img src={match.teamA.logo} alt={match.teamA.name} className="w-12 h-12 md:w-16 md:h-16 object-contain mb-2" />
-          <span className="font-bold text-gray-800 text-center text-sm md:text-base">{match.teamA.name}</span>
+          <span className="font-bold text-gray-800 text-center text-xs md:text-sm whitespace-nowrap truncate w-full">{match.teamA.name}</span>
         </div>
         
         <div className="flex flex-col items-center">
-          <div className="mt-2 text-[10px] md:text-xs text-center text-[#364153] font-bold bg-white border border-gray-200 px-2 py-1 rounded">
+          <div className="mt-2 text-[10px] md:text-xs text-center text-[#364153] font-bold bg-white border border-gray-200 px-2 py-1 rounded whitespace-nowrap">
             <Calendar className="w-3 h-3 inline mr-1 text-[#FFB10A]" />
             {match.date} • {match.time}
           </div>
         </div>
 
-        <div className="flex flex-col items-center flex-1">
+        <div className="flex flex-col items-center flex-1 overflow-hidden">
           <img src={match.teamB.logo} alt={match.teamB.name} className="w-12 h-12 md:w-16 md:h-16 object-contain mb-2" />
-          <span className="font-bold text-gray-800 text-center text-sm md:text-base">{match.teamB.name}</span>
+          <span className="font-bold text-gray-800 text-center text-xs md:text-sm whitespace-nowrap truncate w-full">{match.teamB.name}</span>
         </div>
       </div>
 
@@ -484,7 +484,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gray-200 -translate-x-1/2" />
 
             {/* Left Team (Home) */}
-            <div className="flex-1 flex flex-col items-center pr-4">
+            <div className="flex-1 flex flex-col items-center pr-4 overflow-hidden">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center bg-white p-2">
                   <motion.img 
@@ -501,13 +501,13 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   </span>
                 )}
               </div>
-              <span className="font-black text-[#091747] text-center text-[10px] md:text-xs uppercase tracking-tight leading-tight italic">
+              <span className="font-black text-[#091747] text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight italic whitespace-nowrap truncate w-full">
                 {match.teamA.name}
               </span>
             </div>
 
             {/* Right Team (Away) */}
-            <div className="flex-1 flex flex-col items-center pl-4">
+            <div className="flex-1 flex flex-col items-center pl-4 overflow-hidden">
               <div className="flex items-center gap-3 mb-2">
                 {match.teamB.record && (
                   <span className="text-gray-700 text-[10px] md:text-xs font-black italic uppercase tracking-widest leading-none">
@@ -524,7 +524,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   />
                 </div>
               </div>
-              <span className="font-black text-[#091747] text-center text-[10px] md:text-xs uppercase tracking-tight leading-tight italic">
+              <span className="font-black text-[#091747] text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight italic whitespace-nowrap truncate w-full">
                 {match.teamB.name}
               </span>
             </div>
@@ -545,7 +545,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             </motion.div>
           </div>
           <div className="flex items-center justify-around gap-2">
-            <div className="flex flex-col items-center flex-1 max-w-[120px]">
+            <div className="flex flex-col items-center flex-1 max-w-[120px] overflow-hidden">
               <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-white p-2 mb-2">
                 <motion.img 
                   initial={{ scale: 0.8, opacity: 0 }}
@@ -555,7 +555,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   className="w-full h-full object-contain" 
                 />
               </div>
-              <span className="font-bold text-gray-900 text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamA.name}</span>
+              <span className="font-bold text-gray-900 text-center text-[8px] md:text-[9px] uppercase tracking-tight leading-tight whitespace-nowrap truncate w-full">{match.teamA.name}</span>
             </div>
             
             <div className="flex flex-col items-center justify-center gap-1">
@@ -570,7 +570,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               </div>
             </div>
 
-            <div className="flex flex-col items-center flex-1 max-w-[120px]">
+            <div className="flex flex-col items-center flex-1 max-w-[120px] overflow-hidden">
               <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center bg-white p-2 mb-2">
                 <motion.img 
                   initial={{ scale: 0.8, opacity: 0 }}
@@ -580,7 +580,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   className="w-full h-full object-contain" 
                 />
               </div>
-              <span className="font-bold text-gray-900 text-center text-[9px] md:text-[10px] uppercase tracking-tight leading-tight line-clamp-2">{match.teamB.name}</span>
+              <span className="font-bold text-gray-900 text-center text-[8px] md:text-[9px] uppercase tracking-tight leading-tight whitespace-nowrap truncate w-full">{match.teamB.name}</span>
             </div>
           </div>
         </>
@@ -1463,7 +1463,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                           {selectedMarket === displayName && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </div>
                         <span className={cn(
-                          "text-[9px] font-black uppercase tracking-tight leading-tight line-clamp-2",
+                          "text-[8px] md:text-[9px] font-black uppercase tracking-tight leading-tight truncate whitespace-nowrap px-1",
                           selectedMarket === displayName ? "text-white" : "text-gray-900"
                         )}>{displayName}</span>
                       </button>
@@ -1609,7 +1609,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                             setSelectedMarketsList(newPreds);
                           }}
                           className={cn(
-                            "py-3 px-1 rounded-2xl text-[9px] font-black border-2 transition-all uppercase tracking-tight text-center leading-tight line-clamp-2",
+                            "py-3 px-1 rounded-2xl text-[8px] md:text-[9px] font-black border-2 transition-all uppercase tracking-tight text-center leading-tight whitespace-nowrap truncate",
                             res === opt.id
                               ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-md"
                               : "bg-white border-gray-100 text-gray-900 hover:border-[#FFB10A]"
@@ -1695,7 +1695,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                             setSelectedMarketsList(newPreds);
                           }}
                           className={cn(
-                            "py-2.5 text-[8px] font-black rounded-lg border-2 transition-all active:scale-95 px-2 uppercase tracking-tighter", 
+                            "py-2.5 text-[7px] md:text-[8px] font-black rounded-lg border-2 transition-all active:scale-95 px-1 uppercase tracking-tighter whitespace-nowrap truncate", 
                             selectedMarketsList[i] === opt.id ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-lg" : "bg-gray-50 border-gray-50 text-gray-500 hover:border-[#FFB10A]"
                           )}
                         >

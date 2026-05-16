@@ -34,11 +34,63 @@ const LeagueCard = React.memo(({ card, category, fallbackImage }: { card: League
   </Link>
 ));
 
+const F1TeamCard = React.memo(({ card, category }: { card: LeagueOption, category: string }) => (
+  <Link 
+    id={`f1-team-card-${card.title.toLowerCase().replace(/\s+/g, '-')}`}
+    to={`/aposta/${category}?topic=${card.title}`}
+    className="group block relative transition-transform active:scale-95"
+  >
+    <div className="aspect-video rounded-xl md:rounded-3xl border border-gray-200 bg-white overflow-hidden relative group-hover:border-[#FFB10A] transition-all">
+      {/* Drivers Container Background */}
+      <div className="absolute inset-0 flex items-end justify-between px-1 sm:px-4">
+        {/* Driver 1 - Left */}
+        {card.driver1 && (
+          <div className="w-[45%] h-[80%] flex items-end">
+            <motion.img 
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              src={card.driver1} 
+              alt="Driver 1" 
+              className="w-full h-full object-contain object-bottom transition-transform group-hover:scale-105 group-hover:translate-x-1 origin-bottom" 
+            />
+          </div>
+        )}
+        {/* Driver 2 - Right */}
+        {card.driver2 && (
+          <div className="w-[45%] h-[80%] flex items-end">
+            <motion.img 
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              src={card.driver2} 
+              alt="Driver 2" 
+              className="w-full h-full object-contain object-bottom transition-transform group-hover:scale-105 group-hover:-translate-x-1 origin-bottom" 
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Center Logo - Floats above drivers */}
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 w-14 h-14 md:w-24 md:h-24 flex items-center justify-center group-hover:scale-110 transition-transform">
+        <img src={card.image} alt={card.title} className="w-full h-full object-contain" />
+      </div>
+      
+      {/* Dynamic Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+    </div>
+    <p className="mt-3 text-center text-[10px] md:text-xs font-black text-[#091747] uppercase tracking-widest group-hover:text-[#FFB10A] transition-colors italic">
+      {card.title}
+    </p>
+  </Link>
+));
+
 LeagueCard.displayName = 'LeagueCard';
+F1TeamCard.displayName = 'F1TeamCard';
 
 export default function Liga() {
   const { category = 'futebol' } = useParams();
-  const [activeTab, setActiveTab] = useState<'practice' | 'private' | 'community'>('practice');
+  const [activeTab, setActiveTab] = useState<'practice' | 'private' | 'community'>(
+    category === 'f1' ? 'community' : 'practice'
+  );
   const [isFavorited, setIsFavorited] = useState(false);
   const cardsRef = React.useRef<HTMLHeadingElement>(null);
 
@@ -65,7 +117,7 @@ export default function Liga() {
     
     // Ensure activeTab is valid for the category
     if (!currentCategory.labels[activeTab]) {
-      setActiveTab('practice');
+      setActiveTab(category === 'f1' ? 'community' : 'practice');
     }
 
     window.addEventListener('favoritesUpdated', updateFavStatus);
@@ -87,6 +139,10 @@ export default function Liga() {
       setIsFavorited(true);
     }
   };
+
+  const tabs = category === 'f1' 
+    ? (['community', 'practice', 'private'] as const)
+    : (['practice', 'private', 'community'] as const);
 
   return (
     <div className="flex flex-col flex-1">
@@ -114,7 +170,7 @@ export default function Liga() {
           "flex items-center border-b border-gray-100",
           Object.keys(currentCategory.labels).length < 3 ? "justify-center gap-8 md:gap-16" : "justify-between"
         )}>
-          {(['practice', 'private', 'community'] as const).map((tab) => (
+          {tabs.map((tab) => (
             currentCategory.labels[tab] && (
               <button
                 key={tab}
@@ -123,7 +179,7 @@ export default function Liga() {
                   scrollToCards();
                 }}
                 className={cn(
-                  "py-3 text-center text-lg md:text-xl lg:text-2xl font-dancing font-bold transition-all border-b-2 px-6",
+                  "py-3 text-center text-sm md:text-base lg:text-lg font-black uppercase tracking-tight transition-all border-b-2 px-6",
                   Object.keys(currentCategory.labels).length >= 3 && "flex-1",
                   activeTab === tab 
                     ? "text-[#FFB10A] border-[#FFB10A]" 
@@ -167,15 +223,24 @@ export default function Liga() {
       <div className="px-4 md:px-8 pb-10 lg:pb-14 w-full">
         <div className={cn(
           "grid grid-cols-2 gap-4 md:gap-6 lg:gap-8 mx-auto",
-          category === 'f1' ? "max-w-7xl" : "max-w-5xl"
+          category === 'f1' ? "max-w-7xl" : "max-w-5xl",
+          (category === 'f1' && activeTab === 'community') && "grid-cols-1 md:grid-cols-2"
         )}>
           {currentCategory.cards[activeTab]?.map((card, idx) => (
-            <LeagueCard 
-              key={idx} 
-              card={card} 
-              category={category} 
-              fallbackImage={currentCategory.image} 
-            />
+            (category === 'f1' && activeTab === 'community') ? (
+              <F1TeamCard 
+                key={idx} 
+                card={card} 
+                category={category} 
+              />
+            ) : (
+              <LeagueCard 
+                key={idx} 
+                card={card} 
+                category={category} 
+                fallbackImage={currentCategory.image} 
+              />
+            )
           ))}
         </div>
       </div>

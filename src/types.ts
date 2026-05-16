@@ -29,6 +29,8 @@ export interface Category {
 export interface LeagueOption {
   title: string;
   image?: string;
+  driver1?: string;
+  driver2?: string;
 }
 
 export interface UserProfile {

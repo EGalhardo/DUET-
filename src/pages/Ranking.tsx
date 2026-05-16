@@ -12,17 +12,51 @@ interface RankingPlayer {
   avatar: string;
 }
 
-const rankings: RankingPlayer[] = [
-  { id: 1, name: 'Ana Ferreira', score: 9850, avatar: 'https://i.pravatar.cc/150?u=1' },
-  { id: 2, name: 'Carlos Mendes', score: 9420, avatar: 'https://i.pravatar.cc/150?u=2' },
-  { id: 3, name: 'Sofia Lopes', score: 8990, avatar: 'https://i.pravatar.cc/150?u=3' },
-  { id: 4, name: 'Rui Santos', score: 8540, avatar: 'https://i.pravatar.cc/150?u=4' },
-  { id: 5, name: 'Marta Costa', score: 8100, avatar: 'https://i.pravatar.cc/150?u=5' },
-];
-
 export default function Ranking() {
+  const [activeTab, setActiveTab] = useState<'Recente' | 'Semanal' | 'Geral'>('Recente');
   const [isFavorited, setIsFavorited] = useState(false);
   const favoriteId = 'page-ranking';
+
+  const rankingData = {
+    Recente: [
+      { id: 1, name: 'Ana Ferreira', score: 9850, avatar: 'https://i.pravatar.cc/150?u=1' },
+      { id: 2, name: 'Carlos Mendes', score: 9420, avatar: 'https://i.pravatar.cc/150?u=2' },
+      { id: 3, name: 'Sofia Lopes', score: 8990, avatar: 'https://i.pravatar.cc/150?u=3' },
+      { id: 4, name: 'Rui Santos', score: 8540, avatar: 'https://i.pravatar.cc/150?u=4' },
+      { id: 5, name: 'Marta Costa', score: 8100, avatar: 'https://i.pravatar.cc/150?u=5' },
+      { id: 6, name: 'Hugo Brás', score: 7800, avatar: 'https://i.pravatar.cc/150?u=6' },
+      { id: 7, name: 'Inês Caldeira', score: 7600, avatar: 'https://i.pravatar.cc/150?u=7' },
+      { id: 8, name: 'David Lucas', score: 7400, avatar: 'https://i.pravatar.cc/150?u=8' },
+      { id: 9, name: 'Soraia Lima', score: 7200, avatar: 'https://i.pravatar.cc/150?u=9' },
+      { id: 10, name: 'Bruno Alves', score: 7000, avatar: 'https://i.pravatar.cc/150?u=10' },
+    ],
+    Semanal: [
+      { id: 11, name: 'Pedro Silva', score: 15600, avatar: 'https://i.pravatar.cc/150?u=11' },
+      { id: 12, name: 'Maria Joana', score: 14200, avatar: 'https://i.pravatar.cc/150?u=12' },
+      { id: 13, name: 'Luís Gomes', score: 13800, avatar: 'https://i.pravatar.cc/150?u=13' },
+      { id: 14, name: 'Isabel Rocha', score: 12500, avatar: 'https://i.pravatar.cc/150?u=14' },
+      { id: 15, name: 'Jorge Lima', score: 11900, avatar: 'https://i.pravatar.cc/150?u=15' },
+      { id: 16, name: 'Filipa Melo', score: 11500, avatar: 'https://i.pravatar.cc/150?u=16' },
+      { id: 17, name: 'Vítor Paiva', score: 11100, avatar: 'https://i.pravatar.cc/150?u=17' },
+      { id: 18, name: 'Lia Duarte', score: 10800, avatar: 'https://i.pravatar.cc/150?u=18' },
+      { id: 19, name: 'Samuel Neto', score: 10500, avatar: 'https://i.pravatar.cc/150?u=19' },
+      { id: 20, name: 'Cláudia Reis', score: 10200, avatar: 'https://i.pravatar.cc/150?u=20' },
+    ],
+    Geral: [
+      { id: 21, name: 'Ricardo Dias', score: 150400, avatar: 'https://i.pravatar.cc/150?u=21' },
+      { id: 22, name: 'Tiago Santos', score: 142300, avatar: 'https://i.pravatar.cc/150?u=22' },
+      { id: 23, name: 'Andreia Cruz', score: 139100, avatar: 'https://i.pravatar.cc/150?u=23' },
+      { id: 24, name: 'Nuno Alves', score: 128500, avatar: 'https://i.pravatar.cc/150?u=24' },
+      { id: 25, name: 'Beatriz Vaz', score: 125000, avatar: 'https://i.pravatar.cc/150?u=25' },
+      { id: 26, name: 'Gonçalo Pinheiro', score: 122000, avatar: 'https://i.pravatar.cc/150?u=26' },
+      { id: 27, name: 'Leonor Guerra', score: 119000, avatar: 'https://i.pravatar.cc/150?u=27' },
+      { id: 28, name: 'Miguel Faria', score: 115000, avatar: 'https://i.pravatar.cc/150?u=28' },
+      { id: 29, name: 'Raquel Sobral', score: 112000, avatar: 'https://i.pravatar.cc/150?u=29' },
+      { id: 30, name: 'Tomás Veiga', score: 109000, avatar: 'https://i.pravatar.cc/150?u=30' },
+    ]
+  };
+
+  const currentRankings = rankingData[activeTab];
 
   useEffect(() => {
     const updateFavStatus = () => {
@@ -81,11 +115,15 @@ export default function Ranking() {
 
         <div className="flex justify-center mb-8">
           <div className="period-tabbar flex bg-gray-200 p-1 rounded-2xl w-full max-w-xs">
-            {['Recente', 'Semanal', 'Geral'].map((period, i) => (
-              <button key={period} className={cn(
-                "flex-1 py-2 text-xs font-black rounded-xl transition-all",
-                i === 0 ? "bg-[#FFB10A] text-white" : "text-[#364153] hover:text-[#091747]"
-              )}>
+            {['Recente', 'Semanal', 'Geral'].map((period) => (
+              <button 
+                key={period} 
+                onClick={() => setActiveTab(period as any)}
+                className={cn(
+                  "flex-1 py-2 text-xs font-black rounded-xl transition-all",
+                  activeTab === period ? "bg-[#FFB10A] text-white shadow-sm" : "text-[#364153] hover:text-[#091747]"
+                )}
+              >
                 {period}
               </button>
             ))}
@@ -101,15 +139,34 @@ export default function Ranking() {
              </div>
              
              {/* Podium */}
-             <div className="flex items-end justify-center gap-2 p-6 bg-gray-50/50 border-b border-gray-100">
-                <PodiumPosition position={2} player={rankings[1]} />
-                <PodiumPosition position={1} player={rankings[0]} />
-                <PodiumPosition position={3} player={rankings[2]} />
-             </div>
+             <motion.div 
+               key={`podium-${activeTab}`}
+               initial={{ opacity: 0, scale: 0.95 }}
+               animate={{ opacity: 1, scale: 1 }}
+               transition={{ duration: 0.4 }}
+               className="flex items-end justify-center gap-2 p-6 bg-gray-50/50 border-b border-gray-100"
+             >
+                <PodiumPosition position={2} player={currentRankings[1]} />
+                <PodiumPosition position={1} player={currentRankings[0]} />
+                <PodiumPosition position={3} player={currentRankings[2]} />
+             </motion.div>
 
-             <div className="divide-y divide-gray-200">
-               {rankings.map((player, i) => (
-                 <div key={player.id} className="flex items-center gap-4 p-4 hover:bg-orange-50/50 transition-colors">
+             <motion.div 
+               key={activeTab}
+               initial={{ opacity: 0, x: 20 }}
+               animate={{ opacity: 1, x: 0 }}
+               exit={{ opacity: 0, x: -20 }}
+               transition={{ duration: 0.3 }}
+               className="divide-y divide-gray-200"
+             >
+               {currentRankings.map((player, i) => (
+                 <motion.div 
+                   initial={{ opacity: 0, y: 10 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   transition={{ delay: i * 0.05 }}
+                   key={player.id} 
+                   className="flex items-center gap-4 p-4 hover:bg-orange-50/50 transition-colors"
+                 >
                    <div className={cn(
                      "w-8 h-8 rounded-full flex items-center justify-center font-black text-xs",
                      i === 0 ? "bg-yellow-400 text-white" : i === 1 ? "bg-gray-400 text-white" : i === 2 ? "bg-amber-600 text-white" : "bg-gray-200 text-[#364153]"
@@ -121,9 +178,9 @@ export default function Ranking() {
                    <span className="bg-gray-200 px-3 py-1 rounded-full text-[10px] font-black text-[#364153]">
                      {player.score.toLocaleString()} pts
                    </span>
-                 </div>
+                 </motion.div>
                ))}
-             </div>
+             </motion.div>
           </div>
         </div>
       </div>

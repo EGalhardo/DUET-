@@ -171,8 +171,20 @@ export const CATEGORY_DATA: Record<string, CategoryDetail> = {
   f1: {
     title: 'F1',
     image: 'https://i.postimg.cc/xd95kgZj/F1.gif',
-    labels: { practice: 'Classificacao', private: 'G.P' },
+    labels: { community: 'Equipas', practice: 'Classificacao', private: 'G.P' },
     cards: {
+      community: [
+        { title: 'Mercedes', image: 'https://i.postimg.cc/9RhZbrs6/1-Mercedes.jpg', driver1: 'https://i.postimg.cc/sMCjv7SG/1-Hamilton.png', driver2: 'https://i.postimg.cc/yDC1kc9F/2-Botas.png' },
+        { title: 'Red Bull Racing', image: 'https://i.postimg.cc/hzBTsfHB/2-RBR.jpg', driver1: 'https://i.postimg.cc/0z1kbDmG/3-Verstappen.png', driver2: 'https://i.postimg.cc/LJkHf5Bn/4-Albon.png' },
+        { title: 'Ferrari', image: 'https://i.postimg.cc/R6BKdNj4/3-Ferrari.jpg', driver1: 'https://i.postimg.cc/Mn0WRHbn/5-Vettel.png', driver2: 'https://i.postimg.cc/YvNpg0fL/6-Leclerc.png' },
+        { title: 'Alpine', image: 'https://i.postimg.cc/9RhZbrvV/4-Renault.jpg', driver1: 'https://i.postimg.cc/v47Q9TL7/11-Ricciardo.png', driver2: 'https://i.postimg.cc/QFgX5CkJ/12-Ocon.png' },
+        { title: 'Stake F1 Team', image: 'https://i.postimg.cc/CBgk7zWw/5-Alfa-romeo.jpg', driver1: 'https://i.postimg.cc/Js31J0cZ/8-Raikkonen.png', driver2: 'https://i.postimg.cc/yDhV9xXR/7-Giovinazzi.png' },
+        { title: 'Visa Cash App RB', image: 'https://i.postimg.cc/phHzCpgT/6-Alfatauri.jpg', driver1: 'https://i.postimg.cc/87d1WcBH/14-Gasly.png', driver2: 'https://i.postimg.cc/Bj5qDbcC/13-Kvyat.png' },
+        { title: 'Haas', image: 'https://i.postimg.cc/k6mKsBkG/7-Haas-F1.jpg', driver1: 'https://i.postimg.cc/hX8Sxvby/17-Magnussen.png', driver2: 'https://i.postimg.cc/0zG8mjdH/18-Grosjean.png' },
+        { title: 'Williams', image: 'https://i.postimg.cc/r0kxjKvr/10-Williams.jpg', driver1: 'https://i.postimg.cc/18096XcB/15-Russel.png', driver2: 'https://i.postimg.cc/G4PcYtJX/16-Latifi.png' },
+        { title: 'Aston Martin', image: 'https://i.postimg.cc/cgSwhrVr/9-Racing-Point.jpg', driver1: 'https://i.postimg.cc/xXG0H8y4/19-Stroll.png', driver2: 'https://i.postimg.cc/Wdm2rz6C/20-Perez.png' },
+        { title: 'McLaren', image: 'https://i.postimg.cc/dkYr6Lzd/mclaren-logo.png', driver1: 'https://i.postimg.cc/RW1MfhQc/9-Sainz.png', driver2: 'https://i.postimg.cc/hX8SxvbL/10-Norris.png' },
+      ],
       practice: [
         { title: 'Abu Dhabi', image: 'https://i.postimg.cc/hG3BynHh/ABU-DHABI-YAS-MARINA-CIRCUIT.jpg' },
         { title: 'Arábia Saudita', image: 'https://i.postimg.cc/wjfZHVF2/ARABIA-SAUDITA-JEDDAH-STREET-CIRCUIT.jpg' },
