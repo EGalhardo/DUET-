@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Trophy, Clock, CircleDot as Football, Shield, Users, Eye, Trash2, X, AlertTriangle, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { storageService } from '../services/storageService';
 import { MATCH_DATA } from '../constants';
 import { Bet } from '../types';

@@ -1887,6 +1887,22 @@ export const JEEP_ELITE_MATCHES: Match[] = [
   }
 ];
 
+export const F1_MATCHES: Match[] = [
+  {
+    id: 5001,
+    league: "Grande Prémio de Abu Dhabi",
+    teamA: { name: "Max Verstappen", logo: "https://i.postimg.cc/0z1kbDmG/3-Verstappen.png" },
+    teamB: { name: "Lewis Hamilton", logo: "https://i.postimg.cc/sMCjv7SG/1-Hamilton.png" },
+    date: "25/05/2026",
+    time: "14:00",
+    odds: { winA: 1.65, draw: 0, winB: 3.50 },
+    status: 'breve',
+    scoreA: 0,
+    scoreB: 0,
+    broadcast: 'F1 TV / Eleven'
+  }
+];
+
 export const BBL_MATCHES: Match[] = [
   {
     id: 9001,

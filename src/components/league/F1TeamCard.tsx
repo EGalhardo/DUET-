@@ -1,15 +1,18 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { LeagueOption } from '../../types';
 
 interface F1TeamCardProps {
   card: LeagueOption;
+  sessionType?: string;
 }
 
-const F1TeamCard: React.FC<F1TeamCardProps> = React.memo(({ card }) => (
-  <div 
+const F1TeamCard: React.FC<F1TeamCardProps> = React.memo(({ card, sessionType }) => (
+  <Link 
     id={`f1-team-card-${card.title.toLowerCase().replace(/\s+/g, '-')}`}
-    className="group block relative transition-all"
+    to={`/aposta/f1?topic=${card.title}${sessionType ? `&session=${sessionType}` : ''}`}
+    className="group block relative transition-all active:scale-95 text-decoration-none"
   >
     <div className="aspect-video rounded-xl md:rounded-3xl border border-gray-200 bg-white overflow-hidden relative group-hover:border-[#FFB10A] transition-all">
       {/* Drivers Container Background */}
@@ -51,7 +54,7 @@ const F1TeamCard: React.FC<F1TeamCardProps> = React.memo(({ card }) => (
     <p className="mt-3 text-center text-[10px] md:text-xs font-black text-[#091747] uppercase tracking-widest group-hover:text-[#FFB10A] transition-colors italic">
       {card.title}
     </p>
-  </div>
+  </Link>
 ));
 
 F1TeamCard.displayName = 'F1TeamCard';

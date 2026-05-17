@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Wallet, RotateCw, Coins, CreditCard, HandCoins, Users, Clock, Info, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { storageService } from '../services/storageService';
 import { cn } from '../lib/utils';
 

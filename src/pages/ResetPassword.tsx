@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Mail, ArrowLeft } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 

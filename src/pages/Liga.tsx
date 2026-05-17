@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Heart, Calendar, CircleDot as Football, ChevronDown } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
 
 import { CATEGORY_DATA } from '../constants';
@@ -154,6 +154,7 @@ export default function Liga() {
               <F1TeamCard 
                 key={idx} 
                 card={card} 
+                sessionType={currentCategory.labels[activeTab]}
               />
             ) : (
               <LeagueCard 
@@ -161,6 +162,7 @@ export default function Liga() {
                 card={card} 
                 category={category} 
                 fallbackImage={currentCategory.image} 
+                sessionType={category === 'f1' ? currentCategory.labels[activeTab] : undefined}
               />
             )
           ))}

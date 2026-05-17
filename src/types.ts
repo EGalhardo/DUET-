@@ -34,6 +34,7 @@ export interface LeagueOption {
 }
 
 export interface UserProfile {
+  id: string;
   name: string;
   photo: string;
   ranking: 'Bronze' | 'Prata' | 'Ouro' | 'Elite' | 'Lenda';
@@ -72,6 +73,28 @@ export interface FavoriteItem {
   sub: string;
   type: string;
   path: string;
+}
+
+export interface Notification {
+  id: string;
+  type: 'Performance' | 'Taunt';
+  title: string;
+  message: string;
+  emoji: string;
+  image?: string;
+  challengeId: string;
+  fromUserId?: string;
+  createdAt: string;
+  isRead: boolean;
+}
+
+export interface Taunt {
+  id: string;
+  challengeId: string;
+  fromUserId: string;
+  toUserId: string;
+  stickerId: string;
+  createdAt: string;
 }
 
 export interface CategoryDetail {

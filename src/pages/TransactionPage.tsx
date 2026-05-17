@@ -54,75 +54,79 @@ export default function TransactionPage() {
       </div>
 
       <div className="max-w-xl mx-auto w-full px-4 pt-8 pb-12">
-        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-200 bg-gray-50/50 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                <config.icon className="w-5 h-5 text-[#FFC000]" />
+          <div id="transaction-card" className="bg-white rounded-3xl border border-gray-200 overflow-hidden">
+            <div id="transaction-header" className="px-5 py-4 border-b border-gray-200 bg-gray-50/50 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+                  <config.icon className="w-5 h-5 text-[#FFC000]" />
+                </div>
+                <h3 className="text-[#091747] font-bold">{config.title}</h3>
               </div>
-              <h3 className="text-[#091747] font-bold">{config.title}</h3>
-            </div>
-            <span className="flex items-center gap-1 text-[10px] text-green-600 font-bold uppercase tracking-wider">
-              <ShieldCheck className="w-4 h-4" /> Seguro
-            </span>
-          </div>
-
-          <form className="p-6 space-y-6" onSubmit={(e) => { e.preventDefault(); setIsSuccess(true); }}>
-            <div>
-              <label className="block text-xs font-bold text-gray-800 uppercase tracking-widest mb-2 px-1">Valor (Kz)</label>
-              <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-900 font-black italic">Kz</span>
-                <input 
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="0"
-                  className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#FFB10A] outline-none font-bold text-lg transition-all"
-                  required
-                />
-              </div>
+              <span id="secure-badge" className="flex items-center gap-1 text-[10px] text-green-600 font-bold uppercase tracking-wider">
+                <ShieldCheck className="w-4 h-4" /> Seguro
+              </span>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-800 uppercase tracking-widest mb-2 px-1">Método</label>
-              <div className="relative">
-                <select 
-                  value={method}
-                  onChange={(e) => setMethod(e.target.value)}
-                  className="w-full px-4 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#FFB10A] outline-none font-bold text-sm transition-all appearance-none bg-white"
+            <form id="transaction-form" className="p-6 space-y-6" onSubmit={(e) => { e.preventDefault(); setIsSuccess(true); }}>
+              <div>
+                <label className="block text-xs font-bold text-gray-800 uppercase tracking-widest mb-2 px-1">Valor (Kz)</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-900 font-black italic">Kz</span>
+                  <input 
+                    id="amount-input"
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="0"
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#FFB10A] outline-none font-bold text-lg transition-all"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-800 uppercase tracking-widest mb-2 px-1">Método</label>
+                <div className="relative">
+                  <select 
+                    id="method-select"
+                    value={method}
+                    onChange={(e) => setMethod(e.target.value)}
+                    className="w-full px-4 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#FFB10A] outline-none font-bold text-sm transition-all appearance-none bg-white"
+                  >
+                    <option value="multicaixa">Multicaixa Express</option>
+                    <option value="referencia">Referência Bancária</option>
+                    <option value="wallet">Carteira Digital</option>
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+
+              <div id="total-preview" className="bg-orange-50/50 rounded-2xl p-4 border border-orange-100">
+                 <div className="flex items-center justify-between">
+                   <span className="text-xs font-black text-gray-600 uppercase tracking-widest">Total</span>
+                   <span className="text-xl font-black text-[#091747]">Kz {amount ? Number(amount).toLocaleString() : '0'}</span>
+                 </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button 
+                  id="cancel-transaction"
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  className="flex-1 py-4 rounded-[1.2rem] border-2 border-gray-100 font-black text-gray-700 hover:bg-gray-50 transition-all uppercase tracking-widest text-[10px]"
                 >
-                  <option value="multicaixa">Multicaixa Express</option>
-                  <option value="referencia">Referência Bancária</option>
-                  <option value="wallet">Carteira Digital</option>
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  Cancelar
+                </button>
+                <button 
+                  id="confirm-transaction"
+                  type="submit"
+                  className="flex-1 py-4 rounded-[1.2rem] bg-[#FFB10A] text-white font-black hover:bg-[#FFC000] transition-all uppercase tracking-widest text-[10px] shadow-lg shadow-orange-50"
+                >
+                  Confirmar
+                </button>
               </div>
-            </div>
-
-            <div className="bg-orange-50/50 rounded-2xl p-4 border border-orange-100">
-               <div className="flex items-center justify-between">
-                 <span className="text-xs font-black text-gray-600 uppercase tracking-widest">Total</span>
-                 <span className="text-xl font-black text-[#091747]">Kz {amount ? Number(amount).toLocaleString() : '0'}</span>
-               </div>
-            </div>
-
-            <div className="flex gap-3">
-              <button 
-                type="button"
-                onClick={() => navigate(-1)}
-                className="flex-1 py-4 rounded-[1.2rem] border-2 border-gray-100 font-black text-gray-700 hover:bg-gray-50 transition-all uppercase tracking-widest text-[10px]"
-              >
-                Cancelar
-              </button>
-              <button 
-                type="submit"
-                className="flex-1 py-4 rounded-[1.2rem] bg-[#FFB10A] text-white font-black hover:bg-[#FFC000] transition-all uppercase tracking-widest text-[10px] shadow-lg shadow-orange-50"
-              >
-                Confirmar
-              </button>
-            </div>
-          </form>
-        </div>
+            </form>
+          </div>
 
         <div className="mt-6 flex gap-3 p-4 rounded-2xl bg-gray-50 border border-gray-100">
            <Info className="w-5 h-5 text-gray-400 shrink-0" />

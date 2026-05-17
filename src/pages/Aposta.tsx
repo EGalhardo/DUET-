@@ -1,10 +1,10 @@
 import React from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import { ArrowLeft, CircleDot as Football, Calendar, Trophy, Copy, CheckCircle2, AlertCircle, X, Loader2, Plus, Users, Shield, Check, ChevronDown, Trash2, List, Share2, Mail, MessageSquare, Heart, Lock } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, CircleDot as Football, Calendar, Trophy, Copy, CheckCircle2, AlertCircle, X, Loader2, Plus, Users, Shield, Check, ChevronDown, Trash2, List, Share2, Mail, MessageSquare, Heart, Lock, Send, Smile, Ghost, History } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 
-import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES, LEAGUE_CLASSIFICATIONS, NBA_MATCHES, UNITEL_BASKET_MATCHES, ACB_MATCHES, VTB_MATCHES, GREEK_BASKET_MATCHES, ITALY_BASKET_MATCHES, JEEP_ELITE_MATCHES, BBL_MATCHES } from '../constants';
+import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES, LEAGUE_CLASSIFICATIONS, NBA_MATCHES, UNITEL_BASKET_MATCHES, ACB_MATCHES, VTB_MATCHES, GREEK_BASKET_MATCHES, ITALY_BASKET_MATCHES, JEEP_ELITE_MATCHES, BBL_MATCHES, F1_MATCHES } from '../constants';
 import { Match, Wallet as WalletType, UserProfile, Bet, FavoriteItem } from '../types';
 import { storageService } from '../services/storageService';
 import ClassificationTable from '../components/bets/ClassificationTable';
@@ -20,7 +20,7 @@ interface BettingModalProps {
 }
 
 const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingModalProps) => {
-  const [betAction, setBetAction] = React.useState<'create' | 'join' | 'my_bets' | 'bet_details' | null>(null);
+  const [betAction, setBetAction] = React.useState<'create' | 'join' | 'my_bets' | 'bet_details' | 'challenge_results' | null>(null);
   const [selectedBetId, setSelectedBetId] = React.useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState<string | null>(null);
   const [createStep, setCreateStep] = React.useState<'password' | 'selection' | 'details'>('selection');
@@ -42,11 +42,27 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
   const [isFavorited, setIsFavorited] = React.useState(false);
   const [error, setError] = React.useState('');
   const [selectedUserView, setSelectedUserView] = React.useState<string>('me');
+  const [showTauntSelector, setShowTauntSelector] = React.useState<string | null>(null); // userId to taunt
+  const userProfile = storageService.getUserProfile();
+
   const inscribedUsers = React.useMemo(() => [
-    { id: '1', name: 'João Silva', picks: ['A', 'X', 'B', 'A', 'X', 'B', 'A', 'X', 'B', 'A'] },
-    { id: '2', name: 'Maria Santos', picks: ['B', 'B', 'A', 'X', 'A', 'B', 'X', 'A', 'B', 'X'] },
-    { id: '3', name: 'Carlos Pereira', picks: ['X', 'A', 'X', 'B', 'B', 'A', 'A', 'X', 'B', 'B'] }
-  ], []);
+    { id: 'user_1', name: 'João Silva', picks: ['A', 'X', 'B', 'A', 'X', 'B', 'A', 'X', 'B', 'A'], points: 8, rank: 1, photo: 'https://i.pravatar.cc/150?u=1' },
+    { id: 'user_2', name: 'Maria Santos', picks: ['B', 'B', 'A', 'X', 'A', 'B', 'X', 'A', 'B', 'X'], points: 5, rank: 2, photo: 'https://i.pravatar.cc/150?u=2' },
+    { id: 'user_3', name: 'Carlos Pereira', picks: ['X', 'A', 'X', 'B', 'B', 'A', 'A', 'X', 'B', 'B'], points: 3, rank: 3, photo: 'https://i.pravatar.cc/150?u=3' },
+    { id: 'me', name: userProfile.name, picks: ['A', 'A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A'], points: 2, rank: 4, photo: userProfile.photo }
+  ], [userProfile]);
+
+  const STICKERS = [
+    { id: 'stick_1', emoji: '🏆', label: 'CAMPEÃO', type: 'celebrate' },
+    { id: 'stick_2', emoji: '🎉', label: 'FESTA', type: 'celebrate' },
+    { id: 'stick_3', emoji: '🥳', label: 'FELIZ', type: 'celebrate' },
+    { id: 'stick_4', emoji: '😜', label: 'GOZAR', type: 'mocking' },
+    { id: 'stick_5', emoji: '🤡', label: 'PALHAÇO', type: 'mocking' },
+    { id: 'stick_6', emoji: '😂', label: 'RIR', type: 'mocking' },
+    { id: 'stick_7', emoji: '😢', label: 'CHORAR', type: 'sad' },
+    { id: 'stick_8', emoji: '💔', label: 'TRISTE', type: 'sad' },
+    { id: 'stick_9', emoji: '👋', label: 'TCHAU', type: 'sad' },
+  ];
 
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
@@ -89,6 +105,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
     setSelectedUserView('me');
     setSelectedBetId(null);
     setShowDeleteConfirm(null);
+    setShowTauntSelector(null);
     onClose();
   }, [activeTab, onClose]);
 
@@ -126,24 +143,40 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
     }
   };
 
-  // Reset action when modal opens
+  // Process notifications and set bet status for terminated matches
   React.useEffect(() => {
-    if (isOpen) {
-      setBetAction(activeTab === 'Nacional' ? 'create' : null);
-      setCreateStep('selection');
-      setSelectedMarketsList(activeTab === 'Nacional' ? Array(10).fill('') : Array(10).fill(''));
-      setError('');
-      setJoiningBet(null);
-      setIsSuccess(false);
-      setBetValue('0');
-      setMarketType('Resultado Final');
-      setSelectedMarket('');
-      setRoomName('');
-      setRoomNameInput('');
-      setAutoConfirmNacional(false);
-      setShowClassification(false);
+    if (isOpen && match && match.status === 'terminou') {
+      const userBets = storageService.getBets().filter(b => b.matchId === match.id && b.status === 'Open');
+      userBets.forEach(bet => {
+        const isWinner = Math.random() > 0.5; // Simulate result
+        const status = isWinner ? 'Won' : 'Lost';
+        storageService.updateBetStatus(bet.id, status);
+        
+        // Add notification
+        const notifications = storageService.getNotifications();
+        const alreadyNotified = notifications.find(n => n.challengeId === bet.id && n.type === 'Performance');
+        
+        if (!alreadyNotified) {
+          const emoji = isWinner ? '🏆' : '😢';
+          const title = isWinner ? 'VITÓRIA! 🎉' : 'NÃO FOI DESTA... 📈';
+          const message = isWinner 
+            ? `Parabéns! Venceste no desafio ${bet.category} do jogo ${match.teamA.name} vs ${match.teamB.name}.`
+            : `Ficaste no ranking do desafio ${bet.category} do jogo ${match.teamA.name} vs ${match.teamB.name}.`;
+            
+          storageService.addNotification({
+            id: Date.now().toString() + Math.random(),
+            type: 'Performance',
+            title,
+            message,
+            emoji,
+            challengeId: bet.id,
+            createdAt: new Date().toISOString(),
+            isRead: false
+          });
+        }
+      });
     }
-  }, [isOpen, activeTab]);
+  }, [isOpen, match]);
 
   React.useEffect(() => {
     const selectedCount = selectedMarketsList.filter(m => !!m).length;
@@ -694,27 +727,47 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-black text-[#FFB10A]">{bet.amount.toLocaleString()} KZ</p>
-                      <p className="text-[10px] font-black text-green-600 uppercase italic">Ativo</p>
+                      <p className={cn(
+                        "text-[10px] font-black uppercase italic",
+                        betMatch.status === 'terminou' ? "text-blue-600" : "text-green-600"
+                      )}>
+                        {betMatch.status === 'terminou' ? 'Finalizado' : 'Ativo'}
+                      </p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                    {bet.autoConfirmThreshold && (
-                      <span className="text-[8px] font-black bg-blue-100 text-blue-800 px-2 py-1 rounded-lg uppercase tracking-tight flex items-center gap-1">
-                        <Shield className="w-2.5 h-2.5" />
-                        Conf. Prémio {bet.autoConfirmThreshold.toLocaleString()}
-                      </span>
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-100 gap-2">
+                    {betMatch.status === 'terminou' ? (
+                      <button 
+                        onClick={() => {
+                          setSelectedBetId(bet.id);
+                          setBetAction('challenge_results');
+                        }}
+                        className="flex-1 bg-blue-600 text-white text-[10px] font-black py-2.5 rounded-xl uppercase tracking-widest flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all"
+                      >
+                        <Trophy className="w-3.5 h-3.5" strokeWidth={3} />
+                        Ver Resultados
+                      </button>
+                    ) : (
+                      <>
+                        {bet.autoConfirmThreshold && (
+                          <span className="text-[8px] font-black bg-blue-100 text-blue-800 px-2 py-1 rounded-lg uppercase tracking-tight flex items-center gap-1">
+                            <Shield className="w-2.5 h-2.5" />
+                            Conf. Prémio {bet.autoConfirmThreshold.toLocaleString()}
+                          </span>
+                        )}
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowDeleteConfirm(bet.id);
+                          }}
+                          className="flex items-center gap-1 text-[10px] font-black text-red-500 uppercase tracking-widest hover:text-red-700 transition-colors p-1"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Eliminar
+                        </button>
+                      </>
                     )}
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowDeleteConfirm(bet.id);
-                      }}
-                      className="flex items-center gap-1 text-[10px] font-black text-red-500 uppercase tracking-widest hover:text-red-700 transition-colors p-1"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      Eliminar
-                    </button>
                   </div>
                 </div>
               );
@@ -1065,6 +1118,207 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       );
     }
 
+    if (betAction === 'challenge_results') {
+      const bet = storageService.getBets().find(b => b.id === selectedBetId);
+      if (!bet) return null;
+      
+      const myRankInfo = inscribedUsers.find(u => u.id === 'me');
+      const myRank = myRankInfo?.rank || 99;
+      const taunts = storageService.getTaunts();
+      const hasSentTaunt = taunts.some(t => t.challengeId === bet.id && t.fromUserId === 'me');
+
+      return (
+        <div className="flex flex-col gap-6 py-2 overflow-y-auto custom-scrollbar max-h-[70vh] pb-8 relative">
+          <div className="bg-[#091747] rounded-3xl p-6 text-white relative overflow-hidden shadow-xl sticky top-0 z-20">
+            <div className="absolute -right-4 -top-4 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+            <div className="flex items-center justify-between relative z-10 mb-4">
+               <div>
+                 <h4 className="text-xl font-black text-[#FFB10A] uppercase tracking-tighter italic leading-tight">Classificação Final</h4>
+                 <span className="text-[10px] text-blue-300 font-bold uppercase tracking-widest">Desafio: {bet.roomName || 'Geral'}</span>
+               </div>
+               <div className="text-right">
+                 <div className="text-2xl font-black text-white italic">#{myRank}</div>
+                 <span className="text-[8px] text-white/50 font-bold uppercase tracking-widest">Tua Posição</span>
+               </div>
+            </div>
+            <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-md border border-white/5 relative z-10">
+               <div className="flex items-center justify-between mb-2">
+                 <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest">O teu desempenho</span>
+                 <span className="text-[10px] font-black text-[#FFB10A] uppercase tracking-widest">{myRankInfo?.points} Pontos</span>
+               </div>
+               <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                 <motion.div 
+                   initial={{ width: 0 }}
+                   animate={{ width: `${(myRankInfo?.points || 0) * 10}%` }}
+                   className="h-full bg-gradient-to-r from-[#FFB10A] to-orange-400"
+                 />
+               </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+             <div className="flex items-center justify-between px-2">
+               <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic">Ranking do Grupo</label>
+               <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic">PTS</span>
+             </div>
+             
+             <div className="flex flex-col gap-2.5">
+               {inscribedUsers.sort((a, b) => a.rank - b.rank).map((user, i) => {
+                 const isMe = user.id === 'me';
+                 const canBeTaunted = !isMe && user.rank > myRank;
+                 const alreadyTaunted = taunts.some(t => t.challengeId === bet.id && t.fromUserId === 'me' && t.toUserId === user.id);
+                 
+                 return (
+                   <motion.div 
+                     key={user.id}
+                     initial={{ opacity: 0, x: -20 }}
+                     animate={{ opacity: 1, x: 0 }}
+                     transition={{ delay: i * 0.1 }}
+                     className={cn(
+                      "group flex items-center justify-between p-4 rounded-2xl border-2 transition-all",
+                      isMe ? "bg-orange-50 border-[#FFB10A]/30 shadow-md ring-1 ring-[#FFB10A]/20" : "bg-white border-gray-100 hover:border-gray-200"
+                     )}
+                   >
+                      <div className="flex items-center gap-4">
+                         <div className="relative">
+                            <span className={cn(
+                              "absolute -left-2 -top-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shadow-sm z-10",
+                              user.rank === 1 ? "bg-[#FFB10A] text-white" : "bg-gray-100 text-gray-500"
+                            )}>
+                              {user.rank}
+                            </span>
+                            <img src={user.photo} className="w-10 h-10 rounded-xl border-2 border-white shadow-sm" />
+                         </div>
+                         <div className="flex flex-col">
+                            <span className={cn(
+                              "text-[11px] font-black uppercase tracking-tight",
+                              isMe ? "text-[#091747]" : "text-gray-900"
+                            )}>
+                              {user.name} {isMe && '(Tu)'}
+                            </span>
+                            <span className="text-[8px] text-gray-500 font-bold uppercase tracking-widest">{user.rank === 1 ? 'Vencedor do Duelo' : 'Participante'}</span>
+                         </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-4">
+                         <span className="text-sm font-black text-[#091747] italic">{user.points}</span>
+                         {canBeTaunted && (
+                           <button
+                             onClick={() => !hasSentTaunt && setShowTauntSelector(user.id)}
+                             disabled={hasSentTaunt}
+                             className={cn(
+                               "w-9 h-9 rounded-xl flex items-center justify-center transition-all",
+                               alreadyTaunted 
+                                 ? "bg-green-100 text-green-600" 
+                                 : hasSentTaunt 
+                                   ? "bg-gray-50 text-gray-300 cursor-not-allowed"
+                                   : "bg-red-50 text-red-500 hover:bg-red-500 hover:text-white active:scale-95 shadow-sm"
+                             )}
+                           >
+                             {alreadyTaunted ? (
+                               <Check className="w-4 h-4 stroke-[3px]" />
+                             ) : (
+                               <Smile className="w-4 h-4" strokeWidth={3} />
+                             )}
+                           </button>
+                         )}
+                      </div>
+                   </motion.div>
+                 );
+               })}
+             </div>
+          </div>
+
+          {/* TAUNT SELECTOR MODAL */}
+          <AnimatePresence>
+            {showTauntSelector && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/40 backdrop-blur-md"
+              >
+                <motion.div 
+                  initial={{ scale: 0.9, y: 20 }}
+                  animate={{ scale: 1, y: 0 }}
+                  exit={{ scale: 0.9, y: 20 }}
+                  className="w-full max-w-sm bg-white rounded-[2.5rem] p-8 shadow-2xl relative border-2 border-[#FFB10A]/20"
+                >
+                  <button 
+                    onClick={() => setShowTauntSelector(null)}
+                    className="absolute right-6 top-6 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <X className="w-5 h-5" strokeWidth={3} />
+                  </button>
+                  
+                  <div className="flex flex-col items-center mb-8">
+                     <div className="w-20 h-20 rounded-3xl bg-red-50 flex items-center justify-center text-red-500 mb-4 shadow-inner">
+                        <Smile className="w-10 h-10" />
+                     </div>
+                     <h5 className="text-lg font-black text-[#091747] text-center uppercase tracking-tighter italic leading-tight px-4">
+                        Enviar Provocação
+                     </h5>
+                     <p className="text-[9px] text-gray-500 mt-2 font-bold uppercase tracking-widest text-center">Escolhe um sticker para "picar" o teu colega!</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-3 mb-8">
+                     {STICKERS.map((sticker) => (
+                       <button
+                         key={sticker.id}
+                         onClick={() => {
+                            if (showTauntSelector) {
+                              storageService.sendTaunt({
+                                challengeId: bet.id,
+                                fromUserId: 'me',
+                                toUserId: showTauntSelector,
+                                stickerId: sticker.id
+                              });
+                              
+                              // Create notification for the target user (simulation)
+                              storageService.addNotification({
+                                id: Date.now().toString() + Math.random(),
+                                type: 'Taunt',
+                                title: 'PROVOCAÇÃO RECEBIDA! 😜',
+                                message: `O usuário ${userProfile.name} enviou-te uma provocação no desafio ${bet.roomName || 'Geral'}.`,
+                                emoji: sticker.emoji,
+                                fromUserId: 'me',
+                                challengeId: bet.id,
+                                createdAt: new Date().toISOString(),
+                                isRead: false
+                              });
+                              
+                              setShowTauntSelector(null);
+                            }
+                         }}
+                         className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl border-2 border-gray-100 hover:border-[#FFB10A] hover:bg-orange-50 active:scale-95 transition-all text-center group"
+                       >
+                          <span className="text-3xl filter group-hover:scale-110 transition-transform">{sticker.emoji}</span>
+                          <span className="text-[7px] font-black text-gray-400 uppercase tracking-widest group-hover:text-[#FFB10A]">{sticker.label}</span>
+                       </button>
+                     ))}
+                  </div>
+                  
+                  <p className="text-[8px] text-gray-400 font-bold uppercase tracking-tight text-center px-6 italic leading-relaxed">
+                     Apenas podes enviar uma provocação por desafio. Escolhe com sabedoria!
+                  </p>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="sticky bottom-0 pt-4 bg-gradient-to-t from-white via-white to-transparent pb-4 z-10">
+            <button 
+              onClick={() => setBetAction('my_bets')}
+              className="w-full bg-[#091747] text-white font-black py-5 rounded-[1.5rem] flex items-center justify-center gap-3 active:scale-95 transition-all uppercase tracking-widest text-xs shadow-lg shadow-blue-900/20"
+            >
+              <ArrowLeft className="w-4 h-4" strokeWidth={3} />
+              Voltar às Apostas
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     switch (activeTab) {
       case '1 vs 1':
         return (
@@ -1333,6 +1587,11 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             </div>
           </div>
         );
+      default:
+        return null;
+    }
+
+    switch (activeTab) {
       case 'Nacional':
         return (
           <div className="flex flex-col gap-6 py-2">
@@ -1599,6 +1858,7 @@ export default function Aposta() {
   const { category } = useParams();
   const [searchParams] = useSearchParams();
   const topic = searchParams.get('topic');
+  const session = searchParams.get('session');
   const [activeTab, setActiveTab] = React.useState('1 vs 1');
   const [selectedMatch, setSelectedMatch] = React.useState<Match | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -1609,9 +1869,17 @@ export default function Aposta() {
   React.useEffect(() => {
     const matchId = searchParams.get('matchId');
     if (matchId) {
-      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES, ...NBA_MATCHES, ...UNITEL_BASKET_MATCHES, ...ACB_MATCHES, ...VTB_MATCHES, ...GREEK_BASKET_MATCHES, ...ITALY_BASKET_MATCHES, ...JEEP_ELITE_MATCHES, ...BBL_MATCHES];
-      const match = allMatches.find(m => m.id.toString() === matchId);
+      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES, ...NBA_MATCHES, ...UNITEL_BASKET_MATCHES, ...ACB_MATCHES, ...VTB_MATCHES, ...GREEK_BASKET_MATCHES, ...ITALY_BASKET_MATCHES, ...JEEP_ELITE_MATCHES, ...BBL_MATCHES, ...F1_MATCHES];
+      let match = allMatches.find(m => m.id.toString() === matchId);
       if (match) {
+        // Apply F1 league update if needed
+        if (category === 'f1') {
+          const sessionPrefix = session || 'Classificação';
+          match = {
+            ...match,
+            league: topic ? `${sessionPrefix} ${topic}` : `${sessionPrefix} ${match.league}`
+          };
+        }
         setSelectedMatch(match);
         setIsModalOpen(true);
       }
@@ -1775,7 +2043,7 @@ export default function Aposta() {
       <div className="max-w-6xl mx-auto w-full px-4">
         <div className="flex flex-col gap-8 pb-16">
           {(() => {
-            const matches = 
+            const baseMatches = 
               topic === 'Girabola' || topic === 'Taça de Angola' ? GIRABOLA_MATCHES :
               topic?.toLowerCase() === 'bundesliga' || topic === 'Taça da Alemanha' || topic === 'DFB Pokal' ? BUNDESLIGA_MATCHES :
               topic?.toLowerCase() === 'la liga' || topic === 'Taça de Espanha' || topic === 'Copa del Rey' ? LALIGA_MATCHES :
@@ -1792,12 +2060,26 @@ export default function Aposta() {
               topic === 'Serie A Basket' || topic === 'LBA' ? ITALY_BASKET_MATCHES :
               topic === 'Jeep Elite' || topic === 'LNB' ? JEEP_ELITE_MATCHES :
               topic === 'BBL Alemanha' || topic === 'BBL' ? BBL_MATCHES :
+              category === 'f1' ? F1_MATCHES :
               category === 'basket' ? UNITEL_BASKET_MATCHES :
               MATCH_DATA;
 
+            const matches = category === 'f1' ? baseMatches.map(m => {
+              const sessionPrefix = session || 'Classificação';
+              return {
+                ...m,
+                league: topic ? `${sessionPrefix} ${topic}` : `${sessionPrefix} ${m.league}`
+              };
+            }) : baseMatches;
+
+            const displayMatches = category === 'f1' ? matches.slice(0, 1) : matches;
+
             return (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {matches.map((match) => (
+              <div className={cn(
+                "grid gap-6",
+                category === 'f1' ? "grid-cols-1 max-w-2xl mx-auto w-full" : "grid-cols-1 md:grid-cols-2"
+              )}>
+                {displayMatches.map((match) => (
                   <MatchCard key={match.id} match={match} onClick={handleOpenModal} category={category} />
                 ))}
               </div>

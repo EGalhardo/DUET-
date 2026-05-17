@@ -7,12 +7,13 @@ interface LeagueCardProps {
   card: LeagueOption;
   category: string;
   fallbackImage: string;
+  sessionType?: string;
 }
 
-const LeagueCard: React.FC<LeagueCardProps> = React.memo(({ card, category, fallbackImage }) => (
+const LeagueCard: React.FC<LeagueCardProps> = React.memo(({ card, category, fallbackImage, sessionType }) => (
   <Link 
     id={`league-card-${card.title.toLowerCase().replace(/\s+/g, '-')}`}
-    to={`/aposta/${category}?topic=${card.title}`}
+    to={`/aposta/${category}?topic=${card.title}${sessionType ? `&session=${sessionType}` : ''}`}
     className="group block transition-transform active:scale-95"
   >
     <div className={cn(

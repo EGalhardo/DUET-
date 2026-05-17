@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Check, Share2, Copy } from 'lucide-react';
 
 interface SuccessViewProps {

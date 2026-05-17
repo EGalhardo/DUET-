@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { CircleDot as Football, Calendar } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Match } from '../../types';
@@ -12,6 +12,54 @@ interface MatchCardProps {
 
 const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, category }) => {
   const isBasketball = category === 'basket' || match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha';
+  const isF1 = category === 'f1';
+
+  if (isF1) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        onClick={() => onClick(match)}
+        className="bg-white rounded-[1.5rem] border-2 border-gray-200 cursor-pointer hover:shadow-xl transition-all relative overflow-hidden group shadow-sm min-h-[180px] md:aspect-[2.1/1] md:min-h-0"
+      >
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+          style={{ 
+            backgroundImage: `url('https://i.postimg.cc/ZKqzCtsV/F1-Classificacao.png')`
+          }}
+        />
+
+        {/* Gradient Overlay for better legibility */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#091747]/40 via-transparent to-transparent" />
+        
+        {/* Content Overlay */}
+        <div className="absolute inset-0 z-20 p-6 md:p-10 flex flex-col justify-between items-start">
+          <div className="flex flex-col gap-3 md:gap-4">
+            <div className="inline-flex items-center px-3 md:px-5 py-1.5 md:py-2 bg-[#091747] rounded-full border border-white/20 shadow-2xl">
+              <span className="text-[8px] md:text-[10px] font-black text-[#FFB10A] uppercase tracking-[0.15em] md:tracking-[0.25em] italic">
+                {match.league}
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-3 text-white font-black text-base md:text-xl uppercase tracking-tighter italic drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+              <Calendar className="w-4 h-4 md:w-6 md:h-6 text-[#FFB10A]" />
+              {match.date}
+            </div>
+          </div>
+
+          <div className="w-full flex justify-center items-end pb-4 md:pb-8 absolute inset-0 pointer-events-none">
+            <button 
+              id={`match-entrar-${match.id}`}
+              className="pointer-events-auto bg-transparent hover:bg-[#FFB10A] text-white font-black py-3 md:py-4 px-16 md:px-28 rounded-xl md:rounded-2xl uppercase tracking-[0.15em] md:tracking-[0.25em] text-[10px] md:text-sm shadow-2xl active:scale-95 transition-all border-2 border-white/30"
+            >
+              Entrar
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
 
   if (isBasketball) {
     return (

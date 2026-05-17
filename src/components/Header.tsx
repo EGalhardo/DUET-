@@ -1,15 +1,37 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, LogIn, Globe, UserPlus, Key, Users, Link as LinkIcon, PlayCircle, LogOut, Bell, IdCard, History, Wallet, Heart, Settings, Shield, Moon, ChevronDown } from 'lucide-react';
+import { User, LogIn, Globe, UserPlus, Key, Users, Link as LinkIcon, PlayCircle, LogOut, Bell, IdCard, History, Wallet, Heart, Settings, Shield, Moon, ChevronDown, Check, Trash2, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { cn } from '../lib/utils';
+import { storageService } from '../services/storageService';
+import { Notification } from '../types';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function Header() {
   const { auth, logout, login } = useAppContext();
   const [showPopover, setShowPopover] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const bellRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
+
+  useEffect(() => {
+    const loadNotifications = () => {
+      setNotifications(storageService.getNotifications());
+    };
+    loadNotifications();
+    window.addEventListener('notificationsUpdated', loadNotifications);
+    window.addEventListener('tauntsUpdated', loadNotifications);
+    return () => {
+      window.removeEventListener('notificationsUpdated', loadNotifications);
+      window.removeEventListener('tauntsUpdated', loadNotifications);
+    };
+  }, []);
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -17,10 +39,22 @@ export default function Header() {
           buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
         setShowPopover(false);
       }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node) && 
+          bellRef.current && !bellRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleMarkAsRead = (id: string) => {
+    storageService.markNotificationAsRead(id);
+  };
+
+  const handleClearNotifications = () => {
+    notifications.forEach(n => storageService.markNotificationAsRead(n.id));
+  };
 
   useEffect(() => {
     setShowPopover(false);
@@ -38,6 +72,107 @@ export default function Header() {
         </Link>
 
         <div className="relative flex items-center gap-3 md:gap-4">
+          {auth.isLoggedIn && (
+            <div className="relative">
+              <button 
+                ref={bellRef}
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative flex items-center justify-center h-9 w-9 md:h-10 md:w-10 rounded-full border border-gray-200 hover:border-[#FFB10A] transition-all duration-300 bg-white"
+              >
+                <Bell className="w-5 h-5 text-[#364153]" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[8px] font-black text-white ring-2 ring-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              <AnimatePresence>
+                {showNotifications && (
+                  <motion.div 
+                    ref={notificationsRef}
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-full right-0 mt-3 w-80 md:w-96 bg-white border border-gray-200 rounded-3xl shadow-2xl overflow-hidden z-[60]"
+                  >
+                    <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                       <h4 className="text-xs font-black text-[#091747] uppercase tracking-widest italic flex items-center gap-2">
+                          <Bell className="w-4 h-4 text-[#FFB10A]" />
+                          Notificações
+                       </h4>
+                       {unreadCount > 0 && (
+                         <button 
+                           onClick={handleClearNotifications}
+                           className="text-[9px] font-black text-[#FFB10A] uppercase tracking-widest hover:underline"
+                         >
+                           Ler Todas
+                         </button>
+                       )}
+                    </div>
+
+                    <div className="max-h-[70vh] overflow-y-auto custom-scrollbar">
+                       {notifications.length === 0 ? (
+                         <div className="p-12 flex flex-col items-center justify-center text-center opacity-40">
+                            <Bell className="w-12 h-12 mb-4 text-gray-300" />
+                            <p className="text-[10px] font-black uppercase tracking-widest">Sem novas notificações</p>
+                         </div>
+                       ) : (
+                         <div className="flex flex-col">
+                            {notifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((n) => (
+                              <div 
+                                key={n.id}
+                                onClick={() => handleMarkAsRead(n.id)}
+                                className={cn(
+                                  "p-4 border-b border-gray-50 transition-colors cursor-pointer group flex items-start gap-4",
+                                  !n.isRead ? "bg-orange-50/30" : "hover:bg-gray-50"
+                                )}
+                              >
+                                 <div className={cn(
+                                   "w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-sm",
+                                   n.type === 'Performance' ? "bg-blue-50" : "bg-red-50"
+                                 )}>
+                                    {n.emoji}
+                                 </div>
+                                 <div className="flex-1">
+                                    <div className="flex items-center justify-between mb-1">
+                                       <span className={cn(
+                                         "text-[10px] font-black uppercase tracking-tight",
+                                         n.type === 'Performance' ? "text-blue-600" : "text-red-600"
+                                       )}>
+                                          {n.title}
+                                       </span>
+                                       <span className="text-[8px] text-gray-400 font-bold uppercase tracking-widest">
+                                          {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                       </span>
+                                    </div>
+                                    <p className="text-[10px] text-gray-700 font-black leading-relaxed uppercase tracking-tight">
+                                      {n.message}
+                                    </p>
+                                    {!n.isRead && (
+                                      <div className="w-1.5 h-1.5 bg-[#FFB10A] rounded-full mt-2" />
+                                    )}
+                                 </div>
+                              </div>
+                            ))}
+                         </div>
+                       )}
+                    </div>
+                    
+                    <div className="p-4 bg-gray-50 text-center">
+                       <Link 
+                        to="/historico" 
+                        onClick={() => setShowNotifications(false)}
+                        className="text-[9px] font-black text-gray-500 uppercase tracking-widest hover:text-[#FFB10A] transition-colors"
+                       >
+                          Ver Histórico Completo
+                       </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
 
           {auth.isLoggedIn && (
             <div className="hidden md:flex flex-col items-end mr-1">
