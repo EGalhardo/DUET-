@@ -20,6 +20,8 @@ interface BettingModalProps {
 }
 
 const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingModalProps) => {
+  const [searchParams] = useSearchParams();
+  const topic = searchParams.get('topic');
   const [betAction, setBetAction] = React.useState<'create' | 'join' | 'my_bets' | 'bet_details' | 'challenge_results' | null>(null);
   const [selectedBetId, setSelectedBetId] = React.useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState<string | null>(null);
@@ -206,7 +208,32 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
 
   const isBasketball = category === 'basket' || (match && (match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha'));
 
-  const matchHeader = (
+  const isF1Step2 = category === 'f1' && activeTab === '1 vs 1' && createStep === 'details';
+
+  const matchHeader = isF1Step2 ? (
+    <div className="mb-6 rounded-[2rem] overflow-hidden border-2 border-[#FFB10A]/20 shadow-xl relative aspect-video">
+      <img 
+        src="https://i.postimg.cc/ZKqzCtsV/F1-Classificacao.png" 
+        alt="F1 Classificação" 
+        className="w-full h-full object-cover block"
+      />
+      {/* Dynamic Labels Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
+      
+      {/* Top Left Badge & Date */}
+      <div className="absolute top-6 left-6 md:top-8 md:left-8 flex flex-col gap-3 md:gap-4 pointer-events-none">
+        <div className="inline-flex items-center px-6 py-2.5 bg-[#091747] rounded-full border border-white/20 shadow-2xl">
+          <span className="text-[9px] md:text-[11px] font-black text-[#FFB10A] uppercase tracking-[0.2em] italic">
+            {match.league.split(' ')[0]} {topic || (match.league.includes(' ') ? match.league.split(' ').slice(1).join(' ') : match.league)}
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-white font-black text-base md:text-2xl uppercase tracking-tighter italic drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ml-1">
+          <Calendar className="w-5 h-5 md:w-8 md:h-8 text-[#FFB10A]" />
+          {match.date}
+        </div>
+      </div>
+    </div>
+  ) : (
     <div className="flex flex-col gap-4 py-4 px-1 mb-2 shrink-0">
       {/* LEAGUE & BROADCAST */}
       <div className="flex flex-col items-center gap-1.5 focus-within:">
@@ -445,7 +472,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       id: Date.now().toString(),
       matchId: match.id,
       category: activeTab as any,
-      market: activeTab === 'Nacional' ? 'Predição 10 Mercados' : selectedMarket,
+      market: activeTab === 'Nacional' ? 'Predição 10 Mercados' : (category === 'f1' && !selectedMarket ? 'Classificação' : selectedMarket),
       marketType: activeTab === '1 vs 1' ? marketType : undefined,
       amount: amount,
       status: 'Open',
@@ -1326,7 +1353,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             {matchHeader}
 
             <div className="bg-orange-50/50 rounded-[2rem] p-6 border-2 border-orange-100 flex flex-col gap-6 shadow-sm">
-              {!isBasketball && (
+              {!isBasketball && category !== 'f1' && (
                 <div>
                   <div className="flex items-center justify-between mb-2 px-2">
                     <label className="text-[10px] font-black text-gray-600 block uppercase tracking-widest italic">Mercado do Duelo</label>
@@ -1351,8 +1378,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                 </div>
               )}
 
-              <div id="basketball-market-prognostic-container">
-                <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest px-2 italic">O teu Prognóstico: {!isBasketball ? marketType : ''}</label>
+              {category !== 'f1' && (
+                <div id="basketball-market-prognostic-container">
+                  <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest px-2 italic">O teu Prognóstico: {!isBasketball ? marketType : ''}</label>
                 {isBasketball && (
                   <div className="relative mb-3">
                     <select 
@@ -1411,9 +1439,51 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   })}
                 </div>
               </div>
+            )}
               
               <div>
-                <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest px-2 italic">Investimento (KZ)</label>
+                <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest px-2 italic">
+                  {category === 'f1' ? 'Melhor Classificado' : 'Investimento (KZ)'}
+                </label>
+                
+                {/* Investment Presets Dropdown - Hidden for Football */}
+                {category !== 'futebol' && (
+                  <div className="mb-4 relative px-1">
+                    <select 
+                      id="investment-presets"
+                      className="w-full bg-white border-2 border-gray-100 rounded-2xl py-4 px-6 text-xs md:text-sm font-black text-gray-800 uppercase tracking-widest outline-none focus:border-[#FFB10A] transition-all appearance-none cursor-pointer shadow-sm"
+                      onChange={(e) => category === 'f1' ? setSelectedMarket(e.target.value) : setBetValue(e.target.value)}
+                      value={category === 'f1' ? selectedMarket : ""}
+                    >
+                      <option value="" disabled>
+                        {category === 'f1' ? 'Escolha o Piloto' : 'Escolha um valor pré-definido'}
+                      </option>
+                      {category === 'f1' ? (
+                        <>
+                          <option value="Max Verstappen">Max Verstappen</option>
+                          <option value="Lewis Hamilton">Lewis Hamilton</option>
+                          <option value="Charles Leclerc">Charles Leclerc</option>
+                          <option value="Lando Norris">Lando Norris</option>
+                          <option value="Oscar Piastri">Oscar Piastri</option>
+                          <option value="Carlos Sainz">Carlos Sainz</option>
+                          <option value="George Russell">George Russell</option>
+                          <option value="Sergio Perez">Sergio Perez</option>
+                          <option value="Fernando Alonso">Fernando Alonso</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="500">500 KZ</option>
+                          <option value="1000">1.000 KZ</option>
+                          <option value="5000">5.000 KZ</option>
+                          <option value="10000">10.000 KZ</option>
+                          <option value="50000">50.000 KZ</option>
+                        </>
+                      )}
+                    </select>
+                    <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                  </div>
+                )}
+
                 <div className="relative group">
                   <input 
                     type="number" 
@@ -1429,22 +1499,24 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 shadow-sm">
-              <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest text-center italic">Lotação da Sala</label>
-              <div className="relative overflow-hidden">
-                <motion.div 
-                  key="fixed-3"
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  className="w-full bg-gray-100/50 border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
-                >
-                  <Lock className="w-4 h-4 text-gray-400" />
-                  <span>3</span>
-                  <span className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Atletas</span>
-                </motion.div>
+            {category !== 'f1' && category !== 'futebol' && (
+              <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 shadow-sm">
+                <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest text-center italic">Lotação da Sala</label>
+                <div className="relative overflow-hidden">
+                  <motion.div 
+                    key="fixed-3"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="w-full bg-gray-100/50 border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
+                  >
+                    <Lock className="w-4 h-4 text-gray-400" />
+                    <span>3</span>
+                    <span className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Atletas</span>
+                  </motion.div>
+                </div>
+                <p className="text-[8px] text-gray-500 mt-3 font-bold text-center uppercase tracking-tight italic">Este modo de jogo requer uma lotação específica de atletas.</p>
               </div>
-              <p className="text-[8px] text-gray-500 mt-3 font-bold text-center uppercase tracking-tight italic">Este modo de jogo requer uma lotação específica de atletas.</p>
-            </div>
+            )}
           </div>
         );
       case 'Privado':
@@ -1501,24 +1573,26 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
         const currentPrivateMarkets = isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS;
         return (
           <div className="flex flex-col gap-6 py-2">
-            <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 mb-2 shadow-sm">
-              <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest text-center italic">Lotação da Sala</label>
-              <div className="relative overflow-hidden">
-                <motion.div 
-                  key={maxParticipants}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  className="w-full bg-gray-100/50 border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
-                >
-                  <Lock className="w-4 h-4 text-gray-400" />
-                  <span>{maxParticipants}</span>
-                  <span className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Atletas</span>
-                </motion.div>
+            {category !== 'futebol' && category !== 'f1' && (
+              <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 mb-2 shadow-sm">
+                <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest text-center italic">Lotação da Sala</label>
+                <div className="relative overflow-hidden">
+                  <motion.div 
+                    key={maxParticipants}
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="w-full bg-gray-100/50 border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
+                  >
+                    <Lock className="w-4 h-4 text-gray-400" />
+                    <span>{maxParticipants}</span>
+                    <span className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Atletas</span>
+                  </motion.div>
+                </div>
+                <p className="text-[8px] text-gray-500 mt-3 font-bold text-center uppercase tracking-tight italic px-4">
+                  A lotação da sala é definida automaticamente com base na quantidade de mercados selecionados.
+                </p>
               </div>
-              <p className="text-[8px] text-gray-500 mt-3 font-bold text-center uppercase tracking-tight italic px-4">
-                A lotação da sala é definida automaticamente com base na quantidade de mercados selecionados.
-              </p>
-            </div>
+            )}
 
             <div className="flex flex-col gap-4">
               <label className="text-[10px] font-black text-gray-600 mb-0 block uppercase tracking-widest px-2 italic">Mercado de Aposta ({selectedMarketsList.filter(s => !!s).length})</label>

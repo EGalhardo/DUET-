@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { LeagueOption } from '../../types';
 
@@ -9,12 +8,11 @@ interface F1TeamCardProps {
 }
 
 const F1TeamCard: React.FC<F1TeamCardProps> = React.memo(({ card, sessionType }) => (
-  <Link 
+  <div 
     id={`f1-team-card-${card.title.toLowerCase().replace(/\s+/g, '-')}`}
-    to={`/aposta/f1?topic=${card.title}${sessionType ? `&session=${sessionType}` : ''}`}
-    className="group block relative transition-all active:scale-95 text-decoration-none"
+    className="group block relative text-decoration-none"
   >
-    <div className="aspect-video rounded-xl md:rounded-3xl border border-gray-200 bg-white overflow-hidden relative group-hover:border-[#FFB10A] transition-all">
+    <div className="aspect-video rounded-xl md:rounded-3xl border border-gray-200 bg-white overflow-hidden relative transition-all">
       {/* Drivers Container Background */}
       <div className="absolute inset-0 flex items-end justify-between px-1 sm:px-4">
         {/* Driver 1 - Left */}
@@ -25,7 +23,7 @@ const F1TeamCard: React.FC<F1TeamCardProps> = React.memo(({ card, sessionType })
               animate={{ x: 0, opacity: 1 }}
               src={card.driver1} 
               alt="Driver 1" 
-              className="w-full h-full object-contain object-bottom transition-transform group-hover:scale-105 group-hover:translate-x-1 origin-bottom" 
+              className="w-full h-full object-contain object-bottom origin-bottom" 
             />
           </div>
         )}
@@ -37,24 +35,23 @@ const F1TeamCard: React.FC<F1TeamCardProps> = React.memo(({ card, sessionType })
               animate={{ x: 0, opacity: 1 }}
               src={card.driver2} 
               alt="Driver 2" 
-              className="w-full h-full object-contain object-bottom transition-transform group-hover:scale-105 group-hover:-translate-x-1 origin-bottom" 
+              className="w-full h-full object-contain object-bottom origin-bottom" 
             />
           </div>
         )}
       </div>
 
       {/* Center Logo - Floats above drivers */}
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 w-14 h-14 md:w-24 md:h-24 flex items-center justify-center group-hover:scale-110 transition-transform">
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 w-14 h-14 md:w-24 md:h-24 flex items-center justify-center">
         <img src={card.image} alt={card.title} className="w-full h-full object-contain" />
       </div>
       
-      {/* Dynamic Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      {/* Dynamic Overlay removed or kept static */}
     </div>
-    <p className="mt-3 text-center text-[10px] md:text-xs font-black text-[#091747] uppercase tracking-widest group-hover:text-[#FFB10A] transition-colors italic">
+    <p className="mt-3 text-center text-[10px] md:text-xs font-black text-[#091747] uppercase tracking-widest italic">
       {card.title}
     </p>
-  </Link>
+  </div>
 ));
 
 F1TeamCard.displayName = 'F1TeamCard';
