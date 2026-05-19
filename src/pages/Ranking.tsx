@@ -20,7 +20,7 @@ export default function Ranking() {
 
   const rankingData = {
     Recente: [
-      { id: 1, name: 'Ana Ferreira', score: 9850, avatar: 'https://i.pravatar.cc/150?u=1' },
+      { id: 1, name: 'Edlasio', score: 9850, avatar: 'https://i.postimg.cc/Nj00CMbd/Foto-Edlasio.png' },
       { id: 2, name: 'Carlos Mendes', score: 9420, avatar: 'https://i.pravatar.cc/150?u=2' },
       { id: 3, name: 'Sofia Lopes', score: 8990, avatar: 'https://i.pravatar.cc/150?u=3' },
       { id: 4, name: 'Rui Santos', score: 8540, avatar: 'https://i.pravatar.cc/150?u=4' },

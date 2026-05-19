@@ -101,7 +101,7 @@ export const storageService = {
       const data = localStorage.getItem(STORAGE_KEYS.FAVORITES);
       return data ? JSON.parse(data) : [
         { id: 'liga-futebol', title: 'Futebol', sub: 'Abrir liga', type: 'league', path: '/liga/futebol' },
-        { id: 2, title: 'Prática de Pronomes', sub: 'Iniciar prática', type: 'practice', path: '/aposta/futebol?topic=Pronomes' },
+        { id: 'fav-girabola', title: 'Girabola', sub: 'Duelos 1 vs 1', type: 'league', path: '/aposta/futebol?topic=Girabola' },
       ];
     } catch (e) {
       console.error('Error parsing favorites:', e);
