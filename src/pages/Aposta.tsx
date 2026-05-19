@@ -9,7 +9,7 @@ import { Match, Wallet as WalletType, UserProfile, Bet, FavoriteItem } from '../
 import { storageService } from '../services/storageService';
 import ClassificationTable from '../components/bets/ClassificationTable';
 import MatchCard from '../components/bets/MatchCard';
-import { FOOTBALL_MARKETS, PRIVATE_MARKETS, BASKETBALL_PRIVATE_MARKETS } from '../constants/markets';
+import { FOOTBALL_MARKETS, PRIVATE_MARKETS, BASKETBALL_PRIVATE_MARKETS, F1_PRIVATE_MARKETS } from '../constants/markets';
 
 interface BettingModalProps {
   isOpen: boolean;
@@ -45,7 +45,15 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
   const [error, setError] = React.useState('');
   const [selectedUserView, setSelectedUserView] = React.useState<string>('me');
   const [showTauntSelector, setShowTauntSelector] = React.useState<string | null>(null); // userId to taunt
+  const [headerLoaded, setHeaderLoaded] = React.useState(false);
   const userProfile = storageService.getUserProfile();
+
+  React.useEffect(() => {
+    if (category === 'f1') {
+      const img = new Image();
+      img.src = "https://i.postimg.cc/ZKqzCtsV/F1-Classificacao.png";
+    }
+  }, [category]);
 
   const inscribedUsers = React.useMemo(() => [
     { id: 'user_1', name: 'João Silva', picks: ['A', 'X', 'B', 'A', 'X', 'B', 'A', 'X', 'B', 'A'], points: 8, rank: 1, photo: 'https://i.pravatar.cc/150?u=1' },
@@ -207,16 +215,28 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
   const currentStepIndex = steps.indexOf(createStep);
 
   const isBasketball = category === 'basket' || (match && (match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha'));
+  const isF1 = category === 'f1';
 
-  const isF1Step2 = category === 'f1' && activeTab === '1 vs 1' && createStep === 'details';
+  const isF1Step2 = isF1 && activeTab === '1 vs 1' && createStep === 'details';
 
   const matchHeader = isF1Step2 ? (
-    <div className="mb-6 rounded-[2rem] overflow-hidden border-2 border-[#FFB10A]/20 shadow-xl relative aspect-video">
+    <div className="mb-6 rounded-[2rem] overflow-hidden border-2 border-[#FFB10A]/20 shadow-xl relative aspect-video bg-[#091747]">
       <img 
         src="https://i.postimg.cc/ZKqzCtsV/F1-Classificacao.png" 
         alt="F1 Classificação" 
-        className="w-full h-full object-cover block"
+        onLoad={() => setHeaderLoaded(true)}
+        className={cn(
+          "w-full h-full object-cover block transition-opacity duration-700",
+          headerLoaded ? "opacity-100" : "opacity-0"
+        )}
       />
+      
+      {!headerLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/50 to-[#091747] animate-pulse" />
+        </div>
+      )}
+
       {/* Dynamic Labels Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 pointer-events-none" />
       
@@ -1002,7 +1022,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
 
         const viewingUser = inscribedUsers.find(u => u.id === selectedUserView);
         const displayPicks = viewingUser ? viewingUser.picks : selectedMarketsList;
-        const currentPrivateMarkets = isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS;
+        const currentPrivateMarkets = category === 'f1' ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
 
         return (
           <div className="flex flex-col gap-6 py-4">
@@ -1062,7 +1082,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                       </div>
                       <div className={cn(
                         "grid gap-2",
-                        currentPrivateMarkets[idx].options(match).length === 2 ? "grid-cols-2" : "grid-cols-3"
+                        currentPrivateMarkets[idx].options(match).length <= 2 ? "grid-cols-2" : (currentPrivateMarkets[idx].options(match).length <= 6 ? "grid-cols-3" : "grid-cols-2")
                       )}>
                         {currentPrivateMarkets[idx].options(match).map((opt) => {
                           const isSelected = viewingUser ? (viewingUser.picks[idx] === opt.id) : (res === opt.id);
@@ -1521,7 +1541,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
         );
       case 'Privado':
         if (createStep === 'selection') {
-          const currentPrivateMarkets = isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS;
+          const currentPrivateMarkets = category === 'f1' ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
           return (
             <div className="flex flex-col gap-6 py-2">
               <div className="bg-[#091747] rounded-3xl p-6 text-white overflow-hidden relative">
@@ -1570,7 +1590,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
           );
         }
 
-        const currentPrivateMarkets = isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS;
+        const currentPrivateMarkets = category === 'f1' ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
         return (
           <div className="flex flex-col gap-6 py-2">
             {category !== 'futebol' && category !== 'f1' && (
@@ -1616,7 +1636,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                       </div>
                       <div className={cn(
                         "grid gap-2",
-                        currentPrivateMarkets[idx].options(match).length === 2 ? "grid-cols-2" : "grid-cols-3"
+                        currentPrivateMarkets[idx].options(match).length <= 2 ? "grid-cols-2" : (currentPrivateMarkets[idx].options(match).length <= 6 ? "grid-cols-3" : "grid-cols-2")
                       )}>
                         {currentPrivateMarkets[idx].options(match).map((opt) => (
                           <button
@@ -1661,12 +1681,8 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             </div>
           </div>
         );
-      default:
-        return null;
-    }
-
-    switch (activeTab) {
       case 'Nacional':
+        const currentNacionalMarkets = isF1 ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
         return (
           <div className="flex flex-col gap-6 py-2">
             <div className="bg-[#091747] p-8 rounded-[2.5rem] text-white relative overflow-hidden shadow-xl">
@@ -1679,7 +1695,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               </motion.div>
               <div className="flex items-center justify-between relative z-10 mb-4">
                 <div className="flex flex-col">
-                  <h4 className="text-base font-black text-[#FFB10A] uppercase tracking-widest italic leading-tight">Rodada Nacional</h4>
+                  <h4 className="text-base font-black text-[#FFB10A] uppercase tracking-widest italic leading-tight">
+                    {isF1 ? 'Rodada Nacional F1' : 'Rodada Nacional'}
+                  </h4>
                   <span className="text-[9px] text-orange-200 font-bold uppercase tracking-widest">Desafio Oficial Duet</span>
                 </div>
                 {storageService.getBets().filter(b => b.matchId === match.id && b.category === 'Nacional').length > 0 && (
@@ -1691,15 +1709,21 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   </button>
                 )}
               </div>
-              <p className="text-[11px] text-orange-50/70 leading-relaxed font-bold uppercase tracking-[0.05em] relative z-10 max-w-[80%]">
-                Taxa: <span className="text-white font-black">1.000 KZ</span>. Prevê os <span className="text-[#FFB10A]">10 resultados</span> e sobe no ranking nacional!
-              </p>
+              <div className="relative z-10 space-y-2">
+                <p className="text-[11px] text-orange-50/70 leading-relaxed font-bold uppercase tracking-[0.05em] max-w-[90%]">
+                  {isF1 ? (
+                    <> Prevê a <span className="text-[#FFB10A]">classificação oficial</span> e sobe no ranking nacional!</>
+                  ) : (
+                    <> Prevê os <span className="text-[#FFB10A]">10 resultados</span> e sobe no ranking nacional!</>
+                  )}
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-col gap-3">
               <label className="text-[9px] font-black text-gray-400 mb-0 block uppercase tracking-widest px-2 italic">Teus Prognósticos</label>
-              {PRIVATE_MARKETS.map((market, i) => {
-                const options = market.options(match);
+              {currentNacionalMarkets.map((market, i) => {
+                const options = (typeof market.options === 'function' ? market.options(match) : []) as any[];
                 return (
                   <div key={i} className="flex flex-col gap-3 p-4 bg-white border-2 border-gray-100 rounded-2xl hover:border-[#FFB10A]/30 transition-all">
                     <div className="flex items-center gap-2">
@@ -1708,7 +1732,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                     </div>
                     <div className={cn(
                       "grid gap-2",
-                      options.length === 2 ? "grid-cols-2" : "grid-cols-3"
+                      options.length <= 2 ? "grid-cols-2" : (options.length <= 6 ? "grid-cols-3" : "grid-cols-2")
                     )}>
                       {options.map((opt) => (
                         <button 
@@ -1732,7 +1756,18 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               })}
             </div>
 
-            <div className="mt-4 flex items-center justify-between bg-orange-50/50 p-5 rounded-3xl border border-orange-100 mb-6">
+            {isF1 && (
+              <div className="flex flex-col gap-1 items-center justify-center p-3 bg-gray-50 rounded-2xl border border-gray-100 mb-2">
+                <p className="text-[10px] font-black text-[#091747] uppercase tracking-widest leading-none">
+                  Valor Aposta: <span className="text-[#FFB10A]">250 KZ</span>
+                </p>
+                <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest italic">
+                  50 KZ (Taxa de Inscrição)
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between bg-orange-50/50 p-5 rounded-3xl border border-orange-100 mb-6">
               <div className="flex-1 pr-6 text-left">
                 <h5 className="text-[10px] font-black text-[#091747] uppercase tracking-widest mb-1 italic">Confirmação Inteligente</h5>
                 <p className="text-[8px] text-gray-500 font-bold leading-tight uppercase">Confirmar apenas se o prémio total superar 100.000 KZ</p>

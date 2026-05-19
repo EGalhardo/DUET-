@@ -49,3 +49,29 @@ export const BASKETBALL_PRIVATE_MARKETS = [
   { name: "Mais Ressaltos", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }] },
   { name: "Mais Assistências", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }] },
 ];
+
+const F1_DRIVERS = [
+  { id: 'verstappen', label: 'Max Verstappen' },
+  { id: 'hamilton', label: 'Lewis Hamilton' },
+  { id: 'leclerc', label: 'Charles Leclerc' },
+  { id: 'norris', label: 'Lando Norris' },
+  { id: 'piastri', label: 'Oscar Piastri' },
+  { id: 'sainz', label: 'Carlos Sainz' },
+  { id: 'russell', label: 'George Russell' },
+  { id: 'perez', label: 'Sergio Perez' },
+  { id: 'alonso', label: 'Fernando Alonso' },
+  { id: 'gasly', label: 'Pierre Gasly' }
+];
+
+export const F1_PRIVATE_MARKETS = [
+  { name: "1- Classificado", options: () => F1_DRIVERS },
+  { name: "2- Classificado", options: () => F1_DRIVERS },
+  { name: "3- Classificado", options: () => F1_DRIVERS },
+  { name: "4- Classificado", options: () => F1_DRIVERS },
+  { name: "5- Classificado", options: () => F1_DRIVERS },
+  { name: "6- Classificado", options: () => F1_DRIVERS },
+  { name: "7- Classificado", options: () => F1_DRIVERS },
+  { name: "8- Classificado", options: () => F1_DRIVERS },
+  { name: "9- Classificado", options: () => F1_DRIVERS },
+  { name: "10- Classificado", options: () => F1_DRIVERS },
+];

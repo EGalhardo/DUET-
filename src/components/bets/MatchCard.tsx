@@ -13,6 +13,7 @@ interface MatchCardProps {
 const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, category }) => {
   const isBasketball = category === 'basket' || match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha';
   const isF1 = category === 'f1';
+  const [imageLoaded, setImageLoaded] = React.useState(false);
 
   if (isF1) {
     return (
@@ -20,15 +21,31 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         onClick={() => onClick(match)}
-        className="bg-white rounded-[1.5rem] border-2 border-gray-200 cursor-pointer hover:shadow-xl transition-all relative overflow-hidden group shadow-sm min-h-[180px] md:aspect-[2.1/1] md:min-h-0"
+        className="bg-[#091747] rounded-[1.5rem] border-2 border-gray-200 cursor-pointer hover:shadow-xl transition-all relative overflow-hidden group shadow-sm min-h-[180px] md:aspect-[2.1/1] md:min-h-0"
       >
         {/* Background Image */}
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+          className={cn(
+            "absolute inset-0 z-0 bg-cover bg-center transition-all duration-700 group-hover:scale-105",
+            imageLoaded ? "opacity-100" : "opacity-0"
+          )}
           style={{ 
             backgroundImage: `url('https://i.postimg.cc/ZKqzCtsV/F1-Classificacao.png')`
           }}
         />
+        <img 
+          src="https://i.postimg.cc/ZKqzCtsV/F1-Classificacao.png" 
+          className="hidden" 
+          onLoad={() => setImageLoaded(true)}
+          alt=""
+        />
+
+        {/* Fallback pattern while loading */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 z-0 flex items-center justify-center opacity-20">
+            <div className="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900 to-[#091747] animate-pulse" />
+          </div>
+        )}
 
         {/* Gradient Overlay for better legibility */}
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-[#091747]/40 via-transparent to-transparent" />
@@ -48,10 +65,14 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
             </div>
           </div>
 
-          <div className="w-full flex justify-center items-end pb-4 md:pb-8 absolute inset-0 pointer-events-none">
+          <div className="w-full flex justify-center items-end pb-4 md:pb-12 absolute inset-0 pointer-events-none">
             <button 
               id={`match-entrar-${match.id}`}
-              className="pointer-events-auto bg-transparent hover:bg-[#FFB10A] text-white font-black py-3 md:py-4 px-16 md:px-28 rounded-xl md:rounded-2xl uppercase tracking-[0.15em] md:tracking-[0.25em] text-[10px] md:text-sm shadow-2xl active:scale-95 transition-all border-2 border-white/30"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick(match);
+              }}
+              className="pointer-events-auto bg-[#FFB10A] hover:bg-[#FFC000] text-white font-black py-3 md:py-4 px-16 md:px-28 rounded-xl md:rounded-2xl uppercase tracking-[0.15em] md:tracking-[0.25em] text-[10px] md:text-sm shadow-[0_10px_30px_rgba(255,177,10,0.4)] hover:shadow-[0_15px_40px_rgba(255,177,10,0.6)] active:scale-95 transition-all border-2 border-white/20 transform hover:-translate-y-1"
             >
               Entrar
             </button>
@@ -132,7 +153,7 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
               e.stopPropagation();
               onClick(match);
             }}
-            className="w-full py-3 bg-[#FFB10A] text-white rounded-lg font-black text-xs uppercase tracking-widest hover:bg-[#e69f09] transition-colors shadow-lg shadow-orange-200"
+            className="w-full py-3 bg-[#FFB10A] text-white rounded-lg font-black text-xs uppercase tracking-widest hover:bg-[#FFC000] transition-all shadow-[0_10px_20px_rgba(255,177,10,0.3)] hover:shadow-[0_15px_30px_rgba(255,177,10,0.5)] transform hover:-translate-y-1 active:scale-95"
           >
             Entrar
           </button>
@@ -213,7 +234,7 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
           e.stopPropagation();
           onClick(match);
         }}
-        className="w-full bg-[#FFB10A] hover:bg-[#FFC000] text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98]"
+        className="w-full bg-[#FFB10A] hover:bg-[#FFC000] text-white font-bold py-3 rounded-xl transition-all shadow-[0_10px_20px_rgba(255,177,10,0.3)] hover:shadow-[0_15px_30px_rgba(255,177,10,0.5)] transform hover:-translate-y-1 active:scale-95"
       >
         Entrar
       </button>

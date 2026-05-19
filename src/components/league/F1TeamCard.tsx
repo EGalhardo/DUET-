@@ -12,7 +12,7 @@ const F1TeamCard: React.FC<F1TeamCardProps> = React.memo(({ card, sessionType })
     id={`f1-team-card-${card.title.toLowerCase().replace(/\s+/g, '-')}`}
     className="group block relative text-decoration-none"
   >
-    <div className="aspect-video rounded-xl md:rounded-3xl border border-gray-200 bg-white overflow-hidden relative transition-all">
+    <div className="aspect-video rounded-xl md:rounded-3xl border border-gray-200 bg-white overflow-hidden relative transition-all group-hover:border-[#FFB10A]">
       {/* Drivers Container Background */}
       <div className="absolute inset-0 flex items-end justify-between px-1 sm:px-4">
         {/* Driver 1 - Left */}
@@ -44,6 +44,13 @@ const F1TeamCard: React.FC<F1TeamCardProps> = React.memo(({ card, sessionType })
       {/* Center Logo - Floats above drivers */}
       <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10 w-14 h-14 md:w-24 md:h-24 flex items-center justify-center">
         <img src={card.image} alt={card.title} className="w-full h-full object-contain" />
+      </div>
+
+      {/* ENTRAR Button */}
+      <div className="absolute inset-x-0 bottom-0 p-2 md:p-3 z-20">
+        <div className="w-full py-1.5 md:py-2 bg-[#FFB10A] text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest text-center rounded-lg md:rounded-xl shadow-lg group-hover:bg-[#FFC000] transition-all transform group-hover:-translate-y-1">
+          Entrar
+        </div>
       </div>
       
       {/* Dynamic Overlay removed or kept static */}

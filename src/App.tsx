@@ -5,6 +5,7 @@ import { AppProvider } from './context/AppContext';
 import Layout from './components/Layout';
 import ImagePreloader from './components/ImagePreloader';
 import Ranking from './pages/Ranking';
+import Liga from './pages/Liga';
 
 // Lazy load components for better performance and scalability
 const Home = lazy(() => import('./pages/Home'));
@@ -12,7 +13,6 @@ const Onboarding = lazy(() => import('./pages/Onboarding'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
-const Liga = lazy(() => import('./pages/Liga'));
 const Aposta = lazy(() => import('./pages/Aposta'));
 const Carteira = lazy(() => import('./pages/Carteira'));
 const Historico = lazy(() => import('./pages/Historico'));
