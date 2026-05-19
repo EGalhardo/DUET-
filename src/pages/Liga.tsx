@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, Calendar, CircleDot as Football, ChevronDown } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
@@ -11,6 +11,7 @@ import F1TeamCard from '../components/league/F1TeamCard';
 
 export default function Liga() {
   const { category = 'futebol' } = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'practice' | 'private' | 'community'>(
     category === 'f1' ? 'community' : 'practice'
   );
@@ -145,9 +146,8 @@ export default function Liga() {
       {/* GRID OF CARDS */}
       <div className="px-4 md:px-8 pb-10 lg:pb-14 w-full">
         <div className={cn(
-          "grid grid-cols-2 gap-4 md:gap-6 lg:gap-8 mx-auto",
-          category === 'f1' ? "max-w-7xl" : "max-w-5xl",
-          (category === 'f1' && activeTab === 'community') && "grid-cols-1 md:grid-cols-2"
+          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 mx-auto",
+          category === 'f1' ? "max-w-7xl" : "max-w-5xl"
         )}>
           {currentCategory.cards[activeTab]?.map((card, idx) => (
             (category === 'f1' && activeTab === 'community') ? (
@@ -163,6 +163,10 @@ export default function Liga() {
                 category={category} 
                 fallbackImage={currentCategory.image} 
                 sessionType={category === 'f1' ? currentCategory.labels[activeTab] : undefined}
+                onClick={(c) => {
+                  const session = category === 'f1' ? currentCategory.labels[activeTab] : undefined;
+                  navigate(`/aposta/${category}?topic=${c.title}${session ? `&session=${session}` : ''}`);
+                }}
               />
             )
           ))}
