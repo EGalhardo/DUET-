@@ -38,7 +38,7 @@ const LeagueCard: React.FC<LeagueCardProps> = React.memo(({ card, category, fall
             e.stopPropagation();
             if (onClick) onClick(card);
           }}
-          className="w-full py-3.5 md:py-4.5 bg-[#FFB10A] text-white text-[10px] md:text-[12px] font-black uppercase tracking-widest text-center rounded-lg md:rounded-xl shadow-lg hover:bg-[#FFC000] transition-all transform active:scale-95 group-hover:-translate-y-1 cursor-pointer"
+          className="w-full py-1.5 md:py-2 bg-[#FFB10A] text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest text-center rounded-lg md:rounded-xl shadow-lg hover:bg-[#FFC000] transition-all transform active:scale-95 group-hover:-translate-y-1 cursor-pointer"
         >
           Entrar
         </button>
