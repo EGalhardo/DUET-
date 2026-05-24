@@ -199,8 +199,8 @@ export default function Header() {
             className="flex items-center gap-1 hover:text-[#FFB10A] transition-colors shrink-0 select-none active:scale-95 mr-1"
           >
             <Wallet className="w-3.5 h-3.5 text-[#FFB10A]" />
-            <span className="text-xs md:text-sm font-black text-[#091747] tracking-tight whitespace-nowrap">
-              {balance.toLocaleString()} <span className="text-[#FFB10A] text-[10px] font-bold ml-0.5">KZ</span>
+            <span className="text-[12px] font-black text-[#091747] tracking-tight whitespace-nowrap">
+              {balance.toLocaleString()} <span className="text-[#FFB10A] text-[9px] font-bold ml-0.5">KZ</span>
             </span>
           </Link>
 
