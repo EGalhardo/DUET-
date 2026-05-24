@@ -62,6 +62,74 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
     { id: 'me', name: userProfile.name, picks: ['A', 'A', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'A'], points: 2, rank: 4, photo: userProfile.photo }
   ], [userProfile]);
 
+  const isBasketball = category === 'basket' || (match && (match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha'));
+  const isF1 = category === 'f1';
+  const currentPrivateMarkets = isF1 ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
+
+  const roomInscribedUsers = React.useMemo(() => {
+    if (!joiningBet) return [];
+
+    const allBetsInRoom = storageService.getBets().filter(b => 
+      b.category === 'Privado' && 
+      b.matchId === match?.id && 
+      b.roomName?.toLowerCase() === joiningBet.roomName?.toLowerCase()
+    );
+
+    const creatorPicks = joiningBet.selectedMarkets || [];
+
+    const getMockPicksForUser = (seedOffset: number) => {
+      return creatorPicks.map((m, idx) => {
+        if (m === null) return null;
+        const marketObj = currentPrivateMarkets[idx];
+        if (!marketObj) return null;
+        const opts = marketObj.options(match || { id: 0 } as any);
+        if (opts.length === 0) return null;
+        return opts[(idx + seedOffset) % opts.length].id;
+      });
+    };
+
+    const list = [
+      {
+        id: 'room_creator',
+        name: 'Manuel Neto (Moderador)',
+        picks: creatorPicks,
+        points: 6,
+        rank: 1,
+        photo: 'https://i.pravatar.cc/150?u=15'
+      },
+      {
+        id: 'user_room_1',
+        name: 'Rita Vaz',
+        picks: getMockPicksForUser(1),
+        points: 7,
+        rank: 2,
+        photo: 'https://i.pravatar.cc/150?u=10'
+      },
+      {
+        id: 'user_room_2',
+        name: 'Cláudio Silva',
+        picks: getMockPicksForUser(2),
+        points: 4,
+        rank: 3,
+        photo: 'https://i.pravatar.cc/150?u=12'
+      }
+    ];
+
+    const userBet = allBetsInRoom.find(b => b.id !== joiningBet.id);
+    if (userBet && userBet.selectedMarkets) {
+      list.push({
+        id: 'me',
+        name: `${userProfile.name} (Tu)`,
+        picks: userBet.selectedMarkets,
+        points: 2,
+        rank: 4,
+        photo: userProfile.photo
+      });
+    }
+
+    return list;
+  }, [joiningBet, match, userProfile, currentPrivateMarkets]);
+
   const STICKERS = [
     { id: 'stick_1', emoji: '🏆', label: 'CAMPEÃO', type: 'celebrate' },
     { id: 'stick_2', emoji: '🎉', label: 'FESTA', type: 'celebrate' },
@@ -213,9 +281,6 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
 
   const steps = activeTab === 'Privado' ? ['password', 'selection', 'details'] : (activeTab === '1 vs 1' ? ['password', 'details'] : ['details']);
   const currentStepIndex = steps.indexOf(createStep);
-
-  const isBasketball = category === 'basket' || (match && (match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha'));
-  const isF1 = category === 'f1';
 
   const isF1Step2 = isF1 && activeTab === '1 vs 1' && createStep === 'details';
 
@@ -372,9 +437,19 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
           setSelectedMarket('');
           
           if (activeTab === 'Privado' && mockBet.selectedMarkets) {
-            // Consistent with creation: '' for not-yet-filled, null for not-in-bet
-            const initialList = mockBet.selectedMarkets.map(m => m !== null ? '' : null);
-            setSelectedMarketsList(initialList);
+            const allBetsInRoom = storageService.getBets().filter(b => 
+              b.category === 'Privado' && 
+              b.matchId === match.id && 
+              b.roomName?.toLowerCase() === roomNameInput.toLowerCase()
+            );
+            const userBet = allBetsInRoom.find(b => b.id !== mockBet.id);
+            if (userBet && userBet.selectedMarkets) {
+              setSelectedMarketsList(userBet.selectedMarkets);
+            } else {
+              // Consistent with creation: '' for not-yet-filled, null for not-in-bet
+              const initialList = mockBet.selectedMarkets.map(m => m !== null ? '' : null);
+              setSelectedMarketsList(initialList);
+            }
           }
           return;
         }
@@ -384,8 +459,18 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
         setSelectedMarket('');
         
         if (activeTab === 'Privado' && existingBet.selectedMarkets) {
-          const initialList = existingBet.selectedMarkets.map(m => m !== null ? '' : null);
-          setSelectedMarketsList(initialList);
+          const allBetsInRoom = storageService.getBets().filter(b => 
+            b.category === 'Privado' && 
+            b.matchId === match.id && 
+            b.roomName?.toLowerCase() === roomNameInput.toLowerCase()
+          );
+          const userBet = allBetsInRoom.find(b => b.id !== existingBet.id);
+          if (userBet && userBet.selectedMarkets) {
+            setSelectedMarketsList(userBet.selectedMarkets);
+          } else {
+            const initialList = existingBet.selectedMarkets.map(m => m !== null ? '' : null);
+            setSelectedMarketsList(initialList);
+          }
         }
         return;
       }
@@ -410,6 +495,17 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
 
         if (!allMarketsFilled) {
           setError('Por favor, preenche todos os prognósticos!');
+          return;
+        }
+
+        // --- UNIQUE COMBINATION VALIDATION ---
+        const isDuplicate = roomInscribedUsers.some(user => {
+          if (user.id === 'me') return false; // ignore checking self
+          return selectedMarketsList.every((val, idx) => val === user.picks[idx]);
+        });
+
+        if (isDuplicate) {
+          setError('Esta combinação de palpites já está registada por outro participante. Modifica pelo menos um mercado para continuar.');
           return;
         }
       }
@@ -450,9 +546,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       return;
     }
 
-    if (activeTab === 'Privado' && createStep === 'selection') {
+    if (activeTab === 'Privado' && betAction === 'create') {
       // For Private creation: only those in the bet should be non-null. '' means not in bet.
-      const selectedCount = selectedMarketsList.filter(s => s === 'PENDING' || (!!s && s !== '')).length;
+      const selectedCount = selectedMarketsList.filter(s => s && s !== '').length;
       if (selectedCount === 0) {
         setError('Seleciona pelo menos 1 mercado!');
         return;
@@ -460,13 +556,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       
       const hasPending = selectedMarketsList.some(s => s === 'PENDING');
       if (hasPending) {
-        setError('Por favor, escolhe o resultado (A, X ou B) para todos os mercados selecionados!');
+        setError('Por favor, escolhe o resultado para todos os mercados selecionados!');
         return;
       }
-      
-      // Final adjustment: replace '' with null for markets NOT included in the private bet
-      const finalMarkets = selectedMarketsList.map(s => s === '' ? null : s);
-      setSelectedMarketsList(finalMarkets);
     }
 
     if (activeTab === 'Nacional') {
@@ -488,6 +580,10 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       blocked_balance: wallet.blocked_balance + amount
     });
 
+    const finalMarketsToSave = (activeTab === 'Privado' || activeTab === 'Nacional')
+      ? selectedMarketsList.map(s => s === '' ? null : s)
+      : undefined;
+
     storageService.saveBet({
       id: Date.now().toString(),
       matchId: match.id,
@@ -500,7 +596,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       password: (activeTab === '1 vs 1' || activeTab === 'Privado') ? createPassword : '',
       roomName: (activeTab === '1 vs 1' || activeTab === 'Privado') ? roomName : '',
       maxParticipants: activeTab === 'Privado' ? Number(maxParticipants) : undefined,
-      selectedMarkets: (activeTab === 'Privado' || activeTab === 'Nacional') ? selectedMarketsList : undefined,
+      selectedMarkets: finalMarketsToSave,
       createdAt: new Date().toISOString()
     });
 
@@ -540,61 +636,44 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       const mailUrl = `mailto:?subject=Convite para Desafio Duet&body=${encodeURIComponent(shareText)}`;
 
       return (
-        <div className="flex flex-col items-center py-10">
+        <div className="flex flex-col items-center py-6">
           <motion.div 
             initial={{ scale: 0.5, opacity: 0 }} 
             animate={{ scale: 1, opacity: 1 }} 
-            className="mb-8"
+            className="mb-6 flex justify-center items-center"
           >
-            <div className="relative">
-              <div className="w-24 h-24 rounded-[2.5rem] bg-green-50 flex items-center justify-center border-4 border-white relative z-10 shadow-lg">
-                <CheckCircle2 className="w-12 h-12 text-green-500 stroke-[3px]" />
-              </div>
-              <motion.div 
-                animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.4, 0.2] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="absolute inset-0 bg-green-400 rounded-full blur-3xl -z-10"
+            {activeTab === '1 vs 1' || activeTab === 'Privado' ? (
+              <img 
+                src="https://images.vexels.com/media/users/3/157890/isolated/preview/4f2c005416b7f48b3d6d09c5c6763d87-icone-de-circulo-com-marca-de-verificacao.png" 
+                alt="Sucesso" 
+                className="w-40 h-40 object-contain"
+                referrerPolicy="no-referrer"
               />
-            </div>
+            ) : (
+              <div className="relative">
+                <div className="w-24 h-24 rounded-[2.5rem] bg-green-50 flex items-center justify-center border-4 border-white relative z-10 shadow-lg">
+                  <CheckCircle2 className="w-12 h-12 text-green-500 stroke-[3px]" />
+                </div>
+                <motion.div 
+                  animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.4, 0.2] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute inset-0 bg-green-400 rounded-full blur-3xl -z-10"
+                />
+              </div>
+            )}
           </motion.div>
           
           <h3 className="text-2xl font-black text-[#091747] text-center px-4 uppercase tracking-tighter italic leading-none">
             {betAction === 'join' ? 'Desafio Aceite!' : 'Rodada Lançada!'}
           </h3>
-          <p className="text-[10px] text-gray-600 mt-4 font-bold text-center px-10 leading-relaxed uppercase tracking-widest">
+          <p className="text-[10px] text-gray-600 mt-3 font-bold text-center px-10 leading-relaxed uppercase tracking-widest">
             {activeTab === '1 vs 1' && betAction === 'create' 
               ? 'O teu duelo está ativo. Partilha os dados com o teu adversário para começar!'
               : 'Informação registada com sucesso. Acompanha o teu prémio no histórico.'}
           </p>
 
           {(activeTab === 'Privado' || activeTab === '1 vs 1') && betAction === 'create' && (
-            <div className="mt-10 space-y-4 w-full">
-              <div className="bg-gray-50 p-8 rounded-[3rem] border border-gray-100 shadow-inner relative overflow-hidden">
-                <div className="absolute right-0 top-0 w-24 h-24 bg-[#FFB10A]/5 rounded-full blur-2xl" />
-                <p className="text-[9px] text-[#FFB10A] uppercase font-black tracking-[0.2em] text-center mb-6 italic">Acesso à Sala</p>
-                <div className="space-y-4 mb-8">
-                  <div className="flex justify-between items-center border-b border-gray-200 pb-3">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase">Sala</span>
-                    <span className="text-xs font-black text-[#091747] uppercase">{roomName}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase">Senha</span>
-                    <span className="text-xl font-mono font-black text-[#091747] tracking-[0.2em]">{createPassword}</span>
-                  </div>
-                </div>
-                
-                <button 
-                  onClick={() => {
-                    navigator.clipboard.writeText(shareText);
-                    // Add some feedback here if needed
-                  }}
-                  className="w-full h-16 rounded-2xl bg-white flex items-center justify-center gap-4 text-[#091747] active:scale-95 transition-all font-black uppercase text-[10px] tracking-widest border border-gray-200 shadow-sm"
-                >
-                  <Copy className="w-5 h-5 text-[#FFB10A]" />
-                  Copiar Dados
-                </button>
-              </div>
-
+            <div className="mt-6 space-y-4 w-full">
               <div className="grid grid-cols-2 gap-4">
                 <a 
                   href={whatsappUrl}
@@ -616,19 +695,21 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             </div>
           )}
 
-          <div className="w-full flex flex-col gap-3 mt-12">
-            <Link 
-              to="/historico" 
-              className="w-full bg-[#FFB10A] text-white font-black py-5 rounded-[1.5rem] flex items-center justify-center gap-3 hover:bg-[#FFC000] transition-all uppercase tracking-widest text-xs shadow-lg shadow-[#FFB10A]/30"
-            >
-              <Trophy className="w-5 h-5 text-white" />
-              Ver Histórico
-            </Link>
+          <div className="w-full flex flex-col gap-3 mt-8">
+            {activeTab !== '1 vs 1' && activeTab !== 'Privado' && (
+              <Link 
+                to="/historico" 
+                className="w-full bg-[#FFB10A] text-white font-black py-5 rounded-[1.5rem] flex items-center justify-center gap-3 hover:bg-[#FFC000] transition-all uppercase tracking-widest text-xs shadow-lg shadow-[#FFB10A]/30"
+              >
+                <Trophy className="w-5 h-5 text-white" />
+                Ver Histórico
+              </Link>
+            )}
             <button 
               onClick={handleClose}
               className="w-full bg-white border-2 border-gray-100 text-gray-600 font-black py-5 rounded-[1.5rem] hover:bg-gray-50 transition-all uppercase tracking-widest text-xs"
             >
-              Voltar ao Início
+              Sair
             </button>
           </div>
         </div>
@@ -828,8 +909,16 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       const bet = storageService.getBets().find(b => b.id === selectedBetId);
       if (!bet) return null;
 
+      const isBasketball = category === 'basket' || (match && (match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha'));
+      const isF1 = category === 'f1';
+      const currentPrivateMarkets = isF1 ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
+
+      const shareText = `Vem jogar no Duet Académico!\nSala: ${bet.roomName || '---'}\nSenha: ${bet.password || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+      const mailUrl = `mailto:?subject=${encodeURIComponent('Convite para Desafio Duet')}&body=${encodeURIComponent(shareText)}`;
+
       return (
-        <div className="flex flex-col gap-4 py-1 pb-6">
+        <div className="flex flex-col gap-4 py-1 pb-6 animate-fade-in">
           <div className="bg-white p-4 rounded-3xl border-2 border-gray-200">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -839,16 +928,62 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               <span className="text-[10px] font-black text-[#091747] bg-white px-3 py-1 rounded-full uppercase tracking-widest border-2 border-gray-200">Aberto</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-gray-50 p-3 rounded-2xl border-2 border-gray-100">
-                <p className="text-[9px] font-black text-gray-600 uppercase tracking-tighter mb-1">A tua escolha</p>
-                <p className="text-xs md:text-sm font-black text-[#091747]">{bet.market}</p>
+            <div className="flex flex-col gap-3 mb-4">
+              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
+                <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <List className="w-3.5 h-3.5 text-[#FFB10A]" strokeWidth={3} />
+                  A tua escolha
+                </p>
+                <div className="flex flex-col gap-2">
+                  {bet.selectedMarkets ? (
+                    (() => {
+                      const validSelections = bet.selectedMarkets.map((predCode, idx) => {
+                        if (!predCode || predCode === 'PENDING') return null;
+                        const marketObj = currentPrivateMarkets[idx];
+                        if (!marketObj) return null;
+                        const optionObj = match ? marketObj.options(match).find(o => o.id === predCode) : null;
+                        const choiceLabel = optionObj ? optionObj.label : predCode;
+                        return { market: marketObj.name, choice: choiceLabel };
+                      }).filter((s): s is { market: string; choice: string } => s !== null);
+
+                      if (validSelections.length === 0) {
+                        return <p className="text-xs font-black text-[#091747]">Nenhuma escolha</p>;
+                      }
+
+                      return validSelections.map((sel, sIdx) => (
+                        <div key={sIdx} className="flex justify-between items-center border-b border-gray-100 pb-2 last:border-0 last:pb-0">
+                          <span className="text-[11px] font-bold text-gray-500 uppercase tracking-tight">{sel.market}:</span>
+                          <span className="text-xs font-black text-[#091747]">{sel.choice}</span>
+                        </div>
+                      ));
+                    })()
+                  ) : (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[11px] font-bold text-gray-500 uppercase tracking-tight">Prognóstico:</span>
+                      <span className="text-xs font-black text-[#091747]">{bet.market || '---'}</span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-2xl border-2 border-gray-100">
-                <p className="text-[9px] font-black text-gray-600 uppercase tracking-tighter mb-1">Valor Apostado</p>
-                <p className="text-xs md:text-sm font-black text-[#FFB10A]">{bet.amount.toLocaleString()} KZ</p>
+
+              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100 flex justify-between items-center">
+                <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Valor Apostado</p>
+                <p className="text-sm font-black text-[#FFB10A]">{bet.amount.toLocaleString()} KZ</p>
               </div>
             </div>
+
+            {bet.roomName && (
+              <div className="bg-gray-50 p-3.5 rounded-2xl border-2 border-gray-100 mb-4 flex justify-between items-center px-4">
+                <div>
+                  <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Nome da Sala</p>
+                  <p className="text-xs font-black text-[#091747] uppercase font-mono">{bet.roomName}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Status</p>
+                  <span className="text-[9px] font-black text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-100 uppercase italic">Criada por ti</span>
+                </div>
+              </div>
+            )}
 
             {bet.autoConfirmThreshold && (
               <div className="bg-orange-50 p-3 rounded-xl border-2 border-[#FFB10A]/20 flex items-start gap-2 mb-4">
@@ -860,7 +995,6 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             )}
 
             <div className="bg-blue-50/50 p-4 rounded-3xl border-2 border-dashed border-blue-400">
-              <p className="text-[9px] text-blue-700 uppercase font-black tracking-widest text-center mb-1.5 italic">Desafio: {bet.roomName || 'Sala Sem Nome'}</p>
               <p className="text-[9px] text-blue-700 uppercase font-black tracking-widest text-center mb-1.5 italic">Senha do Desafio</p>
               <div className="flex items-center justify-between bg-white p-3 rounded-xl border-2 border-blue-200">
                 <span className="text-xl md:text-2xl font-mono font-black text-[#091747] tracking-wider">{bet.password || '---'}</span>
@@ -877,23 +1011,23 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             </div>
           </div>
 
-          <div className="flex flex-col gap-2.5">
-            <button 
-              onClick={() => {
-                setBetAction('my_bets');
-                setSelectedBetId(null);
-              }}
-              className="w-full bg-[#091747] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-[#0d2166] transition-all text-xs"
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <a 
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 bg-[#25D366] text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] shadow-lg shadow-green-500/20 active:scale-95 transition-all cursor-pointer"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              Voltar à Lista
-            </button>
-            <button 
-              onClick={handleClose}
-              className="w-full bg-white border-2 border-gray-100 text-gray-700 font-bold py-3.5 rounded-xl text-xs"
+              <MessageSquare className="w-5 h-5" />
+              WhatsApp
+            </a>
+            <a 
+              href={mailUrl}
+              className="flex items-center justify-center gap-2 bg-[#091747] text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-900/20 active:scale-95 transition-all cursor-pointer"
             >
-              Fechar
-            </button>
+              <Mail className="w-5 h-5" />
+              E-mail
+            </a>
           </div>
         </div>
       );
@@ -1020,12 +1154,19 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
           );
         }
 
-        const viewingUser = inscribedUsers.find(u => u.id === selectedUserView);
+        const viewingUser = roomInscribedUsers.find(u => u.id === selectedUserView);
         const displayPicks = viewingUser ? viewingUser.picks : selectedMarketsList;
         const currentPrivateMarkets = category === 'f1' ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
 
         return (
-          <div className="flex flex-col gap-6 py-4">
+          <motion.div 
+            key={`predictions-join-${selectedUserView}`}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.25 }}
+            className="flex flex-col gap-6 py-4"
+          >
             {matchHeader}
 
             <div className="bg-white border-2 border-orange-500 p-4 rounded-2xl flex items-start gap-4 mb-2">
@@ -1046,9 +1187,8 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   onChange={(e) => setSelectedUserView(e.target.value)}
                   className="w-full bg-white border-2 border-white rounded-2xl py-4 px-5 text-xs font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all appearance-none shadow-sm uppercase tracking-[0.1em]"
                 >
-                  <option value="">Selecionar Usuário...</option>
                   <option value="me">Teus Prognósticos (Tu)</option>
-                  {inscribedUsers.map((user) => (
+                  {roomInscribedUsers.filter(u => u.id !== 'me').map((user) => (
                     <option key={user.id} value={user.id}>{user.name}</option>
                   ))}
                 </select>
@@ -1073,12 +1213,12 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
 
                   return (
                     <div key={idx} className={cn(
-                      "bg-white border-2 rounded-[2rem] p-5 flex flex-col gap-4 transition-all",
-                      viewingUser ? "border-blue-100 bg-blue-50/10" : "border-gray-200"
+                      "bg-white border-2 rounded-[2rem] p-5 flex flex-col gap-4 transition-all duration-300",
+                      viewingUser ? "border-orange-100 bg-orange-50/5" : "border-gray-200"
                     )}>
                       <div className="flex items-center justify-between px-1">
                         <span className="text-[10px] font-black text-[#091747] uppercase tracking-widest italic">{currentPrivateMarkets[idx].name}</span>
-                        {viewingUser && <span className="text-[8px] font-black bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full uppercase tracking-widest">Inscrito</span>}
+                        {viewingUser && <span className="text-[8px] font-black bg-orange-50 text-orange-600 px-2.5 py-1 rounded-full uppercase tracking-wider">Inscrito</span>}
                       </div>
                       <div className={cn(
                         "grid gap-2",
@@ -1097,10 +1237,14 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                                 setSelectedMarketsList(newPreds);
                               }}
                               className={cn(
-                                "py-3 px-1 rounded-[1.2rem] text-[9px] font-black border-2 transition-all uppercase tracking-tight text-center leading-tight line-clamp-2",
-                                isSelected 
-                                  ? (viewingUser ? "bg-blue-600 border-blue-600 text-white" : "bg-[#FFB10A] border-[#FFB10A] text-white shadow-md")
-                                  : "bg-white border-gray-100 text-gray-500 hover:border-[#FFB10A]"
+                                "py-3 px-2 rounded-[1.2rem] text-[9px] font-black border-2 transition-all uppercase tracking-tight text-center leading-tight line-clamp-2 relative",
+                                viewingUser 
+                                  ? isSelected 
+                                    ? "bg-[#FFB10A]/90 border-[#FFB10A] text-white shadow-md scale-[1.01]"
+                                    : "bg-gray-50 border-gray-100 text-gray-400 opacity-60 pointer-events-none"
+                                  : isSelected
+                                    ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-md scale-[1.01]"
+                                    : "bg-white border-gray-100 text-gray-700 hover:border-[#FFB10A] hover:bg-gray-50"
                               )}
                             >
                               {opt.label}
@@ -1125,7 +1269,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               </div>
               <p className="text-[8px] text-gray-400 mt-3 font-bold text-center uppercase tracking-tight italic">Este valor foi definido pelo moderador da sala.</p>
             </div>
-          </div>
+          </motion.div>
         );
       }
 
@@ -1668,16 +1812,20 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                 <label className="text-[10px] font-black text-gray-600 block uppercase tracking-widest italic">Valor (Kz)</label>
                 <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest italic">Comissão (50 Kz)</span>
               </div>
-              <div className="relative">
-                <div className="w-full bg-white border-2 border-orange-100 rounded-2xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-between shadow-sm">
-                   <div className="flex items-center gap-2">
-                      <Lock className="w-4 h-4 text-[#FFB10A]" />
-                      <span>0</span>
-                   </div>
-                   <span className="text-[#FFB10A] italic text-sm">KZ</span>
+              <div className="relative group">
+                <input 
+                  type="number" 
+                  value={betValue}
+                  onChange={(e) => setBetValue(e.target.value)}
+                  className="w-full bg-white border-2 border-orange-100 rounded-2xl py-4 px-6 text-2xl font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all shadow-sm italic"
+                  placeholder="EX: 1000"
+                />
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                  <div className="w-[1px] h-6 bg-gray-100" />
+                  <span className="text-[#FFB10A] font-black italic text-base">KZ</span>
                 </div>
               </div>
-              <p className="text-[8px] text-gray-400 mt-3 font-bold text-center uppercase tracking-tight italic">Este valor está definido como padrão para grupos privados.</p>
+              <p className="text-[8px] text-gray-400 mt-3 font-bold text-center uppercase tracking-tight italic">Escolha o valor da aposta para este desafio direto.</p>
             </div>
           </div>
         );

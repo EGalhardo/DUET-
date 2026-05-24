@@ -9,7 +9,7 @@ import {
 import { cn } from '../../../lib/utils';
 import { Match, Bet, FavoriteItem, Wallet as WalletType } from '../../../types';
 import { storageService } from '../../../services/storageService';
-import { FOOTBALL_MARKETS, PRIVATE_MARKETS } from '../../../constants/markets';
+import { FOOTBALL_MARKETS, PRIVATE_MARKETS, BASKETBALL_PRIVATE_MARKETS, F1_PRIVATE_MARKETS } from '../../../constants/markets';
 import { MATCH_DATA, LEAGUE_CLASSIFICATIONS } from '../../../constants';
 import BettingModalHeader from './BettingModalHeader';
 import MarketOption from './MarketOption';
@@ -149,27 +149,11 @@ const BettingModal: React.FC<BettingModalProps> = ({
         );
 
         if (!existingBet) {
-          const mockBet: Bet = {
-            id: `mock-${Date.now()}`,
-            matchId: match.id,
-            category: activeTab as any,
-            market: 'Vitória A',
-            amount: 1000,
-            status: 'Open',
-            password: roomCodeInput,
-            roomName: roomNameInput,
-            selectedMarkets: activeTab === 'Privado' ? Array(10).fill('').map((_, i) => i < 3 ? 'A' : null) : undefined,
-            createdAt: new Date().toISOString()
-          };
-          
-          setJoiningBet(mockBet);
-          setError('');
-          setSelectedMarket('');
-          
-          if (activeTab === 'Privado' && mockBet.selectedMarkets) {
-            const initialList = mockBet.selectedMarkets.map(m => m !== null ? '' : null);
-            setSelectedMarketsList(initialList);
-          }
+          setError(
+            activeTab === 'Privado' 
+              ? 'Grupo Privado não encontrado ou senha incorreta. Verifica os dados e tenta novamente.'
+              : 'Desafio não encontrado ou senha incorreta. Verifica os dados e tenta novamente.'
+          );
           return;
         }
 
@@ -235,8 +219,8 @@ const BettingModal: React.FC<BettingModalProps> = ({
       return;
     }
 
-    if (activeTab === 'Privado' && createStep === 'selection') {
-      const selectedCount = selectedMarketsList.filter(s => s === 'PENDING' || (!!s && s !== '')).length;
+    if (activeTab === 'Privado' && betAction === 'create') {
+      const selectedCount = selectedMarketsList.filter(s => s && s !== '').length;
       if (selectedCount === 0) {
         setError('Seleciona pelo menos 1 mercado!');
         return;
@@ -247,9 +231,6 @@ const BettingModal: React.FC<BettingModalProps> = ({
         setError('Por favor, escolhe o resultado (A, X ou B) para todos os mercados selecionados!');
         return;
       }
-      
-      const finalMarkets = selectedMarketsList.map(s => s === '' ? null : s);
-      setSelectedMarketsList(finalMarkets);
     }
 
     if (activeTab === 'Nacional') {
@@ -270,6 +251,10 @@ const BettingModal: React.FC<BettingModalProps> = ({
       blocked_balance: wallet.blocked_balance + amount
     });
 
+    const finalMarketsToSave = (activeTab === 'Privado' || activeTab === 'Nacional')
+      ? selectedMarketsList.map(s => s === '' ? null : s)
+      : undefined;
+
     storageService.saveBet({
       id: Date.now().toString(),
       matchId: match.id,
@@ -282,7 +267,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
       password: (activeTab === '1 vs 1' || activeTab === 'Privado') ? createPassword : '',
       roomName: (activeTab === '1 vs 1' || activeTab === 'Privado') ? roomName : '',
       maxParticipants: activeTab === 'Privado' ? Number(maxParticipants) : undefined,
-      selectedMarkets: (activeTab === 'Privado' || activeTab === 'Nacional') ? selectedMarketsList : undefined,
+      selectedMarkets: finalMarketsToSave,
       createdAt: new Date().toISOString()
     });
 
@@ -462,8 +447,17 @@ const BettingModal: React.FC<BettingModalProps> = ({
     if (betAction === 'bet_details') {
       const bet = storageService.getBets().find(b => b.id === selectedBetId);
       if (!bet) return null;
+
+      const isBasketball = category === 'basket' || (match && (match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha'));
+      const isF1 = category === 'f1';
+      const currentPrivateMarkets = isF1 ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
+
+      const shareText = `Vem jogar no Duet Académico!\nSala: ${bet.roomName || '---'}\nSenha: ${bet.password || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+      const mailUrl = `mailto:?subject=${encodeURIComponent('Convite para Desafio Duet')}&body=${encodeURIComponent(shareText)}`;
+
       return (
-        <div className="flex flex-col gap-4 py-1 pb-6">
+        <div className="flex flex-col gap-4 py-1 pb-6 animate-fade-in">
           <div className="bg-white p-4 rounded-3xl border-2 border-gray-200">
              <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -472,16 +466,62 @@ const BettingModal: React.FC<BettingModalProps> = ({
               </div>
               <span className="text-[10px] font-black text-[#091747] bg-white px-3 py-1 rounded-full uppercase tracking-widest border-2 border-gray-200">Aberto</span>
             </div>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-gray-50 p-3 rounded-2xl border-2 border-gray-100">
-                <p className="text-[9px] font-black text-gray-600 uppercase tracking-tighter mb-1">A tua escolha</p>
-                <p className="text-xs font-black text-[#091747]">{bet.market}</p>
+            <div className="flex flex-col gap-3 mb-4">
+              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
+                <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                  <List className="w-3.5 h-3.5 text-[#FFB10A]" strokeWidth={3} />
+                  A tua escolha
+                </p>
+                <div className="flex flex-col gap-2">
+                  {bet.selectedMarkets ? (
+                    (() => {
+                      const validSelections = bet.selectedMarkets.map((predCode, idx) => {
+                        if (!predCode || predCode === 'PENDING') return null;
+                        const marketObj = currentPrivateMarkets[idx];
+                        if (!marketObj) return null;
+                        const optionObj = match ? marketObj.options(match).find(o => o.id === predCode) : null;
+                        const choiceLabel = optionObj ? optionObj.label : predCode;
+                        return { market: marketObj.name, choice: choiceLabel };
+                      }).filter((s): s is { market: string; choice: string } => s !== null);
+
+                      if (validSelections.length === 0) {
+                        return <p className="text-xs font-black text-[#091747]">Nenhuma escolha</p>;
+                      }
+
+                      return validSelections.map((sel, sIdx) => (
+                        <div key={sIdx} className="flex justify-between items-center border-b border-gray-100 pb-2 last:border-0 last:pb-0">
+                          <span className="text-[11px] font-bold text-gray-500 uppercase tracking-tight">{sel.market}:</span>
+                          <span className="text-xs font-black text-[#091747]">{sel.choice}</span>
+                        </div>
+                      ));
+                    })()
+                  ) : (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[11px] font-bold text-gray-500 uppercase tracking-tight">Prognóstico:</span>
+                      <span className="text-xs font-black text-[#091747]">{bet.market || '---'}</span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-2xl border-2 border-gray-100">
-                <p className="text-[9px] font-black text-gray-600 uppercase tracking-tighter mb-1">Valor Apostado</p>
-                <p className="text-xs font-black text-[#FFB10A]">{bet.amount.toLocaleString()} KZ</p>
+
+              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100 flex justify-between items-center">
+                <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Valor Apostado</p>
+                <p className="text-sm font-black text-[#FFB10A]">{bet.amount.toLocaleString()} KZ</p>
               </div>
             </div>
+
+            {bet.roomName && (
+              <div className="bg-gray-50 p-3.5 rounded-2xl border-2 border-gray-100 mb-4 flex justify-between items-center px-4">
+                <div>
+                  <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Nome da Sala</p>
+                  <p className="text-xs font-black text-[#091747] uppercase font-mono">{bet.roomName}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Status</p>
+                  <span className="text-[9px] font-black text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-100 uppercase italic">Criada por ti</span>
+                </div>
+              </div>
+            )}
             <div className="bg-blue-50/50 p-4 rounded-3xl border-2 border-dashed border-blue-400">
               <p className="text-[9px] text-blue-700 uppercase font-black tracking-widest text-center mb-1.5 italic">Senha do Desafio</p>
               <div className="flex items-center justify-between bg-white p-3 rounded-xl border-2 border-blue-200">
@@ -492,10 +532,24 @@ const BettingModal: React.FC<BettingModalProps> = ({
               </div>
             </div>
           </div>
-          <button onClick={() => { setBetAction('my_bets'); setSelectedBetId(null); }} className="w-full bg-[#091747] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 text-xs">
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Voltar à Lista
-          </button>
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <a 
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 bg-[#25D366] text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] shadow-lg shadow-green-500/20 active:scale-95 transition-all cursor-pointer animate-fade-in"
+            >
+              <MessageSquare className="w-5 h-5" />
+              WhatsApp
+            </a>
+            <a 
+              href={mailUrl}
+              className="flex items-center justify-center gap-2 bg-[#091747] text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-900/20 active:scale-95 transition-all cursor-pointer animate-fade-in"
+            >
+              <Mail className="w-5 h-5" />
+              E-mail
+            </a>
+          </div>
         </div>
       );
     }
@@ -547,15 +601,40 @@ const BettingModal: React.FC<BettingModalProps> = ({
             <div className="flex flex-col gap-3 md:gap-4">
               {PRIVATE_MARKETS.map((m, i) => {
                 if (joiningBet.selectedMarkets && joiningBet.selectedMarkets[i] === null) return null;
+                const selectedUser = inscribedUsers.find(u => u.id === selectedUserView);
+                const currentAnswer = selectedUserView === 'me' 
+                  ? selectedMarketsList[i] 
+                  : (selectedUser ? selectedUser.picks[i] : null);
+
                 return (
                   <div key={i} className="bg-white border-2 border-gray-200 rounded-xl md:rounded-[2rem] p-4 md:p-5">
                     <p className="text-[9px] md:text-[10px] font-black text-[#091747] uppercase mb-2 md:mb-4">{m.name}</p>
                     <div className="grid grid-cols-3 gap-1.5 md:gap-2">
-                      {m.options(match).map(o => (
-                        <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-2 px-1 text-[8px] md:text-[9px] font-black border-2 rounded-lg md:rounded-xl transition-all uppercase", selectedMarketsList[i] === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-white border-gray-100 text-gray-500")}>
-                          {o.label}
-                        </button>
-                      ))}
+                      {m.options(match).map(o => {
+                        const isSelected = currentAnswer === o.id;
+                        return (
+                          <button 
+                            key={o.id} 
+                            disabled={selectedUserView !== 'me'}
+                            onClick={() => { 
+                              if (selectedUserView === 'me') {
+                                const n = [...selectedMarketsList]; 
+                                n[i] = o.id; 
+                                setSelectedMarketsList(n); 
+                              }
+                            }} 
+                            className={cn(
+                              "py-2 px-1 text-[8px] md:text-[9px] font-black border-2 rounded-lg md:rounded-xl transition-all uppercase", 
+                              isSelected 
+                                ? "bg-[#FFB10A] border-[#FFB10A] text-white" 
+                                : "bg-white border-gray-100 text-gray-400 font-medium",
+                              selectedUserView !== 'me' ? "opacity-90" : ""
+                            )}
+                          >
+                            {o.label}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -565,9 +644,33 @@ const BettingModal: React.FC<BettingModalProps> = ({
         );
       }
       return (
-        <div className="flex flex-col gap-4 md:gap-8 py-2 md:py-4">
-          <input type="text" placeholder="NOME DA SALA" value={roomNameInput} onChange={(e) => setRoomNameInput(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-xl md:rounded-[2rem] py-3.5 md:py-5 px-4 md:px-6 text-center text-sm md:text-lg font-black text-[#091747] outline-none placeholder:text-gray-400 uppercase" />
-          <input type="text" placeholder="SENHA" value={roomCodeInput} onChange={(e) => setRoomCodeInput(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-xl md:rounded-[2rem] py-3.5 md:py-6 px-3 md:px-4 text-center text-lg md:text-2xl font-mono font-black text-[#091747] outline-none placeholder:text-gray-400" />
+        <div className="flex flex-col gap-4 md:gap-6 py-2 md:py-4">
+          <input 
+            type="text" 
+            placeholder="NOME DA SALA" 
+            value={roomNameInput} 
+            onChange={(e) => {
+              setError('');
+              setRoomNameInput(e.target.value);
+            }} 
+            className="w-full bg-white border-2 border-gray-300 rounded-xl md:rounded-[2rem] py-3.5 md:py-5 px-4 md:px-6 text-center text-sm md:text-lg font-black text-[#091747] outline-none placeholder:text-gray-400 uppercase" 
+          />
+          <input 
+            type="text" 
+            placeholder="SENHA" 
+            value={roomCodeInput} 
+            onChange={(e) => {
+              setError('');
+              setRoomCodeInput(e.target.value);
+            }} 
+            className="w-full bg-white border-2 border-gray-300 rounded-xl md:rounded-[2rem] py-3.5 md:py-6 px-3 md:px-4 text-center text-lg md:text-2xl font-mono font-black text-[#091747] outline-none placeholder:text-gray-400" 
+          />
+          {error && (
+            <div className="text-red-600 text-[11px] font-black uppercase italic flex items-center justify-center gap-2 mt-1 bg-red-50 border-2 border-red-500 rounded-2xl p-4">
+              <AlertCircle className="w-4 h-4 shrink-0 text-red-600 animate-pulse" />
+              <span>{error}</span>
+            </div>
+          )}
         </div>
       );
     }
@@ -692,7 +795,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
           </div>
           {betAction && (betAction === 'create' || betAction === 'join') && !isSuccess && !showClassification && !showDeleteConfirm && (
             <div className="mt-6 flex flex-col gap-4 shrink-0">
-              {error && <div className="bg-white text-red-600 p-4 rounded-2xl border-2 border-red-500 text-[11px] font-black uppercase italic flex items-center gap-2"><AlertCircle className="w-4 h-4" />{error}</div>}
+              {error && !(betAction === 'join' && !joiningBet) && <div className="bg-white text-red-600 p-4 rounded-2xl border-2 border-red-500 text-[11px] font-black uppercase italic flex items-center gap-2"><AlertCircle className="w-4 h-4" />{error}</div>}
               {betAction === 'create' && createStep !== 'details' && activeTab !== 'Nacional' ? (
                 <button onClick={() => {
                   setError('');

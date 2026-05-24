@@ -19,13 +19,30 @@ const ClassificationTable: React.FC<ClassificationTableProps> = ({
   const tableData = LEAGUE_CLASSIFICATIONS[league] || LEAGUE_CLASSIFICATIONS['Girabola'];
 
   return (
-    <div className="flex flex-col gap-5 py-4">
+    <div className="flex flex-col gap-5 py-4 animate-fade-in">
       <div className="bg-[#091747] text-white p-5 rounded-[2rem] flex items-center justify-between shadow-lg relative overflow-hidden">
         <div className="absolute right-0 top-0 w-24 h-24 bg-[#FFB10A]/10 rounded-full blur-2xl" />
         <h4 className="text-[11px] font-black uppercase tracking-widest italic flex items-center gap-2 relative z-10">
           <Trophy className="w-4 h-4 text-[#FFB10A]" />
           Tabela: {league}
         </h4>
+      </div>
+
+      <div className="bg-[#FFB10A]/5 border-2 border-[#FFB10A]/20 p-3.5 rounded-2xl flex flex-wrap items-center justify-between gap-3 text-[10px] shadow-sm">
+        <div className="flex items-center gap-2">
+          <span className="font-black text-[#091747] uppercase tracking-wider text-[8px] bg-[#091747]/10 px-2 py-0.5 rounded">Foco no Jogo:</span>
+          <span className="font-extrabold text-[#091747]">{homeTeam}</span>
+          <span className="font-black text-[#FFB10A] px-0.5">X</span>
+          <span className="font-extrabold text-[#091747]">{awayTeam}</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center gap-1 font-bold text-gray-600">
+            <span className="w-2.5 h-2.5 rounded bg-[#091747] border border-[#FFB10A]/40 inline-block" /> Casa
+          </span>
+          <span className="inline-flex items-center gap-1 font-bold text-gray-600">
+            <span className="w-2.5 h-2.5 rounded bg-[#FFB10A] inline-block" /> Fora
+          </span>
+        </div>
       </div>
       
       <div className="bg-white border-2 border-gray-100 rounded-[2.5rem] overflow-hidden shadow-sm">
@@ -48,25 +65,56 @@ const ClassificationTable: React.FC<ClassificationTableProps> = ({
               const home = normalize(homeTeam);
               const away = normalize(awayTeam);
               
-              const isMatchTeam = rowTeam.includes(home) || rowTeam.includes(away) || home.includes(rowTeam) || away.includes(rowTeam);
+              const isHomeTeam = (() => {
+                const rowTokens = rowTeam.split(/\s+/).filter(t => t.length > 2 && t !== 'de' && t !== 'do' && t !== 'da');
+                const homeTokens = home.split(/\s+/).filter(t => t.length > 2 && t !== 'de' && t !== 'do' && t !== 'da');
+                const directMatch = rowTeam.includes(home) || home.includes(rowTeam);
+                if (directMatch) return true;
+                return rowTokens.some(rt => homeTokens.some(ht => rt.includes(ht) || ht.includes(rt)));
+              })();
+
+              const isAwayTeam = (() => {
+                const rowTokens = rowTeam.split(/\s+/).filter(t => t.length > 2 && t !== 'de' && t !== 'do' && t !== 'da');
+                const awayTokens = away.split(/\s+/).filter(t => t.length > 2 && t !== 'de' && t !== 'do' && t !== 'da');
+                const directMatch = rowTeam.includes(away) || away.includes(rowTeam);
+                if (directMatch) return true;
+                return rowTokens.some(rt => awayTokens.some(ht => rt.includes(ht) || ht.includes(rt)));
+              })();
+              
+              const isMatchTeam = isHomeTeam || isAwayTeam;
               
               return (
                 <tr key={i} className={cn(
-                  "border-b border-gray-50 transition-colors", 
-                  isMatchTeam ? "bg-orange-50" : (i % 2 === 0 ? "bg-white" : "bg-gray-50/20")
+                  "border-b border-gray-100 transition-all duration-300", 
+                  isMatchTeam ? "bg-[#FFB10A]/12" : (i % 2 === 0 ? "bg-white" : "bg-gray-50/20")
                 )}>
-                  <td className="px-3 py-4 font-black text-[#091747] italic text-[9px]">{row.pos}º</td>
-                  <td className="px-1 py-4 font-bold text-gray-900 uppercase tracking-tight text-[9px]">
-                    <div className="flex items-center gap-1">
-                      <span className="truncate max-w-[120px] md:max-w-none">{row.team}</span>
-                      {isMatchTeam && <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-[#FFB10A] animate-pulse" />}
+                  <td className={cn(
+                    "px-3 py-4 font-black transition-all",
+                    isMatchTeam ? "text-[#091747] border-l-4 border-l-[#FFB10A] italic text-[10px]" : "text-[#091747] italic text-[9px]"
+                  )}>{row.pos}º</td>
+                  <td className="px-1 py-4 font-bold uppercase tracking-tight text-[9px]">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className={cn(
+                        "truncate max-w-[120px] md:max-w-none transition-all",
+                        isMatchTeam ? "font-black text-[#091747]" : "text-gray-700"
+                      )}>{row.team}</span>
+                      {isHomeTeam && (
+                        <span className="shrink-0 text-[7px] md:text-[8px] font-black bg-[#091747] text-[#FFB10A] px-2 py-0.5 rounded-lg border border-[#FFB10A]/30 uppercase tracking-wider animate-pulse">
+                          CASA
+                        </span>
+                      )}
+                      {isAwayTeam && (
+                        <span className="shrink-0 text-[7px] md:text-[8px] font-black bg-[#FFB10A] text-white px-2 py-0.5 rounded-lg uppercase tracking-wider animate-pulse">
+                          FORA
+                        </span>
+                      )}
                     </div>
                   </td>
-                  <td className="px-1 py-4 text-center font-bold text-gray-500 text-[9px]">{row.p}</td>
-                  <td className="px-1 py-4 text-center font-bold text-gray-400 text-[9px]">{row.w || 0}</td>
-                  <td className="px-1 py-4 text-center font-bold text-gray-400 text-[9px]">{row.d || 0}</td>
-                  <td className="px-1 py-4 text-center font-bold text-gray-400 text-[9px]">{row.l || 0}</td>
-                  <td className="px-2 py-4 text-center font-black text-[#091747] text-[9px]">{row.pts}</td>
+                  <td className={cn("px-1 py-4 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-500")}>{row.p}</td>
+                  <td className={cn("px-1 py-4 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-400")}>{row.w || 0}</td>
+                  <td className={cn("px-1 py-4 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-400")}>{row.d || 0}</td>
+                  <td className={cn("px-1 py-4 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-400")}>{row.l || 0}</td>
+                  <td className={cn("px-2 py-4 text-center font-black text-[10px]", isMatchTeam ? "text-[#091747] bg-[#FFB10A]/20" : "text-[#091747]")}>{row.pts}</td>
                 </tr>
               );
             })}
