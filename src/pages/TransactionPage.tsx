@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CreditCard, HandCoins, Users, ShieldCheck, ChevronDown, Coins, Info } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { storageService } from '../services/storageService';
 
 export default function TransactionPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [amount, setAmount] = useState('');
   const [method, setMethod] = useState('multicaixa');
+  const [error, setError] = useState<string | null>(null);
 
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -67,7 +69,34 @@ export default function TransactionPage() {
               </span>
             </div>
 
-            <form id="transaction-form" className="p-6 space-y-6" onSubmit={(e) => { e.preventDefault(); setIsSuccess(true); }}>
+            <form id="transaction-form" className="p-6 space-y-6" onSubmit={(e) => {
+              e.preventDefault();
+              setError(null);
+              const numericAmount = parseFloat(amount);
+              if (isNaN(numericAmount) || numericAmount <= 0) {
+                setError('Por favor, introduz um valor válido.');
+                return;
+              }
+
+              const wallet = storageService.getWallet();
+              if (type === 'depositar') {
+                storageService.updateWallet({ balance: wallet.balance + numericAmount });
+              } else if (type === 'levantar') {
+                if (wallet.balance < numericAmount) {
+                  setError('Saldo insuficiente para realizar este levantamento.');
+                  return;
+                }
+                storageService.updateWallet({ balance: wallet.balance - numericAmount });
+              } else if (type === 'transferir') {
+                if (wallet.balance < numericAmount) {
+                  setError('Saldo insuficiente para realizar esta transferência.');
+                  return;
+                }
+                storageService.updateWallet({ balance: wallet.balance - numericAmount });
+              }
+
+              setIsSuccess(true);
+            }}>
               <div>
                 <label className="block text-xs font-bold text-gray-800 uppercase tracking-widest mb-2 px-1">Valor (Kz)</label>
                 <div className="relative">
@@ -76,12 +105,17 @@ export default function TransactionPage() {
                     id="amount-input"
                     type="number"
                     value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
+                    onChange={(e) => { setAmount(e.target.value); setError(null); }}
                     placeholder="0"
                     className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#FFB10A] outline-none font-bold text-lg transition-all"
                     required
                   />
                 </div>
+                {error && (
+                  <p className="mt-2 text-xs font-bold text-red-500 uppercase tracking-tight px-1">
+                    {error}
+                  </p>
+                )}
               </div>
 
               <div>

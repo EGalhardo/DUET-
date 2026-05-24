@@ -14,14 +14,24 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
   const isBasketball = category === 'basket' || match.league === 'NBA' || match.league === 'Unitel Basket' || match.league === 'Liga ACB' || match.league === 'VTB United League' || match.league === 'Basket League' || match.league === 'Serie A Basket' || match.league === 'Jeep Elite' || match.league === 'BBL Alemanha';
   const isF1 = category === 'f1';
   const [imageLoaded, setImageLoaded] = React.useState(false);
+  const lastClickTime = React.useRef<number>(0);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    const currentTime = Date.now();
+    const clickInterval = currentTime - lastClickTime.current;
+    if (clickInterval < 300) {
+      onClick(match);
+    }
+    lastClickTime.current = currentTime;
+  };
 
   if (isF1) {
     return (
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        onClick={() => onClick(match)}
-        className="bg-[#091747] rounded-[1.5rem] border-2 border-gray-200 cursor-pointer hover:shadow-xl transition-all relative overflow-hidden group shadow-sm min-h-[180px] md:aspect-[2.1/1] md:min-h-0"
+        onClick={handleCardClick}
+        className="bg-[#091747] rounded-[1.5rem] border-2 border-gray-200 cursor-pointer hover:shadow-xl transition-all relative overflow-hidden group shadow-sm min-h-[180px] md:aspect-[2.1/1] md:min-h-0 select-none touch-manipulation active:scale-[0.98]"
       >
         {/* Background Image */}
         <div 
@@ -64,19 +74,6 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
               {match.date}
             </div>
           </div>
-
-          <div className="w-full flex justify-center items-end pb-4 md:pb-12 absolute inset-0 pointer-events-none">
-            <button 
-              id={`match-entrar-${match.id}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                onClick(match);
-              }}
-              className="pointer-events-auto bg-[#FFB10A] hover:bg-[#FFC000] text-white font-black py-3 md:py-4 px-16 md:px-28 rounded-xl md:rounded-2xl uppercase tracking-[0.15em] md:tracking-[0.25em] text-[10px] md:text-sm shadow-[0_10px_30px_rgba(255,177,10,0.4)] hover:shadow-[0_15px_40px_rgba(255,177,10,0.6)] active:scale-95 transition-all border-2 border-white/20 transform hover:-translate-y-1"
-            >
-              Entrar
-            </button>
-          </div>
         </div>
       </motion.div>
     );
@@ -87,8 +84,8 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        onClick={() => onClick(match)}
-        className="bg-white rounded-lg border-2 border-gray-200 p-6 cursor-pointer hover:shadow-md transition-all relative overflow-hidden"
+        onClick={handleCardClick}
+        className="bg-white rounded-lg border-2 border-gray-200 p-6 cursor-pointer hover:shadow-md transition-all relative overflow-hidden select-none touch-manipulation active:scale-[0.98]"
       >
         {/* TOP: LEAGUE, DATE AND TIME */}
         <div className="flex flex-col items-center gap-1 mb-6">
@@ -144,20 +141,6 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
             </span>
           </div>
         </div>
-
-        {/* FOOTER: ENTRAR BUTTON */}
-        <div className="mt-6 -mx-[19px] px-[5px]">
-          <button 
-            id={`match-entrar-${match.id}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClick(match);
-            }}
-            className="w-full py-3 bg-[#FFB10A] text-white rounded-lg font-black text-xs uppercase tracking-widest hover:bg-[#FFC000] transition-all shadow-[0_10px_20px_rgba(255,177,10,0.3)] hover:shadow-[0_15px_30px_rgba(255,177,10,0.5)] transform hover:-translate-y-1 active:scale-95"
-          >
-            Entrar
-          </button>
-        </div>
       </motion.div>
     );
   }
@@ -166,8 +149,8 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
     <motion.div 
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      onClick={() => onClick(match)}
-      className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6 cursor-pointer hover:border-[#FFB10A] transition-all"
+      onClick={handleCardClick}
+      className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6 cursor-pointer hover:border-[#FFB10A] transition-all select-none touch-manipulation active:scale-[0.98]"
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2 text-sm font-bold text-[#364153]">
@@ -218,7 +201,7 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
         ].map((option, i) => (
           <div key={i} className="flex flex-col items-center justify-center p-2 rounded-xl border border-gray-200 bg-white min-h-[4.5rem]">
             <span className={cn(
-              "text-center line-clamp-1 h-full flex items-center justify-center",
+               "text-center line-clamp-1 h-full flex items-center justify-center",
               option.label !== '' ? "text-2xl font-black text-[#091747]" : "text-[10px] font-bold text-[#364153]"
             )}>
               {option.label}
@@ -227,17 +210,6 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
           </div>
         ))}
       </div>
-
-      <button 
-        id={`match-entrar-${match.id}`}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick(match);
-        }}
-        className="w-full bg-[#FFB10A] hover:bg-[#FFC000] text-white font-bold py-3 rounded-xl transition-all shadow-[0_10px_20px_rgba(255,177,10,0.3)] hover:shadow-[0_15px_30px_rgba(255,177,10,0.5)] transform hover:-translate-y-1 active:scale-95"
-      >
-        Entrar
-      </button>
     </motion.div>
   );
 });

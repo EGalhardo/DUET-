@@ -21,7 +21,7 @@ const MarketOption: React.FC<MarketOptionProps> = ({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "py-5 px-1 rounded-2xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 text-center shadow-sm",
+        "py-3.5 md:py-5 px-1 rounded-xl md:rounded-2xl border-2 transition-all active:scale-95 flex flex-col items-center justify-center gap-1 md:gap-2 text-center shadow-sm",
         isSelected 
           ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-md scale-[1.02]" 
           : "bg-white border-white text-gray-600 hover:border-[#FFB10A]",
@@ -29,7 +29,7 @@ const MarketOption: React.FC<MarketOptionProps> = ({
       )}
     >
       <div className={cn(
-        "w-4 h-4 rounded-full border-2 flex items-center justify-center",
+        "w-3.5 h-3.5 md:w-4 md:h-4 rounded-full border-2 flex items-center justify-center",
         isSelected ? "border-white" : "border-[#FFB10A]/30"
       )}>
         {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}

@@ -343,50 +343,50 @@ const BettingModal: React.FC<BettingModalProps> = ({
       const userBets = storageService.getBets().filter(b => b.matchId === match.id && b.category === activeTab);
 
       return (
-        <div className="flex flex-col gap-4 py-4">
+        <div className="flex flex-col gap-3 md:gap-4 py-2 md:py-4">
           <button 
             onClick={() => {
               setBetAction('create');
               if (activeTab === 'Privado' || activeTab === '1 vs 1') setCreateStep('password');
               else setCreateStep('details');
             }}
-            className="group flex items-center gap-5 p-6 bg-white border border-gray-200 rounded-[2rem] hover:border-[#FFB10A] transition-all hover:bg-orange-50/50"
+            className="group flex items-center gap-3 md:gap-5 p-4 md:p-6 bg-white border border-gray-200 rounded-2xl md:rounded-[2rem] hover:border-[#FFB10A] transition-all hover:bg-orange-50/50"
           >
-            <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center text-[#FFB10A] group-hover:bg-[#FFB10A] group-hover:text-white transition-all">
-              <Plus className="w-8 h-8 stroke-[3px]" />
+            <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-orange-50 flex items-center justify-center text-[#FFB10A] shrink-0 group-hover:bg-[#FFB10A] group-hover:text-white transition-all">
+              <Plus className="w-6 h-6 md:w-8 md:h-8 stroke-[3px]" />
             </div>
             <div className="text-left">
-              <h4 className="font-black text-[#091747] text-xl uppercase tracking-tighter italic">Criar {activeTab === '1 vs 1' ? 'Duelo' : 'Sala'}</h4>
-              <p className="text-[10px] text-gray-800 font-black uppercase tracking-widest mt-1">Lança um desafio novo</p>
+              <h4 className="font-black text-[#091747] text-lg md:text-xl uppercase tracking-tighter italic">Criar {activeTab === '1 vs 1' ? 'Duelo' : 'Sala'}</h4>
+              <p className="text-[9px] md:text-[10px] text-gray-800 font-black uppercase tracking-widest mt-0.5 md:mt-1">Lança um desafio novo</p>
             </div>
           </button>
           <button 
             onClick={() => setBetAction('join')}
-            className="group flex items-center gap-5 p-6 bg-white border border-gray-200 rounded-[2rem] hover:border-blue-500 transition-all hover:bg-blue-50/50"
+            className="group flex items-center gap-3 md:gap-5 p-4 md:p-6 bg-white border border-gray-200 rounded-2xl md:rounded-[2rem] hover:border-blue-500 transition-all hover:bg-blue-50/50"
           >
-            <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
-              <Users className="w-8 h-8 stroke-[3px]" />
+            <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all">
+              <Users className="w-6 h-6 md:w-8 md:h-8 stroke-[3px]" />
             </div>
             <div className="text-left">
-              <h4 className="font-black text-[#091747] text-xl uppercase tracking-tighter italic">Entrar com Senha</h4>
-              <p className="text-[10px] text-gray-800 font-black uppercase tracking-widest mt-1">Aceita um convite direto</p>
+              <h4 className="font-black text-[#091747] text-lg md:text-xl uppercase tracking-tighter italic">Entrar com Senha</h4>
+              <p className="text-[9px] md:text-[10px] text-gray-800 font-black uppercase tracking-widest mt-0.5 md:mt-1">Aceita um convite direto</p>
             </div>
           </button>
 
           {userBets.length > 0 && (
             <button 
               onClick={() => setBetAction('my_bets')}
-              className="group flex items-center gap-5 p-6 bg-white border border-gray-100 rounded-[2rem] hover:border-green-500 transition-all hover:bg-green-50"
+              className="group flex items-center gap-3 md:gap-5 p-4 md:p-6 bg-white border border-gray-100 rounded-2xl md:rounded-[2rem] hover:border-green-500 transition-all hover:bg-green-50"
             >
-              <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-all">
-                <Trophy className="w-8 h-8 stroke-[2px]" />
+              <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-green-50 flex items-center justify-center text-green-600 shrink-0 group-hover:bg-green-600 group-hover:text-white transition-all">
+                <Trophy className="w-6 h-6 md:w-8 md:h-8 stroke-[2px]" />
               </div>
               <div className="text-left flex-1">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-black text-[#091747] text-xl uppercase tracking-tighter italic">Tuas Apostas</h4>
-                  <span className="bg-green-500 text-white text-[10px] font-black px-3 py-1 rounded-xl">{userBets.length}</span>
+                  <h4 className="font-black text-[#091747] text-lg md:text-xl uppercase tracking-tighter italic">Tuas Apostas</h4>
+                  <span className="bg-green-500 text-white text-[9px] md:text-[10px] font-black px-2.5 py-0.5 md:px-3 md:py-1 rounded-xl">{userBets.length}</span>
                 </div>
-                <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-1">Vê o estado dos teus duelos</p>
+                <p className="text-[9px] md:text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-0.5 md:mt-1">Vê o estado dos teus duelos</p>
               </div>
             </button>
           )}
@@ -502,15 +502,15 @@ const BettingModal: React.FC<BettingModalProps> = ({
 
     if (betAction === 'create' && createStep === 'password') {
       return (
-        <div className="flex flex-col gap-6 py-4">
-          <div className="bg-white border-2 border-orange-200 p-5 rounded-[2rem] flex items-start gap-4">
-            <Shield className="w-6 h-6 text-[#FFB10A] shrink-0 mt-1" strokeWidth={3} />
-            <p className="text-[11px] text-gray-900 leading-relaxed font-black uppercase tracking-tight">Configura o acesso ao teu desafio. Cria um nome para a sala e uma senha de segurança.</p>
+        <div className="flex flex-col gap-4 md:gap-6 py-2 md:py-4">
+          <div className="bg-white border-2 border-orange-200 p-3.5 md:p-5 rounded-xl md:rounded-[2rem] flex items-start gap-3 md:gap-4">
+            <Shield className="w-5 h-5 md:w-6 md:h-6 text-[#FFB10A] shrink-0 mt-0.5 md:mt-1" strokeWidth={3} />
+            <p className="text-[10px] md:text-[11px] text-gray-900 leading-relaxed font-black uppercase tracking-tight">Configura o acesso ao teu desafio. Cria um nome para a sala e uma senha de segurança.</p>
           </div>
-          <div className="flex flex-col gap-5">
-            <input type="text" placeholder="NOME DA SALA" value={roomName} onChange={(e) => setRoomName(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-[2rem] py-5 px-6 text-center text-lg font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all uppercase" />
-            <input type="password" placeholder="SENHA" value={createPassword} onChange={(e) => setCreatePassword(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-[2rem] py-5 px-5 text-center text-2xl font-mono font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all" />
-            <input type="password" placeholder="CONFIRMAR SENHA" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-[2rem] py-5 px-5 text-center text-2xl font-mono font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all" />
+          <div className="flex flex-col gap-3 md:gap-5">
+            <input type="text" placeholder="NOME DA SALA" value={roomName} onChange={(e) => setRoomName(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-xl md:rounded-[2rem] py-3.5 md:py-5 px-4 md:px-6 text-center text-sm md:text-lg font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all uppercase" />
+            <input type="password" placeholder="SENHA" value={createPassword} onChange={(e) => setCreatePassword(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-xl md:rounded-[2rem] py-3.5 md:py-5 px-4 md:px-5 text-center text-lg md:text-2xl font-mono font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all" />
+            <input type="password" placeholder="CONFIRMAR SENHA" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-xl md:rounded-[2rem] py-3.5 md:py-5 px-4 md:px-5 text-center text-lg md:text-2xl font-mono font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all" />
           </div>
         </div>
       );
@@ -521,12 +521,12 @@ const BettingModal: React.FC<BettingModalProps> = ({
         if (activeTab === '1 vs 1') {
           const options = FOOTBALL_MARKETS[joiningBet.marketType || 'Resultado Final'] || [];
           return (
-            <div className="flex flex-col gap-6 py-2">
-              <div className="bg-white border-2 border-orange-500 p-4 rounded-2xl flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-[#FFB10A] shrink-0" strokeWidth={3} />
-                <p className="text-[10px] text-gray-900 font-black uppercase">O adversário escolheu {joiningBet.market}. Escolhe outra opção!</p>
+            <div className="flex flex-col gap-4 md:gap-6 py-2">
+              <div className="bg-white border-2 border-orange-500 p-3 md:p-4 rounded-xl md:rounded-2xl flex items-start gap-2.5 md:gap-3">
+                <AlertCircle className="w-4 h-4 md:w-5 md:h-5 text-[#FFB10A] shrink-0" strokeWidth={3} />
+                <p className="text-[9px] md:text-[10px] text-gray-900 font-black uppercase">O adversário escolheu {joiningBet.market}. Escolhe outra opção!</p>
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-1.5 md:gap-2">
                 {options.map(({ id, label }) => {
                   const disp = label(match);
                   const isOccVal = disp === joiningBet.market;
@@ -537,22 +537,22 @@ const BettingModal: React.FC<BettingModalProps> = ({
           );
         }
         return (
-          <div className="flex flex-col gap-6 py-4">
-             <div className="bg-gray-50 p-5 rounded-3xl border-2 border-gray-100">
-              <select value={selectedUserView} onChange={(e) => setSelectedUserView(e.target.value)} className="w-full bg-white border-2 border-white rounded-2xl py-4 px-5 text-xs font-black text-[#091747] appearance-none uppercase">
+          <div className="flex flex-col gap-4 md:gap-6 py-2 md:py-4">
+             <div className="bg-gray-50 p-3.5 md:p-5 rounded-2xl md:rounded-3xl border-2 border-gray-100">
+              <select value={selectedUserView} onChange={(e) => setSelectedUserView(e.target.value)} className="w-full bg-white border-2 border-white rounded-xl md:rounded-2xl py-3 md:py-4 px-4 md:px-5 text-[10px] md:text-xs font-black text-[#091747] appearance-none uppercase">
                 <option value="me">Teus Prognósticos</option>
                 {inscribedUsers.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
               </select>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 md:gap-4">
               {PRIVATE_MARKETS.map((m, i) => {
                 if (joiningBet.selectedMarkets && joiningBet.selectedMarkets[i] === null) return null;
                 return (
-                  <div key={i} className="bg-white border-2 border-gray-200 rounded-[2rem] p-5">
-                    <p className="text-[10px] font-black text-[#091747] uppercase mb-4">{m.name}</p>
-                    <div className="grid grid-cols-3 gap-2">
+                  <div key={i} className="bg-white border-2 border-gray-200 rounded-xl md:rounded-[2rem] p-4 md:p-5">
+                    <p className="text-[9px] md:text-[10px] font-black text-[#091747] uppercase mb-2 md:mb-4">{m.name}</p>
+                    <div className="grid grid-cols-3 gap-1.5 md:gap-2">
                       {m.options(match).map(o => (
-                        <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-3 text-[9px] font-black border-2 rounded-xl transition-all uppercase", selectedMarketsList[i] === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-white border-gray-100 text-gray-500")}>
+                        <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-2 px-1 text-[8px] md:text-[9px] font-black border-2 rounded-lg md:rounded-xl transition-all uppercase", selectedMarketsList[i] === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-white border-gray-100 text-gray-500")}>
                           {o.label}
                         </button>
                       ))}
@@ -565,28 +565,28 @@ const BettingModal: React.FC<BettingModalProps> = ({
         );
       }
       return (
-        <div className="flex flex-col gap-8 py-4">
-          <input type="text" placeholder="NOME DA SALA" value={roomNameInput} onChange={(e) => setRoomNameInput(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-[2rem] py-5 px-6 text-center text-lg font-black text-[#091747] outline-none" />
-          <input type="text" placeholder="SENHA" value={roomCodeInput} onChange={(e) => setRoomCodeInput(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-[2rem] py-6 px-4 text-center text-2xl font-mono font-black text-[#091747] outline-none" />
+        <div className="flex flex-col gap-4 md:gap-8 py-2 md:py-4">
+          <input type="text" placeholder="NOME DA SALA" value={roomNameInput} onChange={(e) => setRoomNameInput(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-xl md:rounded-[2rem] py-3.5 md:py-5 px-4 md:px-6 text-center text-sm md:text-lg font-black text-[#091747] outline-none placeholder:text-gray-400 uppercase" />
+          <input type="text" placeholder="SENHA" value={roomCodeInput} onChange={(e) => setRoomCodeInput(e.target.value)} className="w-full bg-white border-2 border-gray-300 rounded-xl md:rounded-[2rem] py-3.5 md:py-6 px-3 md:px-4 text-center text-lg md:text-2xl font-mono font-black text-[#091747] outline-none placeholder:text-gray-400" />
         </div>
       );
     }
 
     if (activeTab === 'Nacional') {
       return (
-        <div className="flex flex-col gap-6 py-2">
+        <div className="flex flex-col gap-3 md:gap-6 py-2">
           {PRIVATE_MARKETS.map((m, i) => (
-            <div key={i} className="bg-white border-2 border-gray-100 rounded-2xl p-4">
-               <p className="text-[9px] font-black text-[#091747] uppercase mb-3">{i+1}. {m.name}</p>
-               <div className="grid grid-cols-3 gap-2">
-                 {m.options(match).map(o => <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-2.5 text-[7px] font-black rounded-lg border-2", selectedMarketsList[i] === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-gray-50 text-gray-500")}>{o.label}</button>)}
+            <div key={i} className="bg-white border-2 border-gray-100 rounded-xl md:rounded-2xl p-3 md:p-4">
+               <p className="text-[9px] font-black text-[#091747] uppercase mb-2 md:mb-3">{i+1}. {m.name}</p>
+               <div className="grid grid-cols-3 gap-1.5 md:gap-2">
+                 {m.options(match).map(o => <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-2 md:py-2.5 text-[7px] font-black rounded-md md:rounded-lg border-2", selectedMarketsList[i] === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-gray-50 text-gray-500")}>{o.label}</button>)}
                </div>
             </div>
           ))}
-          <div className="flex items-center justify-between bg-orange-50/50 p-5 rounded-3xl border border-orange-100">
-            <span className="text-[10px] font-black text-[#091747] uppercase italic">Confirmação Inteligente (+100k)</span>
-            <button onClick={() => setAutoConfirmNacional(!autoConfirmNacional)} className={cn("w-12 h-6 rounded-full transition-all relative flex items-center px-1", autoConfirmNacional ? "bg-[#FFB10A]" : "bg-gray-300")}>
-              <motion.div animate={{ x: autoConfirmNacional ? 24 : 0 }} className="w-4 h-4 bg-white rounded-full" />
+          <div className="flex items-center justify-between bg-orange-50/50 p-4 md:p-5 rounded-2xl md:rounded-3xl border border-orange-100">
+            <span className="text-[9px] md:text-[10px] font-black text-[#091747] uppercase italic">Confirmação Inteligente (+100k)</span>
+            <button onClick={() => setAutoConfirmNacional(!autoConfirmNacional)} className={cn("w-10 md:w-12 h-5 md:h-6 rounded-full transition-all relative flex items-center px-1", autoConfirmNacional ? "bg-[#FFB10A]" : "bg-gray-300")}>
+              <motion.div animate={{ x: autoConfirmNacional ? 20 : 0 }} className="w-3.5 h-3.5 md:w-4 md:h-4 bg-white rounded-full" />
             </button>
           </div>
         </div>
@@ -595,12 +595,12 @@ const BettingModal: React.FC<BettingModalProps> = ({
 
     if (activeTab === 'Privado' && createStep === 'selection') {
       return (
-        <div className="flex flex-col gap-6 py-2">
-           <div className="grid grid-cols-1 gap-2">
+        <div className="flex flex-col gap-3 md:gap-6 py-1 md:py-2">
+           <div className="grid grid-cols-1 gap-1.5 md:gap-2">
             {PRIVATE_MARKETS.map((m, i) => (
-              <button key={i} onClick={() => { const n = [...selectedMarketsList]; n[i] = n[i] ? '' : 'PENDING'; setSelectedMarketsList(n); }} className={cn("flex items-center gap-3 p-3 rounded-xl border-2 transition-all", selectedMarketsList[i] ? "bg-white border-[#FFB10A]" : "bg-gray-50 opacity-70")}>
-                <div className={cn("w-5 h-5 rounded border-2 flex items-center justify-center", selectedMarketsList[i] ? "bg-[#FFB10A] border-[#FFB10A]" : "bg-white")}>{selectedMarketsList[i] && <Check className="w-2.5 h-2.5 text-white stroke-[4px]" />}</div>
-                <span className="text-[10px] font-black uppercase">{m.name}</span>
+              <button key={i} onClick={() => { const n = [...selectedMarketsList]; n[i] = n[i] ? '' : 'PENDING'; setSelectedMarketsList(n); }} className={cn("flex items-center gap-2.5 md:gap-3 p-2.5 md:p-3 rounded-lg md:rounded-xl border-2 transition-all", selectedMarketsList[i] ? "bg-white border-[#FFB10A]" : "bg-gray-50 opacity-70")}>
+                <div className={cn("w-4 h-4 md:w-5 md:h-5 rounded border-2 flex items-center justify-center", selectedMarketsList[i] ? "bg-[#FFB10A] border-[#FFB10A]" : "bg-white")}>{selectedMarketsList[i] && <Check className="w-2 md:w-2.5 h-2 md:h-2.5 text-white stroke-[4px]" />}</div>
+                <span className="text-[9px] md:text-[10px] font-black uppercase">{m.name}</span>
               </button>
             ))}
           </div>
@@ -609,15 +609,15 @@ const BettingModal: React.FC<BettingModalProps> = ({
     }
 
     return (
-      <div className="flex flex-col gap-6 py-2">
-        <div className="bg-orange-50/50 rounded-[2rem] p-6 border-2 border-orange-100 flex flex-col gap-6">
+      <div className="flex flex-col gap-4 md:gap-6 py-1 md:py-2">
+        <div className="bg-orange-50/50 rounded-2xl md:rounded-[2rem] p-4 md:p-6 border-2 border-orange-100 flex flex-col gap-4 md:gap-6">
           {activeTab === 'Privado' && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 md:gap-4">
                {selectedMarketsList.map((res, i) => res && (
-                 <div key={i} className="bg-white border-2 border-gray-200 rounded-3xl p-5">
-                    <p className="text-[10px] font-black text-[#091747] uppercase mb-4">{PRIVATE_MARKETS[i].name}</p>
-                    <div className="grid grid-cols-3 gap-2">
-                      {PRIVATE_MARKETS[i].options(match).map(o => <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-3 text-[9px] font-black border-2 rounded-2xl transition-all", res === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-white border-gray-100 text-gray-900")}>{o.label}</button>)}
+                 <div key={i} className="bg-white border-2 border-gray-200 rounded-2xl md:rounded-3xl p-4 md:p-5">
+                    <p className="text-[9px] md:text-[10px] font-black text-[#091747] uppercase mb-2 md:mb-4">{PRIVATE_MARKETS[i].name}</p>
+                    <div className="grid grid-cols-3 gap-1.5 md:gap-2">
+                      {PRIVATE_MARKETS[i].options(match).map(o => <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-2.5 md:py-3 text-[8px] md:text-[9px] font-black border-2 rounded-xl md:rounded-2xl transition-all", res === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-white border-gray-100 text-gray-900")}>{o.label}</button>)}
                     </div>
                  </div>
                ))}
@@ -625,24 +625,24 @@ const BettingModal: React.FC<BettingModalProps> = ({
           )}
           {activeTab === '1 vs 1' && (
             <>
-              <select value={marketType} onChange={(e) => { setMarketType(e.target.value); setSelectedMarket(''); }} className="w-full bg-white border-2 border-white rounded-xl py-3.5 px-5 text-xs font-black text-[#091747] uppercase italic appearance-none">
+              <select value={marketType} onChange={(e) => { setMarketType(e.target.value); setSelectedMarket(''); }} className="w-full bg-white border-2 border-white rounded-xl py-2.5 md:py-3.5 px-4 md:px-5 text-[11px] md:text-xs font-black text-[#091747] uppercase italic appearance-none">
                 {Object.keys(FOOTBALL_MARKETS).map(m => <option key={m} value={m}>{m}</option>)}
               </select>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-1.5 md:gap-2">
                 {(FOOTBALL_MARKETS[marketType] || []).map(({ id, label }) => {
                   const disp = label(match);
                   return <MarketOption key={id} id={id} label={disp} isSelected={selectedMarket === disp} onClick={() => setSelectedMarket(disp)} />;
                 })}
               </div>
               <div className="relative">
-                <input type="number" value={betValue} onChange={(e) => setBetValue(e.target.value)} className="w-full bg-white border-2 border-white rounded-2xl py-4 px-6 text-2xl font-black text-[#091747] outline-none" />
-                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[#FFB10A] font-black italic">KZ</span>
+                <input type="number" value={betValue} onChange={(e) => setBetValue(e.target.value)} className="w-full bg-white border-2 border-white rounded-xl md:rounded-2xl py-3 md:py-4 px-4 md:px-6 text-xl md:text-2xl font-black text-[#091747] outline-none" />
+                <span className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 text-[#FFB10A] font-black italic text-sm md:text-base">KZ</span>
               </div>
             </>
           )}
         </div>
-        <div className="bg-white rounded-2xl p-5 border-2 border-gray-200">
-           <p className="text-[10px] font-black text-gray-600 mb-3 text-center uppercase italic">Lotação: <span className="text-[#091747] text-lg ml-2">{maxParticipants} Atletas</span></p>
+        <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-5 border-2 border-gray-200">
+           <p className="text-[9px] md:text-[10px] font-black text-gray-600 mb-0.5 text-center uppercase italic">Lotação: <span className="text-[#091747] text-base md:text-lg ml-1 md:ml-2">{maxParticipants} Atletas</span></p>
         </div>
       </div>
     );

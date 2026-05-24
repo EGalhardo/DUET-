@@ -17,6 +17,18 @@ export default function Header() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const bellRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
+  const [balance, setBalance] = useState<number>(0);
+
+  useEffect(() => {
+    const loadWallet = () => {
+      setBalance(storageService.getWallet().balance);
+    };
+    loadWallet();
+    window.addEventListener('walletUpdated', loadWallet);
+    return () => {
+      window.removeEventListener('walletUpdated', loadWallet);
+    };
+  }, []);
 
   useEffect(() => {
     const loadNotifications = () => {
@@ -180,12 +192,28 @@ export default function Header() {
               <span className="text-[10px] text-[#364153] font-bold">{auth.user?.email}</span>
             </div>
           )}
+
+          <Link 
+            id="header-user-wallet"
+            to="/carteira"
+            className="flex items-center gap-1 hover:text-[#FFB10A] transition-colors shrink-0 select-none active:scale-95 mr-1"
+          >
+            <Wallet className="w-3.5 h-3.5 text-[#FFB10A]" />
+            <span className="text-xs md:text-sm font-black text-[#091747] tracking-tight whitespace-nowrap">
+              {balance.toLocaleString()} <span className="text-[#FFB10A] text-[10px] font-bold ml-0.5">KZ</span>
+            </span>
+          </Link>
+
           <button 
             ref={buttonRef}
             onClick={() => setShowPopover(!showPopover)}
-            className="relative flex items-center justify-center h-9 w-9 md:h-10 md:w-10 rounded-full border border-gray-200 hover:border-[#FFB10A] transition-all duration-300 overflow-hidden bg-white"
+            className="relative flex items-center justify-center h-9 w-9 md:h-10 md:w-10 rounded-full border border-gray-200 hover:border-[#FFB10A] transition-all duration-300 overflow-hidden bg-white shrink-0"
           >
-            <User className="w-5 h-5 md:w-6 md:h-6 text-[#364153]" />
+            {auth.isLoggedIn && auth.user?.avatar ? (
+              <img src={auth.user.avatar} alt="User Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            ) : (
+              <User className="w-5 h-5 md:w-6 md:h-6 text-[#364153]" />
+            )}
           </button>
 
           {showPopover && (

@@ -146,7 +146,8 @@ export default function Liga() {
       {/* GRID OF CARDS */}
       <div className="px-4 md:px-8 pb-10 lg:pb-14 w-full">
         <div className={cn(
-          "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 mx-auto",
+          "grid gap-4 md:gap-6 lg:gap-8 mx-auto",
+          (category === 'futebol' || category === 'basket') ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-2",
           category === 'f1' ? "max-w-7xl" : "max-w-5xl"
         )}>
           {currentCategory.cards[activeTab]?.map((card, idx) => (
