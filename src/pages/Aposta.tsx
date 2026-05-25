@@ -424,6 +424,10 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
         );
 
         if (!existingBet) {
+          if (isBasketball) {
+            setError('Erro: Sala não encontrada ou credenciais inválidas. Tente novamente.');
+            return;
+          }
           // Fallback para desenvolvimento: cria uma aposta fictícia se não encontrar
           const mockBet = {
             id: `mock-${Date.now()}`,
@@ -1098,7 +1102,12 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       if (joiningBet) {
         if (activeTab === '1 vs 1') {
           const currentMarketType = joiningBet.marketType || 'Resultado Final';
-          const options = FOOTBALL_MARKETS[currentMarketType] || [];
+          const options = isBasketball
+            ? [
+                { id: 'Vitória A', label: () => match.teamA.name },
+                { id: 'Vitória B', label: () => match.teamB.name }
+              ]
+            : (FOOTBALL_MARKETS[currentMarketType] || []);
 
           return (
             <div className="flex flex-col gap-6 py-2">

@@ -48,6 +48,8 @@ export const BASKETBALL_PRIVATE_MARKETS = [
   { name: "Triplo-Duplo", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }] },
   { name: "Mais Ressaltos", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }] },
   { name: "Mais Assistências", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }] },
+  { name: "Mais Roubos de Bola", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }] },
+  { name: "Mais Tampões / Desarmes", options: (m: Match) => [{ id: 'A', label: m.teamA.name }, { id: 'B', label: m.teamB.name }] },
 ];
 
 const F1_DRIVERS = [
