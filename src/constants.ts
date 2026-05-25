@@ -434,7 +434,7 @@ export const LEAGUE_CLASSIFICATIONS: Record<string, any[]> = {
     { pos: 9, team: 'Recreativo do Libolo', p: 12, w: 2, d: 3, l: 7, pts: 9 },
     { pos: 10, team: 'Sporting de Cabinda', p: 12, w: 2, d: 2, l: 8, pts: 8 },
     { pos: 11, team: 'Santa Rita de Cássia', p: 12, w: 2, d: 1, l: 9, pts: 7 },
-    { pos: 12, team: 'Bravos do Maquis', p: 12, w: 1, d: 3, l: 8, pts: 6 },
+    { pos: 12, team: 'Cuando Cubango FC', p: 12, w: 1, d: 3, l: 8, pts: 6 },
     { pos: 13, team: 'Desportivo da Lunda Sul', p: 12, w: 1, d: 2, l: 9, pts: 5 },
     { pos: 14, team: 'Isaac de Benguela', p: 12, w: 1, d: 1, l: 10, pts: 4 },
     { pos: 15, team: 'ASK Dragão', p: 12, w: 1, d: 0, l: 11, pts: 3 },

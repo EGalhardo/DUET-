@@ -16,6 +16,26 @@ const ClassificationTable: React.FC<ClassificationTableProps> = ({
   awayTeam, 
   onBack 
 }) => {
+  const clean = (name: string) => {
+    return name
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\b(de|do|da|fc|sc|clube|club)\b/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  };
+
+  const isMatch = (teamA: string, teamB: string) => {
+    const cleanA = clean(teamA);
+    const cleanB = clean(teamB);
+    if (cleanA === cleanB) return true;
+    if (cleanA.length > 3 && cleanB.length > 3) {
+      return cleanA.includes(cleanB) || cleanB.includes(cleanA);
+    }
+    return false;
+  };
+
   const tableData = LEAGUE_CLASSIFICATIONS[league] || LEAGUE_CLASSIFICATIONS['Girabola'];
 
   return (
@@ -60,27 +80,8 @@ const ClassificationTable: React.FC<ClassificationTableProps> = ({
           </thead>
           <tbody>
             {tableData.map((row, i) => {
-              const normalize = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-              const rowTeam = normalize(row.team);
-              const home = normalize(homeTeam);
-              const away = normalize(awayTeam);
-              
-              const isHomeTeam = (() => {
-                const rowTokens = rowTeam.split(/\s+/).filter(t => t.length > 2 && t !== 'de' && t !== 'do' && t !== 'da');
-                const homeTokens = home.split(/\s+/).filter(t => t.length > 2 && t !== 'de' && t !== 'do' && t !== 'da');
-                const directMatch = rowTeam.includes(home) || home.includes(rowTeam);
-                if (directMatch) return true;
-                return rowTokens.some(rt => homeTokens.some(ht => rt.includes(ht) || ht.includes(rt)));
-              })();
-
-              const isAwayTeam = (() => {
-                const rowTokens = rowTeam.split(/\s+/).filter(t => t.length > 2 && t !== 'de' && t !== 'do' && t !== 'da');
-                const awayTokens = away.split(/\s+/).filter(t => t.length > 2 && t !== 'de' && t !== 'do' && t !== 'da');
-                const directMatch = rowTeam.includes(away) || away.includes(rowTeam);
-                if (directMatch) return true;
-                return rowTokens.some(rt => awayTokens.some(ht => rt.includes(ht) || ht.includes(rt)));
-              })();
-              
+              const isHomeTeam = isMatch(row.team, homeTeam);
+              const isAwayTeam = isMatch(row.team, awayTeam);
               const isMatchTeam = isHomeTeam || isAwayTeam;
               
               return (

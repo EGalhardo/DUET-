@@ -145,6 +145,12 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
+    if (isOpen) {
+      setBetAction(null);
+    }
+  }, [isOpen]);
+
+  React.useEffect(() => {
     if (isOpen && scrollRef.current) {
       const resetScroll = () => {
         if (scrollRef.current) {
@@ -162,7 +168,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
   }, [isOpen, createStep, activeTab, betAction, isSuccess, showClassification, showDeleteConfirm, joiningBet]);
 
   const handleClose = React.useCallback(() => {
-    setBetAction(activeTab === 'Nacional' ? 'create' : null);
+    setBetAction(null);
     setCreateStep('selection');
     setCreatePassword('');
     setConfirmPassword('');
@@ -718,15 +724,12 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
 
     // Initial action selection
     if (!betAction) {
-      if (activeTab === 'Nacional') {
-        setBetAction('create');
-        return null;
-      }
       const userBets = storageService.getBets().filter(b => b.matchId === match.id && b.category === activeTab);
 
       return (
         <div className="flex flex-col gap-4 py-4">
           <button 
+            id="criar-sala-btn"
             onClick={() => {
               setBetAction('create');
               if (activeTab === 'Privado' || activeTab === '1 vs 1') setCreateStep('password');
@@ -738,40 +741,48 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               <Plus className="w-8 h-8 stroke-[3px]" />
             </div>
             <div className="text-left">
-              <h4 className="font-black text-[#091747] text-xl uppercase tracking-tighter italic">Criar {activeTab === '1 vs 1' ? 'Duelo' : 'Sala'}</h4>
-              <p className="text-[10px] text-gray-800 font-black uppercase tracking-widest mt-1">Lança um desafio novo</p>
+              <h4 className="font-black text-[#091747] text-xl uppercase tracking-tighter italic">
+                {activeTab === 'Nacional' && isBasketball ? 'Participar' : 'Criar Sala'}
+              </h4>
+              <p className="text-[10px] text-gray-800 font-black uppercase tracking-widest mt-1">
+                {activeTab === 'Nacional' && isBasketball ? 'Adere à rodada nacional' : 'Lança um desafio novo'}
+              </p>
             </div>
           </button>
-          <button 
-            onClick={() => setBetAction('join')}
-            className="group flex items-center gap-5 p-6 bg-white border border-gray-200 rounded-[2rem] hover:border-blue-500 transition-all hover:bg-blue-50/50"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
-              <Users className="w-8 h-8 stroke-[3px]" />
-            </div>
-            <div className="text-left">
-              <h4 className="font-black text-[#091747] text-xl uppercase tracking-tighter italic">Entrar com Senha</h4>
-              <p className="text-[10px] text-gray-800 font-black uppercase tracking-widest mt-1">Aceita um convite direto</p>
-            </div>
-          </button>
-
-          {userBets.length > 0 && (
+          {activeTab !== 'Nacional' && (
             <button 
-              onClick={() => setBetAction('my_bets')}
-              className="group flex items-center gap-5 p-6 bg-white border border-gray-100 rounded-[2rem] hover:border-green-500 transition-all hover:bg-green-50"
+              id="entrar-com-senha-btn"
+              onClick={() => setBetAction('join')}
+              className="group flex items-center gap-5 p-6 bg-white border border-gray-200 rounded-[2rem] hover:border-blue-500 transition-all hover:bg-blue-50/50"
             >
-              <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-all">
-                <Trophy className="w-8 h-8 stroke-[2px]" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                <Users className="w-8 h-8 stroke-[3px]" />
               </div>
-              <div className="text-left flex-1">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-black text-[#091747] text-xl uppercase tracking-tighter italic">Tuas Apostas</h4>
-                  <span className="bg-green-500 text-white text-[10px] font-black px-3 py-1 rounded-xl">{userBets.length}</span>
-                </div>
-                <p className="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-1">Vê o estado dos teus duelos</p>
+              <div className="text-left">
+                <h4 className="font-black text-[#091747] text-xl uppercase tracking-tighter italic">Entrar com Senha</h4>
+                <p className="text-[10px] text-gray-800 font-black uppercase tracking-widest mt-1">Aceita um convite direto</p>
               </div>
             </button>
           )}
+
+          <button 
+            id="tuas-apostas-btn"
+            onClick={() => setBetAction('my_bets')}
+            className="group flex items-center gap-5 p-6 bg-white border border-gray-100 rounded-[2rem] hover:border-green-500 transition-all hover:bg-green-50"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition-all">
+              <Trophy className="w-8 h-8 stroke-[2px]" />
+            </div>
+            <div className="text-left flex-1 font-sans">
+              <div className="flex items-center justify-between">
+                <h4 className="font-black text-[#091747] text-xl uppercase tracking-tighter italic">Tuas Apostas</h4>
+                <span className="bg-green-500 text-white text-[11px] font-black px-3 py-1 rounded-full flex items-center justify-center min-w-[24px] h-[24px] shadow-sm">
+                  {userBets.length}
+                </span>
+              </div>
+              <p className="text-[10px] text-gray-650 font-bold uppercase tracking-widest mt-1">Vê o estado dos teus duelos</p>
+            </div>
+          </button>
         </div>
       );
     }
@@ -913,7 +924,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       const isF1 = category === 'f1';
       const currentPrivateMarkets = isF1 ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
 
-      const shareText = `Vem jogar no Duet Académico!\nSala: ${bet.roomName || '---'}\nSenha: ${bet.password || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
+      const shareText = bet.category === 'Nacional'
+        ? `Vem jogar no Duet Académico!\nModo: Nacional\nJogo: ${match.teamA.name} vs ${match.teamB.name}`
+        : `Vem jogar no Duet Académico!\nSala: ${bet.roomName || '---'}\nSenha: ${bet.password || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
       const mailUrl = `mailto:?subject=${encodeURIComponent('Convite para Desafio Duet')}&body=${encodeURIComponent(shareText)}`;
 
@@ -994,21 +1007,23 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               </div>
             )}
 
-            <div className="bg-blue-50/50 p-4 rounded-3xl border-2 border-dashed border-blue-400">
-              <p className="text-[9px] text-blue-700 uppercase font-black tracking-widest text-center mb-1.5 italic">Senha do Desafio</p>
-              <div className="flex items-center justify-between bg-white p-3 rounded-xl border-2 border-blue-200">
-                <span className="text-xl md:text-2xl font-mono font-black text-[#091747] tracking-wider">{bet.password || '---'}</span>
-                <button 
-                  onClick={() => {
-                    if (bet.password) navigator.clipboard.writeText(bet.password);
-                  }}
-                  className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white active:scale-95 transition-all"
-                >
-                  <Copy className="w-4 h-4" />
-                </button>
+            {bet.category !== 'Nacional' && (
+              <div className="bg-blue-50/50 p-4 rounded-3xl border-2 border-dashed border-blue-400">
+                <p className="text-[9px] text-blue-700 uppercase font-black tracking-widest text-center mb-1.5 italic">Senha do Desafio</p>
+                <div className="flex items-center justify-between bg-white p-3 rounded-xl border-2 border-blue-200">
+                  <span className="text-xl md:text-2xl font-mono font-black text-[#091747] tracking-wider">{bet.password || '---'}</span>
+                  <button 
+                    onClick={() => {
+                      if (bet.password) navigator.clipboard.writeText(bet.password);
+                    }}
+                    className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white active:scale-95 transition-all"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
+                </div>
+                <p className="text-[9px] text-blue-800 mt-2.5 font-black text-center px-4 uppercase tracking-tighter">Envia esta senha ao teu colega para ele aceitar o desafio!</p>
               </div>
-              <p className="text-[9px] text-blue-800 mt-2.5 font-black text-center px-4 uppercase tracking-tighter">Envia esta senha ao teu colega para ele aceitar o desafio!</p>
-            </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-2">
@@ -1610,8 +1625,8 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   {category === 'f1' ? 'Melhor Classificado' : 'Investimento (KZ)'}
                 </label>
                 
-                {/* Investment Presets Dropdown - Hidden for Football */}
-                {category !== 'futebol' && (
+                {/* Investment Presets Dropdown - Hidden for Football and Basketball */}
+                {category !== 'futebol' && !isBasketball && (
                   <div className="mb-4 relative px-1">
                     <select 
                       id="investment-presets"
@@ -1663,7 +1678,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               </div>
             </div>
 
-            {category !== 'f1' && category !== 'futebol' && (
+            {category !== 'f1' && category !== 'futebol' && !isBasketball && (
               <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 shadow-sm">
                 <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest text-center italic">Lotação da Sala</label>
                 <div className="relative overflow-hidden">
@@ -1737,7 +1752,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
         const currentPrivateMarkets = category === 'f1' ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
         return (
           <div className="flex flex-col gap-6 py-2">
-            {category !== 'futebol' && category !== 'f1' && (
+            {category !== 'futebol' && category !== 'f1' && !isBasketball && (
               <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 mb-2 shadow-sm">
                 <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest text-center italic">Lotação da Sala</label>
                 <div className="relative overflow-hidden">
@@ -1978,11 +1993,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                           else setCreateStep('password');
                         }
                       } else {
-                        if (activeTab === 'Nacional') {
-                          if (betAction === 'my_bets') setBetAction('create');
-                          else handleClose();
-                        }
-                        else setBetAction(null);
+                        setBetAction(null);
                       }
                     }}
                     className="w-8 h-8 rounded-xl bg-white border-2 border-gray-200 flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-colors"
@@ -1997,7 +2008,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                      betAction === 'join' ? 'Entrar' : 
                      betAction === 'my_bets' ? 'Minhas Apostas' :
                      betAction === 'bet_details' ? 'Detalhes' :
-                     activeTab === 'Nacional' ? 'Nacional' : `Criar ${activeTab}`}
+                     activeTab === 'Nacional' ? (betAction === 'create' ? 'Rodada Nacional' : 'Criar Nacional') : `Criar ${activeTab}`}
                   </h2>
                   <p className="text-[9px] font-black text-gray-900 uppercase tracking-widest mt-0.5">
                     {match.league}
