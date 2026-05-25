@@ -185,6 +185,7 @@ export const CATEGORY_DATA: Record<string, CategoryDetail> = {
         { title: 'CAF Confederation Cup', image: 'https://i.postimg.cc/zbnCTSq8/2-Taca-das-confederacoes-Africa.png' },
         { title: 'UEFA Champions League', image: 'https://i.postimg.cc/ZBkP9Dzn/3-Liga-dos-campeoes-Europa.jpg' },
         { title: 'UEFA Europa League', image: 'https://i.postimg.cc/8JhRLBTT/4-Liga-Europa.png' },
+        { title: 'Copa do Mundo', image: 'https://i.postimg.cc/sf64n7ML/Copa-de-Mundo-2026.png' },
       ]
     }
   },

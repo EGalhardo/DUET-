@@ -57,7 +57,7 @@ export default function Onboarding() {
       setCurrentSlide(prev => prev + 1);
     } else {
       localStorage.setItem('onboarding:seen', 'true');
-      navigate('/login');
+      navigate('/');
     }
   };
 

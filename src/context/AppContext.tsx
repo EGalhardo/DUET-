@@ -16,18 +16,14 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [auth, setAuth] = useState<AuthState>(() => {
-    const saved = localStorage.getItem('duet:auth');
-    if (saved === '1') {
-      return {
-        isLoggedIn: true,
-        user: {
-          name: 'Edlasio Galhardo',
-          email: 'edlasio@example.com',
-          avatar: 'https://i.postimg.cc/Nj00CMbd/Foto-Edlasio.png',
-        },
-      };
-    }
-    return { isLoggedIn: false, user: null };
+    return {
+      isLoggedIn: true,
+      user: {
+        name: 'Edlasio Galhardo',
+        email: 'edlasio@example.com',
+        avatar: 'https://i.postimg.cc/Nj00CMbd/Foto-Edlasio.png',
+      },
+    };
   });
 
   const login = React.useCallback(() => {
@@ -43,7 +39,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = React.useCallback(() => {
-    setAuth({ isLoggedIn: false, user: null });
+    // Keep user logged in with defaults since login/signup got eliminated
+    setAuth({
+      isLoggedIn: true,
+      user: {
+        name: 'Edlasio Galhardo',
+        email: 'edlasio@example.com',
+        avatar: 'https://i.postimg.cc/Nj00CMbd/Foto-Edlasio.png',
+      },
+    });
     localStorage.removeItem('duet:auth');
   }, []);
 

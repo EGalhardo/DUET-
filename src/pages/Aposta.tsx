@@ -2253,7 +2253,7 @@ export default function Aposta() {
             <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6" />
           </Link>
           <h1 className="text-base md:text-lg lg:text-xl font-semibold text-center truncate px-4">
-            {topic || 'Duet Aposta'}
+            {category === 'f1' && session && topic ? `${session} ${topic}` : (topic || 'Duet Aposta')}
           </h1>
           <button 
             id="aposta-favorite-button"
