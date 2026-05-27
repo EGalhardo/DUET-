@@ -115,7 +115,7 @@ export default function Ranking() {
         </div>
 
         <div className="flex justify-center mb-8">
-          <div className="period-tabbar flex bg-gray-200 p-1 rounded-2xl w-full max-w-xs">
+          <div className="period-tabbar flex bg-transparent border-2 border-gray-200 p-1 rounded-2xl w-full max-w-xs">
             {['Recente', 'Semanal', 'Geral'].map((period) => (
               <button 
                 key={period} 
@@ -145,7 +145,7 @@ export default function Ranking() {
                initial={{ opacity: 0, scale: 0.95 }}
                animate={{ opacity: 1, scale: 1 }}
                transition={{ duration: 0.4 }}
-               className="flex items-end justify-center gap-2 p-6 bg-gray-50/50 border-b border-gray-100"
+               className="flex items-end justify-center gap-2 p-6 bg-transparent border-b-2 border-gray-200"
              >
                 <PodiumPosition position={2} player={currentRankings[1]} />
                 <PodiumPosition position={1} player={currentRankings[0]} />
@@ -170,13 +170,13 @@ export default function Ranking() {
                  >
                    <div className={cn(
                      "w-8 h-8 rounded-full flex items-center justify-center font-black text-xs",
-                     i === 0 ? "bg-yellow-400 text-white" : i === 1 ? "bg-gray-400 text-white" : i === 2 ? "bg-amber-600 text-white" : "bg-gray-200 text-[#364153]"
+                     i === 0 ? "bg-yellow-400 text-white" : i === 1 ? "bg-gray-400 text-white" : i === 2 ? "bg-amber-600 text-white" : "bg-transparent border border-gray-300 text-[#364153]"
                    )}>
                      {i + 1}º
                    </div>
                    <img src={player.avatar} className="w-10 h-10 rounded-full border-2 border-white" />
                    <span className="flex-1 font-bold text-[#091747]">{player.name}</span>
-                   <span className="bg-gray-200 px-3 py-1 rounded-full text-[10px] font-black text-[#364153]">
+                   <span className="bg-transparent border border-gray-300 px-3 py-1 rounded-full text-[10px] font-black text-[#364153]">
                      {player.score.toLocaleString()} pts
                    </span>
                  </motion.div>

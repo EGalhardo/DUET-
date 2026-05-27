@@ -18,7 +18,7 @@ const BetCard: React.FC<BetCardProps> = ({ bet, onView, onDelete }) => {
   if (!match) return null;
 
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-2xl hover:border-[#FFB10A] transition-all group relative overflow-hidden">
+    <div className="flex items-center justify-between p-4 bg-transparent border-2 border-gray-200 rounded-2xl hover:border-[#FFB10A] transition-all group relative overflow-hidden">
       <div className="flex items-center gap-4">
         <div className="flex -space-x-3">
           <img src={match.teamA.logo} alt={match.teamA.name} className="w-10 h-10 object-contain bg-white rounded-full p-1 border border-gray-100 z-10" />
@@ -269,7 +269,7 @@ export default function Historico() {
                   if (!match) return null;
                   return (
                     <>
-                      <div className="flex items-center justify-between gap-4 p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                      <div className="flex items-center justify-between gap-4 p-3 bg-transparent border-2 border-gray-200 rounded-2xl">
                         <div className="flex flex-col items-center flex-1">
                           <img src={match.teamA.logo} alt={match.teamA.name} className="w-10 h-10 object-contain mb-1.5" />
                           <span className="font-bold text-gray-800 text-center text-[9px] uppercase leading-tight line-clamp-1">{match.teamA.name}</span>
@@ -374,7 +374,7 @@ export default function Historico() {
                 </button>
                 <button 
                   onClick={() => setDeleteConfirm(null)}
-                  className="w-full py-4 bg-gray-50 text-gray-600 font-bold rounded-2xl hover:bg-gray-100 transition-all uppercase tracking-wider"
+                  className="w-full py-4 bg-transparent border-2 border-gray-200 text-gray-600 font-bold rounded-2xl hover:bg-gray-50 transition-all uppercase tracking-wider"
                 >
                   CANCELAR
                 </button>

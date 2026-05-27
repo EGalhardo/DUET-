@@ -824,7 +824,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             </button>
             <button 
               onClick={() => setShowDeleteConfirm(null)}
-              className="w-full bg-gray-200 text-gray-900 font-black py-4 rounded-2xl active:scale-95 transition-all uppercase tracking-widest text-xs"
+              className="w-full bg-transparent border-2 border-gray-200 text-gray-700 font-black py-4 rounded-2xl active:scale-95 transition-all uppercase tracking-widest text-xs"
             >
               Cancelar
             </button>
@@ -946,7 +946,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             </div>
 
             <div className="flex flex-col gap-3 mb-4">
-              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
+              <div className="bg-transparent p-4 rounded-2xl border-2 border-gray-200">
                 <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-3 flex items-center gap-2">
                   <List className="w-3.5 h-3.5 text-[#FFB10A]" strokeWidth={3} />
                   A tua escolha
@@ -983,14 +983,14 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100 flex justify-between items-center">
+              <div className="bg-transparent p-4 rounded-2xl border-2 border-gray-200 flex justify-between items-center">
                 <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Valor Apostado</p>
                 <p className="text-sm font-black text-[#FFB10A]">{bet.amount.toLocaleString()} KZ</p>
               </div>
             </div>
 
             {bet.roomName && (
-              <div className="bg-gray-50 p-3.5 rounded-2xl border-2 border-gray-100 mb-4 flex justify-between items-center px-4">
+              <div className="bg-transparent p-3.5 rounded-2xl border-2 border-gray-200 mb-4 flex justify-between items-center px-4">
                 <div>
                   <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Nome da Sala</p>
                   <p className="text-xs font-black text-[#091747] uppercase font-mono">{bet.roomName}</p>
@@ -1139,7 +1139,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                           selectedMarket === optionLabel 
                             ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-md scale-[1.02]" 
                             : isOccupied
-                              ? "bg-gray-100 border-gray-200 opacity-40 cursor-not-allowed"
+                              ? "bg-transparent border-gray-300 opacity-40 cursor-not-allowed"
                               : "bg-white border-gray-200 text-gray-900 hover:border-[#FFB10A]"
                         )}
                       >
@@ -1164,7 +1164,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               <div>
                 <label className="text-[10px] font-black text-gray-900 mb-3 block uppercase tracking-widest px-2 italic">Valor do Duelo (KZ)</label>
                 <div className="relative">
-                  <div className="w-full bg-gray-50 border-2 border-gray-200 rounded-[1.5rem] py-5 px-6 text-2xl font-black text-[#091747] flex items-center justify-between shadow-inner">
+                  <div className="w-full bg-transparent border-2 border-gray-200 rounded-[1.5rem] py-5 px-6 text-2xl font-black text-[#091747] flex items-center justify-between shadow-inner">
                     <div className="flex items-center gap-3">
                       <Lock className="w-5 h-5 text-gray-400" />
                       <span>{joiningBet.amount.toLocaleString()}</span>
@@ -1200,7 +1200,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               </p>
             </div>
 
-            <div className="bg-gray-50 p-5 rounded-3xl border-2 border-gray-100 shadow-sm mb-2">
+            <div className="bg-transparent p-5 rounded-3xl border-2 border-gray-200 shadow-sm mb-2">
               <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest px-2 italic flex items-center gap-2">
                 <Users className="w-3.5 h-3.5 text-[#FFB10A]" />
                 Usuários Inscritos
@@ -1265,7 +1265,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                                 viewingUser 
                                   ? isSelected 
                                     ? "bg-[#FFB10A]/90 border-[#FFB10A] text-white shadow-md scale-[1.01]"
-                                    : "bg-gray-50 border-gray-100 text-gray-400 opacity-60 pointer-events-none"
+                                    : "bg-transparent border-gray-200 text-gray-400 opacity-60 pointer-events-none"
                                   : isSelected
                                     ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-md scale-[1.01]"
                                     : "bg-white border-gray-100 text-gray-700 hover:border-[#FFB10A] hover:bg-gray-50"
@@ -1284,7 +1284,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
 
             <div className="pt-4 mt-2 border-t-2 border-gray-100">
               <label className="text-[10px] font-black text-gray-600 mb-3 block uppercase tracking-widest px-2 italic">Valor da Entrada (KZ)</label>
-              <div className="w-full bg-gray-50 border-2 border-gray-200 rounded-[1.5rem] py-5 px-6 text-2xl font-black text-[#091747] flex items-center justify-between shadow-inner">
+              <div className="w-full bg-transparent border-2 border-gray-200 rounded-[1.5rem] py-5 px-6 text-2xl font-black text-[#091747] flex items-center justify-between shadow-inner">
                 <div className="flex items-center gap-3">
                   <Lock className="w-5 h-5 text-gray-400" />
                   <span>{joiningBet.amount.toLocaleString()}</span>
@@ -1398,7 +1398,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                          <div className="relative">
                             <span className={cn(
                               "absolute -left-2 -top-2 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shadow-sm z-10",
-                              user.rank === 1 ? "bg-[#FFB10A] text-white" : "bg-gray-100 text-gray-500"
+                              user.rank === 1 ? "bg-[#FFB10A] text-white" : "bg-transparent border border-gray-300 text-gray-500"
                             )}>
                               {user.rank}
                             </span>
@@ -1426,7 +1426,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                                alreadyTaunted 
                                  ? "bg-green-100 text-green-600" 
                                  : hasSentTaunt 
-                                   ? "bg-gray-50 text-gray-300 cursor-not-allowed"
+                                   ? "bg-transparent border border-gray-200 text-gray-300 cursor-not-allowed"
                                    : "bg-red-50 text-red-500 hover:bg-red-500 hover:text-white active:scale-95 shadow-sm"
                              )}
                            >
@@ -1695,7 +1695,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                     key="fixed-3"
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="w-full bg-gray-100/50 border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
+                    className="w-full bg-transparent border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
                   >
                     <Lock className="w-4 h-4 text-gray-400" />
                     <span>3</span>
@@ -1731,7 +1731,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                       "flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left",
                       selectedMarketsList[i] 
                         ? "bg-white border-[#FFB10A] shadow-md scale-[1.01]" 
-                        : "bg-gray-50 border-gray-100 opacity-70 hover:opacity-100"
+                        : "bg-transparent border-gray-200 opacity-70 hover:opacity-100"
                     )}
                   >
                     <div className={cn(
@@ -1769,7 +1769,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                     key={maxParticipants}
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="w-full bg-gray-100/50 border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
+                    className="w-full bg-transparent border-2 border-gray-200 rounded-xl py-4 px-5 text-xl font-black text-[#091747] flex items-center justify-center gap-3 shadow-inner select-none"
                   >
                     <Lock className="w-4 h-4 text-gray-400" />
                     <span>{maxParticipants}</span>
@@ -1897,7 +1897,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
               {currentNacionalMarkets.map((market, i) => {
                 const options = (typeof market.options === 'function' ? market.options(match) : []) as any[];
                 return (
-                  <div key={i} className="flex flex-col gap-3 p-4 bg-white border-2 border-gray-100 rounded-2xl hover:border-[#FFB10A]/30 transition-all">
+                  <div key={i} className="flex flex-col gap-3 p-4 bg-white border-2 border-gray-200 rounded-2xl hover:border-[#FFB10A]/30 transition-all">
                     <div className="flex items-center gap-2">
                       <span className="w-5 h-5 rounded bg-orange-50 text-[#FFB10A] text-[9px] font-black flex items-center justify-center border border-orange-100">{i + 1}</span>
                       <span className="text-[9px] font-black text-[#091747] uppercase tracking-widest italic">{market.name}</span>
@@ -1916,7 +1916,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                           }}
                           className={cn(
                             "py-2.5 text-[7px] md:text-[8px] font-black rounded-lg border-2 transition-all active:scale-95 px-1 uppercase tracking-tighter whitespace-nowrap truncate", 
-                            selectedMarketsList[i] === opt.id ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-lg" : "bg-gray-50 border-gray-50 text-gray-500 hover:border-[#FFB10A]"
+                            selectedMarketsList[i] === opt.id ? "bg-[#FFB10A] border-[#FFB10A] text-white shadow-lg" : "bg-transparent border-gray-200 text-gray-500 hover:border-[#FFB10A]"
                           )}
                         >
                           {opt.label}
@@ -1929,7 +1929,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             </div>
 
             {isF1 && (
-              <div className="flex flex-col gap-1 items-center justify-center p-3 bg-gray-50 rounded-2xl border border-gray-100 mb-2">
+              <div className="flex flex-col gap-1 items-center justify-center p-3 bg-transparent rounded-2xl border-2 border-gray-200 mb-2">
                 <p className="text-[10px] font-black text-[#091747] uppercase tracking-widest leading-none">
                   Valor Aposta: <span className="text-[#FFB10A]">250 KZ</span>
                 </p>

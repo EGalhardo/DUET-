@@ -66,7 +66,7 @@ export default function Definicoes() {
               <button 
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex-1 py-4 rounded-2xl border-2 border-gray-100 font-bold text-gray-500 hover:bg-gray-50 transition-all"
+                className="flex-1 py-4 rounded-2xl border-2 border-gray-200 font-bold text-gray-500 hover:bg-gray-50 transition-all"
               >
                 Cancelar
               </button>

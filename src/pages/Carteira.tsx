@@ -96,12 +96,12 @@ export default function Carteira() {
           </div>
 
           <div className="p-6 space-y-6">
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 flex items-center justify-between">
+            <div className="bg-transparent rounded-2xl p-6 border-2 border-gray-300 flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Saldo Atual</p>
+                <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Saldo Atual</p>
                 <p className="text-3xl font-extrabold text-[#091747] mt-1">Kz {wallet.balance.toLocaleString()}</p>
               </div>
-              <div className="w-14 h-14 rounded-2xl bg-orange-100/50 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center">
                 <Coins className="w-8 h-8 text-[#FFC000]" />
               </div>
             </div>
@@ -109,17 +109,17 @@ export default function Carteira() {
             <div>
               <p className="text-sm font-bold text-[#091747] mb-4">Ações Rápidas</p>
               <div className="grid grid-cols-3 gap-3">
-                <Link to="/depositar" className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-gray-100 hover:border-[#FFB10A] hover:bg-orange-50 transition-all font-bold group">
-                  <CreditCard className="w-6 h-6 text-gray-400 group-hover:text-[#FFB10A]" />
-                  <span className="text-[10px]">Depositar</span>
+                <Link to="/depositar" className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-gray-200 hover:border-[#FFB10A] hover:bg-orange-50 transition-all font-bold group">
+                  <CreditCard className="w-6 h-6 text-gray-500 group-hover:text-[#FFB10A]" />
+                  <span className="text-[10px] text-gray-700">Depositar</span>
                 </Link>
-                <Link to="/levantar" className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-gray-100 hover:border-[#FFB10A] hover:bg-orange-50 transition-all font-bold group">
-                  <HandCoins className="w-6 h-6 text-gray-400 group-hover:text-[#FFB10A]" />
-                  <span className="text-[10px]">Levantar</span>
+                <Link to="/levantar" className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-gray-200 hover:border-[#FFB10A] hover:bg-orange-50 transition-all font-bold group">
+                  <HandCoins className="w-6 h-6 text-gray-500 group-hover:text-[#FFB10A]" />
+                  <span className="text-[10px] text-gray-700">Levantar</span>
                 </Link>
-                <Link to="/transferir" className="flex flex-col items-center gap-2 p-4 rounded-2xl border border-gray-100 hover:border-[#FFB10A] hover:bg-orange-50 transition-all font-bold group">
-                  <Users className="w-6 h-6 text-gray-400 group-hover:text-[#FFB10A]" />
-                  <span className="text-[10px]">Transferir</span>
+                <Link to="/transferir" className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-gray-200 hover:border-[#FFB10A] hover:bg-orange-50 transition-all font-bold group">
+                  <Users className="w-6 h-6 text-gray-500 group-hover:text-[#FFB10A]" />
+                  <span className="text-[10px] text-gray-700">Transferir</span>
                 </Link>
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function Carteira() {
               <Clock className="w-6 h-6 text-[#FFB10A]" />
               <div className="flex-1">
                 <p className="text-sm font-bold text-[#091747]">Histórico de Transações</p>
-                <p className="text-[10px] text-gray-500">Consulta as tuas transações</p>
+                <p className="text-[10px] text-gray-700">Consulta as tuas transações</p>
               </div>
             </Link>
           </div>

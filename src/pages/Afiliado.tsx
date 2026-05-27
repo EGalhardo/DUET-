@@ -48,7 +48,7 @@ export default function Afiliado() {
              ))}
           </div>
 
-          <div className="bg-gray-50 rounded-2xl p-4 md:p-6 border border-gray-100">
+          <div className="bg-transparent rounded-2xl p-4 md:p-6 border-2 border-gray-200">
              <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-3">Link de Afiliado</p>
              <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-xs font-mono text-gray-700 overflow-hidden truncate">

@@ -28,7 +28,7 @@ const SuccessView: React.FC<SuccessViewProps> = ({
       <h3 className="text-lg md:text-2xl font-black text-[#091747] uppercase tracking-tight mb-1 md:mb-2 italic">Duelo Ativado!</h3>
       <p className="text-xs md:text-sm text-gray-500 font-bold uppercase tracking-tight mb-4 md:mb-10">A tua sala está pronta para a competição.</p>
 
-      <div className="w-full bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl md:rounded-[2.5rem] p-4 md:p-8 mb-4 md:mb-10 relative overflow-hidden">
+      <div className="w-full bg-transparent border-2 border-dashed border-gray-300 rounded-2xl md:rounded-[2.5rem] p-4 md:p-8 mb-4 md:mb-10 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-[#FFB10A]" />
         <label className="text-[10px] font-black text-gray-400 block uppercase tracking-widest mb-2 md:mb-4 italic">Código de Acesso</label>
         <div className="text-3xl md:text-5xl font-mono font-black text-[#091747] tracking-[0.2em] mb-4 md:mb-6">{roomCode}</div>

@@ -33,14 +33,14 @@ export default function TerminarSessao() {
             <p className="mt-2 text-sm text-gray-600">Queres terminar a sessão neste dispositivo?</p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 p-6 space-y-4 mb-8">
+          <div className="rounded-2xl border border-gray-300 p-6 space-y-4 mb-8">
              <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center shrink-0">
                   <ShieldAlert className="w-6 h-6 text-red-500" />
                 </div>
                 <div>
                    <p className="text-sm font-bold text-[#091747]">O que acontece ao sair?</p>
-                   <ul className="mt-2 list-disc pl-5 text-xs text-gray-500 space-y-2">
+                   <ul className="mt-2 list-disc pl-5 text-xs text-gray-750 space-y-2 font-medium">
                      <li>Serás redirecionado para a página inicial.</li>
                      <li>Os teus dados locais (favoritos/histórico) permanecem no dispositivo.</li>
                    </ul>
@@ -51,7 +51,7 @@ export default function TerminarSessao() {
           <div className="grid grid-cols-2 gap-4">
             <button 
               onClick={() => navigate(-1)}
-              className="py-4 rounded-2xl border-2 border-gray-100 font-bold text-gray-500 hover:bg-gray-50 transition-all"
+              className="py-4 rounded-2xl border-2 border-gray-300 font-bold text-gray-700 hover:bg-gray-50 transition-all"
             >
               Cancelar
             </button>
@@ -63,7 +63,7 @@ export default function TerminarSessao() {
             </button>
           </div>
 
-          <p className="mt-6 text-[10px] text-gray-400 text-center uppercase tracking-widest font-bold">
+          <p className="mt-6 text-[10px] text-gray-600 text-center uppercase tracking-widest font-black">
             Nota: esta ação encerra a sessão atual
           </p>
         </div>

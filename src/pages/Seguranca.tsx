@@ -28,12 +28,12 @@ export default function Seguranca() {
             
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Senha alterada!'); }}>
               <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Palavra-passe atual</label>
-                <input type="password" placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#FFB10A] outline-none font-semibold transition-all" />
+                <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Palavra-passe atual</label>
+                <input type="password" placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#FFB10A] outline-none font-semibold transition-all" />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Nova palavra-passe</label>
-                <input type="password" placeholder="Mínimo 6 caracteres" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#FFB10A] outline-none font-semibold transition-all" />
+                <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Nova palavra-passe</label>
+                <input type="password" placeholder="Mínimo 6 caracteres" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#FFB10A] outline-none font-semibold transition-all" />
               </div>
               <button type="submit" className="w-full py-4 rounded-xl bg-orange-50 text-[#FFB10A] font-bold hover:bg-orange-100 transition-all">
                 Salvar Nova Senha
@@ -48,7 +48,7 @@ export default function Seguranca() {
             </div>
             
             <div className="space-y-4">
-               <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 border border-gray-100">
+               <div className="flex items-center justify-between p-4 rounded-2xl bg-transparent border-2 border-gray-200">
                   <div>
                     <p className="text-sm font-bold text-[#091747]">Este dispositivo</p>
                     <p className="text-[10px] text-green-600 font-bold uppercase tracking-widest">Ativo agora</p>
@@ -56,7 +56,7 @@ export default function Seguranca() {
                   <button className="text-xs font-bold text-red-500 hover:bg-red-50 px-3 py-1 rounded-lg transition-colors">Terminar</button>
                </div>
                
-               <button className="w-full py-4 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-[#091747] transition-colors">
+               <button className="w-full py-4 text-xs font-bold text-gray-650 uppercase tracking-widest hover:text-[#091747] transition-colors">
                  Terminar em todos os dispositivos
                </button>
             </div>

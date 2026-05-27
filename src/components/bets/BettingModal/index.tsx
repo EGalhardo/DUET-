@@ -361,7 +361,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
           {userBets.length > 0 && (
             <button 
               onClick={() => setBetAction('my_bets')}
-              className="group flex items-center gap-3 md:gap-5 p-4 md:p-6 bg-white border border-gray-100 rounded-2xl md:rounded-[2rem] hover:border-green-500 transition-all hover:bg-green-50"
+              className="group flex items-center gap-3 md:gap-5 p-4 md:p-6 bg-white border border-gray-300 rounded-2xl md:rounded-[2rem] hover:border-green-500 transition-all hover:bg-green-50"
             >
               <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-green-50 flex items-center justify-center text-green-600 shrink-0 group-hover:bg-green-600 group-hover:text-white transition-all">
                 <Trophy className="w-6 h-6 md:w-8 md:h-8 stroke-[2px]" />
@@ -399,7 +399,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
                 if (remaining.length === 0) setBetAction(null);
               }
             }} className="w-full bg-red-600 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-xs">Sim, Eliminar</button>
-            <button onClick={() => setShowDeleteConfirm(null)} className="w-full bg-gray-200 text-gray-900 font-black py-4 rounded-2xl uppercase tracking-widest text-xs">Cancelar</button>
+            <button onClick={() => setShowDeleteConfirm(null)} className="w-full bg-transparent border-2 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors font-black py-4 rounded-2xl uppercase tracking-widest text-xs">Cancelar</button>
           </div>
         </div>
       );
@@ -431,7 +431,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
                     <p className="text-[10px] font-black text-green-600 uppercase italic">Ativo</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                <div className="flex items-center justify-between pt-2 border-t border-gray-300">
                   <button onClick={() => setShowDeleteConfirm(bet.id)} className="flex items-center gap-1 text-[10px] font-black text-red-500 uppercase tracking-widest hover:text-red-700 transition-colors p-1">
                     <Trash2 className="w-3.5 h-3.5" />
                     Eliminar
@@ -467,7 +467,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
               <span className="text-[10px] font-black text-[#091747] bg-white px-3 py-1 rounded-full uppercase tracking-widest border-2 border-gray-200">Aberto</span>
             </div>
             <div className="flex flex-col gap-3 mb-4">
-              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
+              <div className="bg-transparent p-4 rounded-2xl border-2 border-gray-200">
                 <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-3 flex items-center gap-2">
                   <List className="w-3.5 h-3.5 text-[#FFB10A]" strokeWidth={3} />
                   A tua escolha
@@ -489,7 +489,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
                       }
 
                       return validSelections.map((sel, sIdx) => (
-                        <div key={sIdx} className="flex justify-between items-center border-b border-gray-100 pb-2 last:border-0 last:pb-0">
+                        <div key={sIdx} className="flex justify-between items-center border-b border-gray-200 pb-2 last:border-0 last:pb-0">
                           <span className="text-[11px] font-bold text-gray-500 uppercase tracking-tight">{sel.market}:</span>
                           <span className="text-xs font-black text-[#091747]">{sel.choice}</span>
                         </div>
@@ -504,14 +504,14 @@ const BettingModal: React.FC<BettingModalProps> = ({
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100 flex justify-between items-center">
+              <div className="bg-transparent p-4 rounded-2xl border-2 border-gray-200 flex justify-between items-center">
                 <p className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Valor Apostado</p>
                 <p className="text-sm font-black text-[#FFB10A]">{bet.amount.toLocaleString()} KZ</p>
               </div>
             </div>
 
             {bet.roomName && (
-              <div className="bg-gray-50 p-3.5 rounded-2xl border-2 border-gray-100 mb-4 flex justify-between items-center px-4">
+              <div className="bg-transparent p-3.5 rounded-2xl border-2 border-gray-200 mb-4 flex justify-between items-center px-4">
                 <div>
                   <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Nome da Sala</p>
                   <p className="text-xs font-black text-[#091747] uppercase font-mono">{bet.roomName}</p>
@@ -592,7 +592,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
         }
         return (
           <div className="flex flex-col gap-4 md:gap-6 py-2 md:py-4">
-             <div className="bg-gray-50 p-3.5 md:p-5 rounded-2xl md:rounded-3xl border-2 border-gray-100">
+             <div className="bg-transparent p-3.5 md:p-5 rounded-2xl md:rounded-3xl border-2 border-gray-200">
               <select value={selectedUserView} onChange={(e) => setSelectedUserView(e.target.value)} className="w-full bg-white border-2 border-white rounded-xl md:rounded-2xl py-3 md:py-4 px-4 md:px-5 text-[10px] md:text-xs font-black text-[#091747] appearance-none uppercase">
                 <option value="me">Teus Prognósticos</option>
                 {inscribedUsers.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
@@ -627,7 +627,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
                               "py-2 px-1 text-[8px] md:text-[9px] font-black border-2 rounded-lg md:rounded-xl transition-all uppercase", 
                               isSelected 
                                 ? "bg-[#FFB10A] border-[#FFB10A] text-white" 
-                                : "bg-white border-gray-100 text-gray-400 font-medium",
+                                : "bg-white border-gray-300 text-gray-700 font-bold",
                               selectedUserView !== 'me' ? "opacity-90" : ""
                             )}
                           >
@@ -679,10 +679,10 @@ const BettingModal: React.FC<BettingModalProps> = ({
       return (
         <div className="flex flex-col gap-3 md:gap-6 py-2">
           {PRIVATE_MARKETS.map((m, i) => (
-            <div key={i} className="bg-white border-2 border-gray-100 rounded-xl md:rounded-2xl p-3 md:p-4">
+            <div key={i} className="bg-white border-2 border-gray-200 rounded-xl md:rounded-2xl p-3 md:p-4">
                <p className="text-[9px] font-black text-[#091747] uppercase mb-2 md:mb-3">{i+1}. {m.name}</p>
                <div className="grid grid-cols-3 gap-1.5 md:gap-2">
-                 {m.options(match).map(o => <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-2 md:py-2.5 text-[7px] font-black rounded-md md:rounded-lg border-2", selectedMarketsList[i] === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-gray-50 text-gray-500")}>{o.label}</button>)}
+                 {m.options(match).map(o => <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-2 md:py-2.5 text-[7px] font-black rounded-md md:rounded-lg border-2", selectedMarketsList[i] === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-transparent border-gray-200 text-gray-500")}>{o.label}</button>)}
                </div>
             </div>
           ))}
@@ -701,7 +701,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
         <div className="flex flex-col gap-3 md:gap-6 py-1 md:py-2">
            <div className="grid grid-cols-1 gap-1.5 md:gap-2">
             {PRIVATE_MARKETS.map((m, i) => (
-              <button key={i} onClick={() => { const n = [...selectedMarketsList]; n[i] = n[i] ? '' : 'PENDING'; setSelectedMarketsList(n); }} className={cn("flex items-center gap-2.5 md:gap-3 p-2.5 md:p-3 rounded-lg md:rounded-xl border-2 transition-all", selectedMarketsList[i] ? "bg-white border-[#FFB10A]" : "bg-gray-50 opacity-70")}>
+              <button key={i} onClick={() => { const n = [...selectedMarketsList]; n[i] = n[i] ? '' : 'PENDING'; setSelectedMarketsList(n); }} className={cn("flex items-center gap-2.5 md:gap-3 p-2.5 md:p-3 rounded-lg md:rounded-xl border-2 transition-all", selectedMarketsList[i] ? "bg-white border-[#FFB10A]" : "bg-transparent border-gray-200 opacity-70")}>
                 <div className={cn("w-4 h-4 md:w-5 md:h-5 rounded border-2 flex items-center justify-center", selectedMarketsList[i] ? "bg-[#FFB10A] border-[#FFB10A]" : "bg-white")}>{selectedMarketsList[i] && <Check className="w-2 md:w-2.5 h-2 md:h-2.5 text-white stroke-[4px]" />}</div>
                 <span className="text-[9px] md:text-[10px] font-black uppercase">{m.name}</span>
               </button>
@@ -720,7 +720,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
                  <div key={i} className="bg-white border-2 border-gray-200 rounded-2xl md:rounded-3xl p-4 md:p-5">
                     <p className="text-[9px] md:text-[10px] font-black text-[#091747] uppercase mb-2 md:mb-4">{PRIVATE_MARKETS[i].name}</p>
                     <div className="grid grid-cols-3 gap-1.5 md:gap-2">
-                      {PRIVATE_MARKETS[i].options(match).map(o => <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-2.5 md:py-3 text-[8px] md:text-[9px] font-black border-2 rounded-xl md:rounded-2xl transition-all", res === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-white border-gray-100 text-gray-900")}>{o.label}</button>)}
+                      {PRIVATE_MARKETS[i].options(match).map(o => <button key={o.id} onClick={() => { const n = [...selectedMarketsList]; n[i] = o.id; setSelectedMarketsList(n); }} className={cn("py-2.5 md:py-3 text-[8px] md:text-[9px] font-black border-2 rounded-xl md:rounded-2xl transition-all", res === o.id ? "bg-[#FFB10A] border-[#FFB10A] text-white" : "bg-white border-gray-200 text-gray-900")}>{o.label}</button>)}
                     </div>
                  </div>
                ))}

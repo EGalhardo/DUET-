@@ -50,11 +50,11 @@ const InfoModal: React.FC<InfoModalProps> = React.memo(({
             <div className="max-h-[50vh] md:max-h-[60vh] overflow-y-auto p-4 md:p-6 space-y-6 md:space-y-8 scrollbar-hide">
               {Object.entries(detail.cards).map(([type, items]) => (
                 <div key={type} className="space-y-4">
-                  <div className="flex items-center gap-3 border-b border-gray-200 pb-2">
+                  <div className="flex items-center gap-3 border-b-2 border-gray-200 pb-2">
                     {type === 'practice' && <Flag className="w-5 h-5 text-blue-600" />}
                     {type === 'private' && <Trophy className="w-5 h-5 text-orange-500" />}
                     {type === 'community' && <Globe className="w-5 h-5 text-green-600" />}
-                    <h4 className="font-black text-[10px] uppercase tracking-[0.3em] text-gray-400">
+                    <h4 className="font-black text-[10px] uppercase tracking-[0.3em] text-gray-600">
                       {detail.labels[type as keyof typeof detail.labels]}
                     </h4>
                   </div>
@@ -66,9 +66,9 @@ const InfoModal: React.FC<InfoModalProps> = React.memo(({
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.05 }}
                         key={item.title} 
-                        className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm border border-gray-100 hover:border-[#FFB10A]/30 transition-all group"
+                        className="flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm border-2 border-gray-200 hover:border-[#FFB10A]/30 transition-all group"
                       >
-                        <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100">
+                        <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 bg-transparent border-2 border-gray-200">
                           <img src={item.image} alt="" className="w-full h-full object-contain" />
                         </div>
                         <span className="text-[10px] sm:text-xs font-black text-[#091747] uppercase leading-tight group-hover:text-[#FFB10A] transition-colors">{item.title}</span>
@@ -80,7 +80,7 @@ const InfoModal: React.FC<InfoModalProps> = React.memo(({
             </div>
 
             {/* Footer - Two Buttons Side by Side (Swapped Pos) */}
-            <div className="p-4 md:p-5 bg-white border-t border-gray-100 grid grid-cols-2 gap-3">
+            <div className="p-4 md:p-5 bg-white border-t-2 border-gray-200 grid grid-cols-2 gap-3">
                <button 
                 id="modal-entrar-btn"
                 onClick={() => onEntrar(category.path)}
@@ -91,7 +91,7 @@ const InfoModal: React.FC<InfoModalProps> = React.memo(({
                <button 
                 id="modal-sair-btn"
                 onClick={onClose}
-                className="w-full py-4 bg-gray-100 text-gray-500 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-200 transition-all active:scale-95"
+                className="w-full py-4 bg-transparent border-2 border-gray-300 text-gray-700 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-50 transition-all active:scale-95"
                >
                  Sair
                </button>

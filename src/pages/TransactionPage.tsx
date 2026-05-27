@@ -57,7 +57,7 @@ export default function TransactionPage() {
 
       <div className="max-w-xl mx-auto w-full px-4 pt-8 pb-12">
           <div id="transaction-card" className="bg-white rounded-3xl border border-gray-200 overflow-hidden">
-            <div id="transaction-header" className="px-5 py-4 border-b border-gray-200 bg-gray-50/50 flex items-center justify-between">
+            <div id="transaction-header" className="px-5 py-4 border-b border-gray-200 bg-transparent flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
                   <config.icon className="w-5 h-5 text-[#FFC000]" />
@@ -107,7 +107,7 @@ export default function TransactionPage() {
                     value={amount}
                     onChange={(e) => { setAmount(e.target.value); setError(null); }}
                     placeholder="0"
-                    className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#FFB10A] outline-none font-bold text-lg transition-all"
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-300 focus:border-[#FFB10A] outline-none font-bold text-lg transition-all"
                     required
                   />
                 </div>
@@ -118,22 +118,51 @@ export default function TransactionPage() {
                 )}
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-gray-800 uppercase tracking-widest mb-2 px-1">Método</label>
-                <div className="relative">
-                  <select 
-                    id="method-select"
-                    value={method}
-                    onChange={(e) => setMethod(e.target.value)}
-                    className="w-full px-4 py-4 rounded-2xl border-2 border-gray-100 focus:border-[#FFB10A] outline-none font-bold text-sm transition-all appearance-none bg-white"
-                  >
-                    <option value="multicaixa">Multicaixa Express</option>
-                    <option value="referencia">Referência Bancária</option>
-                    <option value="wallet">Carteira Digital</option>
-                  </select>
-                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              {type !== 'transferir' ? (
+                <div>
+                  <label className="block text-xs font-bold text-gray-800 uppercase tracking-widest mb-2 px-1">Método</label>
+                  <div className="relative">
+                    <select 
+                      id="method-select"
+                      value={method}
+                      onChange={(e) => setMethod(e.target.value)}
+                      className="w-full px-4 py-4 rounded-2xl border-2 border-gray-300 focus:border-[#FFB10A] outline-none font-bold text-sm transition-all appearance-none bg-white font-sans"
+                    >
+                      {type === 'depositar' ? (
+                        <>
+                          <option value="mcx_express">Multicaixa Express</option>
+                          <option value="ref_multicaixa">Referência Multicaixa</option>
+                          <option value="transferencia">Transferência Bancária (IBAN)</option>
+                          <option value="unitel_money">Unitel Money</option>
+                          <option value="afrimoney">Afrimoney</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="transferencia">Transferência Bancária (IBAN)</option>
+                          <option value="mcx_express">Multicaixa Express (Telemóvel)</option>
+                          <option value="unitel_money">Unitel Money</option>
+                          <option value="afrimoney">Afrimoney</option>
+                        </>
+                      )}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 pointer-events-none" />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div>
+                  <label className="block text-xs font-bold text-gray-800 uppercase tracking-widest mb-2 px-1">Campo</label>
+                  <div className="relative">
+                    <input 
+                      id="method-select"
+                      type="text"
+                      value="Conta de Jogador"
+                      readOnly
+                      onKeyDown={(e) => e.preventDefault()}
+                      className="w-full px-4 py-4 rounded-2xl border-2 border-gray-300 bg-transparent text-gray-500 font-bold text-sm outline-none cursor-default select-none pointer-events-none font-sans"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div id="total-preview" className="bg-orange-50/50 rounded-2xl p-4 border border-orange-100">
                  <div className="flex items-center justify-between">
@@ -147,7 +176,7 @@ export default function TransactionPage() {
                   id="cancel-transaction"
                   type="button"
                   onClick={() => navigate(-1)}
-                  className="flex-1 py-4 rounded-[1.2rem] border-2 border-gray-100 font-black text-gray-700 hover:bg-gray-50 transition-all uppercase tracking-widest text-[10px]"
+                  className="flex-1 py-4 rounded-[1.2rem] border-2 border-gray-200 font-black text-gray-700 hover:bg-gray-50 transition-all uppercase tracking-widest text-[10px]"
                 >
                   Cancelar
                 </button>
@@ -162,9 +191,9 @@ export default function TransactionPage() {
             </form>
           </div>
 
-        <div className="mt-6 flex gap-3 p-4 rounded-2xl bg-gray-50 border border-gray-100">
-           <Info className="w-5 h-5 text-gray-400 shrink-0" />
-           <p className="text-[10px] text-gray-500 leading-relaxed">
+        <div className="mt-6 flex gap-3 p-4 rounded-2xl bg-transparent border-2 border-gray-300">
+           <Info className="w-5 h-5 text-gray-600 shrink-0" />
+           <p className="text-[10px] text-gray-700 leading-relaxed">
              As operações financeiras nesta versão são simuladas para fins de demonstração da interface.
            </p>
         </div>

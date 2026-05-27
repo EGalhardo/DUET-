@@ -89,7 +89,7 @@ export default function Favoritos() {
                 </button>
                 <button 
                   onClick={() => setDeleteConfirmId(null)}
-                  className="w-full bg-gray-100 text-gray-600 font-black py-4 rounded-2xl hover:bg-gray-200 transition-all uppercase tracking-widest text-xs"
+                  className="w-full bg-transparent border-2 border-gray-200 text-gray-600 font-black py-4 rounded-2xl hover:bg-gray-50 transition-all uppercase tracking-widest text-xs"
                 >
                   Cancelar
                 </button>
@@ -126,7 +126,7 @@ export default function Favoritos() {
             <p className="text-xs text-white/80">Acesso rápido aos teus conteúdos</p>
           </div>
 
-          <div className="bg-gray-50/80 px-6 py-3 border-b border-gray-100">
+          <div className="bg-transparent px-6 py-3 border-b-2 border-gray-200">
              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                 <Zap className="w-3 h-3 text-[#FFB10A]" />
                 Acesso direto
@@ -135,7 +135,7 @@ export default function Favoritos() {
 
           <div className="divide-y divide-gray-100">
             {favorites.length === 0 ? (
-              <div className="p-16 text-center text-gray-400 italic text-sm">
+              <div className="p-16 text-center text-gray-600 font-bold italic text-sm">
                 Nenhum favorito guardado ainda.
               </div>
             ) : (

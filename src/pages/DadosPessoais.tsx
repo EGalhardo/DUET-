@@ -33,44 +33,44 @@ export default function DadosPessoais() {
                 <Camera className="w-4 h-4" />
               </div>
             </div>
-            <p className="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Alterar Foto</p>
+            <p className="mt-4 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Alterar Foto</p>
           </div>
 
           <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert('Dados guardados!'); navigate('/perfil'); }}>
             <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Nome Completo</label>
+              <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Nome Completo</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"><User className="w-5 h-5" /></span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"><User className="w-5 h-5" /></span>
                 <input 
                   type="text" 
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#FFB10A] outline-none font-semibold text-sm transition-all"
+                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:border-[#FFB10A] outline-none font-semibold text-sm transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Email</label>
+              <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Email</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"><Mail className="w-5 h-5" /></span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-650"><Mail className="w-5 h-5" /></span>
                 <input 
                   type="email" 
                   defaultValue={auth.user?.email}
                   disabled
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-100 bg-gray-50 text-gray-400 font-semibold text-sm cursor-not-allowed"
+                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 bg-transparent text-gray-500 font-semibold text-sm cursor-not-allowed"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Contacto</label>
+              <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Contacto</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"><Phone className="w-5 h-5" /></span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"><Phone className="w-5 h-5" /></span>
                 <input 
                   type="tel" 
                   placeholder="9xx xxx xxx"
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-[#FFB10A] outline-none font-semibold text-sm transition-all"
+                  className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:border-[#FFB10A] outline-none font-semibold text-sm transition-all"
                 />
               </div>
             </div>
