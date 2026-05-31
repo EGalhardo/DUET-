@@ -16,12 +16,8 @@ export default function Home() {
   const navigate = useNavigate();
   const [infoCategory, setInfoCategory] = React.useState<Category | null>(null);
 
-  React.useEffect(() => {
-    const onboardingSeen = localStorage.getItem('onboarding:seen');
-    if (!onboardingSeen) {
-      navigate('/onboarding');
-    }
-  }, [navigate]);
+  // No onboarding redirect to guarantee Home is the very first screen
+
 
   return (
     <div className="flex flex-col flex-1">

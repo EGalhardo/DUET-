@@ -10,7 +10,7 @@ export default function TerminarSessao() {
   const handleLogout = () => {
     localStorage.removeItem('onboarding:seen');
     logout();
-    navigate('/onboarding');
+    navigate('/');
   };
 
   return (

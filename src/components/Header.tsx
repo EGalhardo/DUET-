@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, LogIn, Globe, UserPlus, Key, Users, Link as LinkIcon, PlayCircle, LogOut, IdCard, History, Wallet, Heart, Settings, Shield, Moon, ChevronDown, Check, Trash2, X } from 'lucide-react';
+import { User, LogIn, Globe, UserPlus, Key, Users, PlayCircle, LogOut, Wallet, Bell } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { cn } from '../lib/utils';
 import { storageService } from '../services/storageService';
+import NotificationsModal from './home/NotificationsModal';
+import AuthModal from './home/AuthModal';
 
 export default function Header() {
   const { auth, logout, login } = useAppContext();
@@ -12,6 +13,76 @@ export default function Header() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
   const [balance, setBalance] = useState<number>(0);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(0);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<'login' | 'social' | 'signup' | 'reset'>('login');
+
+  const openAuthModal = (tab: 'login' | 'social' | 'signup' | 'reset') => {
+    setAuthModalTab(tab);
+    setIsAuthModalOpen(true);
+    setShowPopover(false);
+  };
+
+  useEffect(() => {
+    // Seed initial notifications if empty to trigger red indicator on profile picture
+    try {
+      const currentNotifications = storageService.getNotifications();
+      if (currentNotifications.length === 0) {
+        storageService.addNotification({
+          id: 'welcome_notification',
+          type: 'Performance',
+          title: 'Bem-vindo!',
+          message: 'Sê bem-vindo à nossa plataforma de duelos. Boa sorte!',
+          emoji: '📢',
+          challengeId: '',
+          createdAt: new Date().toISOString(),
+          isRead: false
+        });
+        storageService.addNotification({
+          id: 'first_friend_taunt',
+          type: 'Taunt',
+          title: 'Novo Desafio!',
+          message: 'Foste desafiado por um amigo para um duelo no Girabola.',
+          emoji: '📢',
+          challengeId: 'girabola_challenge_1',
+          createdAt: new Date(Date.now() - 3600000).toISOString(),
+          isRead: false
+        });
+      }
+
+      // Add user specified 1 Vs 1 results notification if not exists
+      if (!currentNotifications.some(n => n.id === 'petro_v_agosto_result')) {
+        storageService.addNotification({
+          id: 'petro_v_agosto_result',
+          type: 'Performance',
+          title: 'Resultado',
+          message: '1 Vs 1\n30/05/2026\nPetro Vs 1- Agosto',
+          emoji: '📢',
+          challengeId: 'petro_v_agosto',
+          createdAt: new Date().toISOString(),
+          isRead: false
+        });
+      }
+    } catch (e) {
+      console.error('Error seeding notifications:', e);
+    }
+
+    const loadNotifications = () => {
+      try {
+        const all = storageService.getNotifications();
+        const unread = all.filter(n => !n.isRead).length;
+        setUnreadNotificationsCount(unread);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    loadNotifications();
+    window.addEventListener('notificationsUpdated', loadNotifications);
+    return () => {
+      window.removeEventListener('notificationsUpdated', loadNotifications);
+    };
+  }, []);
 
   useEffect(() => {
     const loadWallet = () => {
@@ -65,103 +136,107 @@ export default function Header() {
           <button 
             ref={buttonRef}
             onClick={() => setShowPopover(!showPopover)}
-            className="relative flex items-center justify-center h-9 w-9 md:h-10 md:w-10 rounded-full border border-gray-200 hover:border-[#FFB10A] transition-all duration-300 overflow-hidden bg-white shrink-0"
+            className="relative flex items-center justify-center h-9 w-9 md:h-10 md:w-10 rounded-full border border-gray-200 hover:border-[#FFB10A] transition-all duration-300 bg-white shrink-0"
           >
             {auth.isLoggedIn && auth.user?.avatar ? (
-              <img src={auth.user.avatar} alt="User Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <img src={auth.user.avatar} alt="User Avatar" className="w-full h-full object-cover rounded-full overflow-hidden" referrerPolicy="no-referrer" />
             ) : (
               <User className="w-5 h-5 md:w-6 md:h-6 text-[#364153]" />
+            )}
+            {unreadNotificationsCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white animate-pulse">
+                {unreadNotificationsCount}
+              </span>
             )}
           </button>
 
           {showPopover && (
             <div 
               ref={popoverRef}
-              className="absolute top-full right-0 mt-2 w-64 bg-white border border-gray-200 rounded-2xl p-2 animate-pop-in z-50"
+              className="absolute top-full right-0 mt-2 w-64 bg-white border border-gray-200 rounded-[2rem] p-3 animate-pop-in z-50 shadow-xl"
             >
               <div className="absolute top-[-8px] right-4 w-4 h-4 bg-white border-l border-t border-gray-200 rotate-45" />
               
-              {!auth.isLoggedIn ? (
-                <>
-                  <Link to="/login" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <LogIn className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Login</span>
-                  </Link>
-                  <Link to="/login" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <Globe className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Login Social</span>
-                  </Link>
-                  <Link to="/signup" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <UserPlus className="w-5 h-5 text-[#FFB10A]" />
-                    <span>SignUp</span>
-                  </Link>
-                  <Link to="/reset-password" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <Key className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Redefinir Senha</span>
-                  </Link>
-                  <div className="h-px bg-gray-300 my-2" />
-                  <Link to="/opinioes-sugestoes" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <Users className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Opinião & Sugestões</span>
-                  </Link>
-                  <Link to="/afiliado" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <LinkIcon className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Afiliado</span>
-                  </Link>
-                  <Link to="/tutorial" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <PlayCircle className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Video-Tutorial</span>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <div className="px-3 py-2">
-                    <p className="text-[10px] font-black text-[#364153] uppercase tracking-wider">Minha Conta</p>
-                  </div>
-                  <Link to="/perfil" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <User className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Perfil</span>
-                  </Link>
-                  <Link to="/dados-pessoais" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <IdCard className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Dados Pessoais</span>
-                  </Link>
-                  <Link to="/historico" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <History className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Histórico</span>
-                  </Link>
-                  <Link to="/carteira" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <Wallet className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Carteira</span>
-                  </Link>
-                  <Link to="/favoritos" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <Heart className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Favoritos</span>
-                  </Link>
-                  <Link to="/definicoes" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <Settings className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Definições</span>
-                  </Link>
-                  <Link to="/seguranca" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                    <Shield className="w-5 h-5 text-[#FFB10A]" />
-                    <span>Segurança</span>
-                  </Link>
+              {/* SECTION: ACESSO & AUTENTICAÇÃO */}
+              <div className="px-3 pt-1.5 pb-1">
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Acesso</p>
+              </div>
 
-                  <div className="lg:hidden border-t border-gray-300 mt-2 pt-2">
-                    <Link to="/opinioes-sugestoes" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                      <Users className="w-5 h-5 text-[#FFB10A]" />
-                      <span>Opinião & Sugestões</span>
-                    </Link>
-                    <Link to="/tutorial" className="w-full flex items-center gap-3 p-3 rounded-xl font-black text-[#091747] hover:bg-orange-50 transition-colors">
-                      <PlayCircle className="w-5 h-5 text-[#FFB10A]" />
-                      <span>Video-Tutorial</span>
-                    </Link>
-                  </div>
+              <button
+                type="button"
+                onClick={() => openAuthModal('login')}
+                className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-orange-50 transition-colors"
+              >
+                <LogIn className="w-4 h-4 text-[#FFB10A]" />
+                <span className="text-[11px] font-black text-[#0c1e56]">Login</span>
+              </button>
 
-                  <div className="h-px bg-gray-300 my-2" />
-                  <Link to="/logout" className="w-full flex items-center gap-3 p-3 rounded-xl font-bold text-red-600 hover:bg-red-50 transition-colors">
-                    <LogOut className="w-5 h-5 text-red-600" />
-                    <span>Terminar Sessão</span>
+              <button
+                type="button"
+                onClick={() => openAuthModal('social')}
+                className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-orange-50 transition-colors"
+              >
+                <Globe className="w-4 h-4 text-[#FFB10A]" />
+                <span className="text-[11px] font-black text-[#0c1e56]">Login Social</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => openAuthModal('signup')}
+                className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-orange-50 transition-colors"
+              >
+                <UserPlus className="w-4 h-4 text-[#FFB10A]" />
+                <span className="text-[11px] font-black text-[#0c1e56]">SignUp</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => openAuthModal('reset')}
+                className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-orange-50 transition-colors"
+              >
+                <Key className="w-4 h-4 text-[#FFB10A]" />
+                <span className="text-[11px] font-black text-[#0c1e56]">Redefinir Senha</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setIsNotificationsOpen(true); setShowPopover(false); }}
+                className="w-full flex items-center justify-between p-2.5 rounded-xl text-left hover:bg-orange-50 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <Bell className="w-4 h-4 text-[#FFB10A]" />
+                  <span className="text-[11px] font-black text-[#0c1e56]">Notificações</span>
+                </div>
+                {unreadNotificationsCount > 0 && (
+                  <span className="bg-red-500 text-white font-black text-[9px] px-2 py-0.5 rounded-full flex items-center justify-center min-w-[20px] h-5">
+                    {unreadNotificationsCount}
+                  </span>
+                )}
+              </button>
+
+              <div className="h-px bg-gray-100 my-2" />
+
+              {/* SECTION: OUTROS */}
+              <div className="px-3 pt-1.5 pb-1">
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Mais Opções</p>
+              </div>
+
+              <Link to="/opinioes-sugestoes" className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-orange-50 transition-colors" onClick={() => setShowPopover(false)}>
+                <Users className="w-4 h-4 text-[#FFB10A]" />
+                <span className="text-[11px] font-black text-[#0c1e56]">Opinião & Sugestões</span>
+              </Link>
+
+              <Link to="/tutorial" className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-orange-50 transition-colors" onClick={() => setShowPopover(false)}>
+                <PlayCircle className="w-4 h-4 text-[#FFB10A]" />
+                <span className="text-[11px] font-black text-[#0c1e56]">Video-Tutorial</span>
+              </Link>
+
+              {auth.isLoggedIn && (
+                <>
+                  <div className="h-px bg-gray-100 my-2" />
+                  <Link to="/logout" className="w-full flex items-center gap-3 p-2.5 rounded-xl font-bold text-red-600 hover:bg-red-50 transition-colors">
+                    <LogOut className="w-4 h-4 text-red-600" />
+                    <span className="text-[11px] font-bold">Terminar Sessão</span>
                   </Link>
                 </>
               )}
@@ -169,6 +244,15 @@ export default function Header() {
           )}
         </div>
       </div>
+      <NotificationsModal
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
+      />
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        initialTab={authModalTab}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </header>
   );
 }

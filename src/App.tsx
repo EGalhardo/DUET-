@@ -1,29 +1,42 @@
-import React, { Suspense, lazy, useState, useEffect } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
 import { AppProvider } from './context/AppContext';
 import Layout from './components/Layout';
 import ImagePreloader from './components/ImagePreloader';
 import Ranking from './pages/Ranking';
 import Liga from './pages/Liga';
 
-// Lazy load components for better performance and scalability
-const Home = lazy(() => import('./pages/Home'));
-const Onboarding = lazy(() => import('./pages/Onboarding'));
-const Aposta = lazy(() => import('./pages/Aposta'));
-const Carteira = lazy(() => import('./pages/Carteira'));
-const Historico = lazy(() => import('./pages/Historico'));
-const Favoritos = lazy(() => import('./pages/Favoritos'));
-const Perfil = lazy(() => import('./pages/Perfil'));
-const OpiniaoSugestoes = lazy(() => import('./pages/OpiniaoSugestoes'));
-const TransactionPage = lazy(() => import('./pages/TransactionPage'));
-const DadosPessoais = lazy(() => import('./pages/DadosPessoais'));
-const Seguranca = lazy(() => import('./pages/Seguranca'));
-const Tutorial = lazy(() => import('./pages/Tutorial'));
-const Afiliado = lazy(() => import('./pages/Afiliado'));
-const Definicoes = lazy(() => import('./pages/Definicoes'));
-const TerminarSessao = lazy(() => import('./pages/TerminarSessao'));
-const InfoPage = lazy(() => import('./pages/InfoPage'));
+// Lazy load components for better performance and scalability with automatic recovery for dynamic chunk failures
+const safeLazy = (importFn: () => Promise<any>) => {
+  return lazy(() => 
+    importFn().catch((err) => {
+      console.warn("Erro ao carregar o módulo, a recarregar a página...", err);
+      const lastReload = sessionStorage.getItem('last-chunk-reload');
+      const now = Date.now();
+      if (!lastReload || now - parseInt(lastReload, 10) > 10000) {
+        sessionStorage.setItem('last-chunk-reload', String(now));
+        window.location.reload();
+      }
+      return { default: () => null };
+    })
+  );
+};
+
+const Home = safeLazy(() => import('./pages/Home'));
+const Aposta = safeLazy(() => import('./pages/Aposta'));
+const Carteira = safeLazy(() => import('./pages/Carteira'));
+const Historico = safeLazy(() => import('./pages/Historico'));
+const Favoritos = safeLazy(() => import('./pages/Favoritos'));
+const Perfil = safeLazy(() => import('./pages/Perfil'));
+const OpiniaoSugestoes = safeLazy(() => import('./pages/OpiniaoSugestoes'));
+const TransactionPage = safeLazy(() => import('./pages/TransactionPage'));
+const DadosPessoais = safeLazy(() => import('./pages/DadosPessoais'));
+const Seguranca = safeLazy(() => import('./pages/Seguranca'));
+const Tutorial = safeLazy(() => import('./pages/Tutorial'));
+const Afiliado = safeLazy(() => import('./pages/Afiliado'));
+const Definicoes = safeLazy(() => import('./pages/Definicoes'));
+const TerminarSessao = safeLazy(() => import('./pages/TerminarSessao'));
+const InfoPage = safeLazy(() => import('./pages/InfoPage'));
 
 // Loading component for Suspense
 const PageLoader = ({ isOverlay = false }: { isOverlay?: boolean }) => (
@@ -39,40 +52,16 @@ const PageLoader = ({ isOverlay = false }: { isOverlay?: boolean }) => (
 
 const AppRoutes = () => {
   const location = useLocation();
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     // Scroll to top on route change
     window.scrollTo(0, 0);
-
-    // Show loader for 1 second on route change
-    setIsTransitioning(true);
-    const timer = setTimeout(() => {
-      setIsTransitioning(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
   }, [location.pathname]);
 
   return (
     <>
-      <AnimatePresence mode="wait">
-        {isTransitioning && (
-          <motion.div
-            key="route-loader"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PageLoader isOverlay />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <Suspense fallback={<PageLoader isOverlay />}>
         <Routes>
-          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="*" element={
             <Layout>
               <Routes>

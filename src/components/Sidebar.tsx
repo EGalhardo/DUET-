@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Heart, Trophy, Wallet, History, User, MessageSquare, PlayCircle, LogOut } from 'lucide-react';
+import { Home, Heart, Trophy, Wallet, History, User, MessageSquare, PlayCircle, LogOut, Award } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { useAppContext } from '../context/AppContext';
