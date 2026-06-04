@@ -53,7 +53,7 @@ export default function DadosPessoais() {
             <div>
               <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Email</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-650"><Mail className="w-5 h-5" /></span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"><Mail className="w-5 h-5" /></span>
                 <input 
                   type="email" 
                   defaultValue={auth.user?.email}

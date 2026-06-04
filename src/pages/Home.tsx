@@ -69,7 +69,7 @@ export default function Home() {
               <h3 className="text-sm font-black text-[#091747] uppercase tracking-wider mb-4">Plataforma</h3>
               <ul className="space-y-2">
                 <li><Link to="/tutorial" className="text-sm font-bold text-[#364153] hover:text-[#FFB10A]">Como funciona</Link></li>
-                <li><Link to="/ranking" className="text-sm font-bold text-[#364153] hover:text-[#FFB10A]">Ranking Global</Link></li>
+                <li><Link to="/ranking" className="text-sm font-bold text-[#364153] hover:text-[#FFB10A]">Classificação Global</Link></li>
                 <li><Link to="/opinioes-sugestoes" className="text-sm font-bold text-[#364153] hover:text-[#FFB10A]">Opinião & Sugestões</Link></li>
               </ul>
             </div>

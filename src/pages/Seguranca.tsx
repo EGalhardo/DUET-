@@ -56,7 +56,7 @@ export default function Seguranca() {
                   <button className="text-xs font-bold text-red-500 hover:bg-red-50 px-3 py-1 rounded-lg transition-colors">Terminar</button>
                </div>
                
-               <button className="w-full py-4 text-xs font-bold text-gray-650 uppercase tracking-widest hover:text-[#091747] transition-colors">
+               <button className="w-full py-4 text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-[#091747] transition-colors">
                  Terminar em todos os dispositivos
                </button>
             </div>

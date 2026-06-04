@@ -784,7 +784,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
                   {userBets.length}
                 </span>
               </div>
-              <p className="text-[10px] text-gray-650 font-bold uppercase tracking-widest mt-1">Vê o estado dos teus duelos</p>
+              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Vê o estado dos teus duelos</p>
             </div>
           </button>
         </div>

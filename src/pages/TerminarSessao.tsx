@@ -40,7 +40,7 @@ export default function TerminarSessao() {
                 </div>
                 <div>
                    <p className="text-sm font-bold text-[#091747]">O que acontece ao sair?</p>
-                   <ul className="mt-2 list-disc pl-5 text-xs text-gray-750 space-y-2 font-medium">
+                   <ul className="mt-2 list-disc pl-5 text-xs text-gray-500 space-y-2 font-medium">
                      <li>Serás redirecionado para a página inicial.</li>
                      <li>Os teus dados locais (favoritos/histórico) permanecem no dispositivo.</li>
                    </ul>

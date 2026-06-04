@@ -11,7 +11,7 @@ export default function Sidebar() {
   const navItems = [
     { icon: Home, label: 'Início', path: '/' },
     { icon: Heart, label: 'Favoritos', path: '/favoritos' },
-    { icon: Trophy, label: 'Ranking', path: '/ranking' },
+    { icon: Trophy, label: 'Classificação', path: '/ranking' },
     { icon: Wallet, label: 'Carteira', path: '/carteira' },
     { icon: History, label: 'Histórico', path: '/historico' },
     { icon: User, label: 'Perfil', path: '/perfil' },

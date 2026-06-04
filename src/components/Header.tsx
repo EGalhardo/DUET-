@@ -3,8 +3,8 @@ import { User, LogIn, Globe, UserPlus, Key, Users, PlayCircle, LogOut, Wallet, B
 import { Link, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { storageService } from '../services/storageService';
-import NotificationsModal from './home/NotificationsModal';
 import AuthModal from './home/AuthModal';
+import NotificationsModal from './home/NotificationsModal';
 
 export default function Header() {
   const { auth, logout, login } = useAppContext();
@@ -13,9 +13,8 @@ export default function Header() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
   const [balance, setBalance] = useState<number>(0);
-  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(0);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<'login' | 'social' | 'signup' | 'reset'>('login');
 
   const openAuthModal = (tab: 'login' | 'social' | 'signup' | 'reset') => {
@@ -23,66 +22,6 @@ export default function Header() {
     setIsAuthModalOpen(true);
     setShowPopover(false);
   };
-
-  useEffect(() => {
-    // Seed initial notifications if empty to trigger red indicator on profile picture
-    try {
-      const currentNotifications = storageService.getNotifications();
-      if (currentNotifications.length === 0) {
-        storageService.addNotification({
-          id: 'welcome_notification',
-          type: 'Performance',
-          title: 'Bem-vindo!',
-          message: 'Sê bem-vindo à nossa plataforma de duelos. Boa sorte!',
-          emoji: '📢',
-          challengeId: '',
-          createdAt: new Date().toISOString(),
-          isRead: false
-        });
-        storageService.addNotification({
-          id: 'first_friend_taunt',
-          type: 'Taunt',
-          title: 'Novo Desafio!',
-          message: 'Foste desafiado por um amigo para um duelo no Girabola.',
-          emoji: '📢',
-          challengeId: 'girabola_challenge_1',
-          createdAt: new Date(Date.now() - 3600000).toISOString(),
-          isRead: false
-        });
-      }
-
-      // Add user specified 1 Vs 1 results notification if not exists
-      if (!currentNotifications.some(n => n.id === 'petro_v_agosto_result')) {
-        storageService.addNotification({
-          id: 'petro_v_agosto_result',
-          type: 'Performance',
-          title: 'Resultado',
-          message: '1 Vs 1\n30/05/2026\nPetro Vs 1- Agosto',
-          emoji: '📢',
-          challengeId: 'petro_v_agosto',
-          createdAt: new Date().toISOString(),
-          isRead: false
-        });
-      }
-    } catch (e) {
-      console.error('Error seeding notifications:', e);
-    }
-
-    const loadNotifications = () => {
-      try {
-        const all = storageService.getNotifications();
-        const unread = all.filter(n => !n.isRead).length;
-        setUnreadNotificationsCount(unread);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    loadNotifications();
-    window.addEventListener('notificationsUpdated', loadNotifications);
-    return () => {
-      window.removeEventListener('notificationsUpdated', loadNotifications);
-    };
-  }, []);
 
   useEffect(() => {
     const loadWallet = () => {
@@ -143,11 +82,6 @@ export default function Header() {
             ) : (
               <User className="w-5 h-5 md:w-6 md:h-6 text-[#364153]" />
             )}
-            {unreadNotificationsCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white animate-pulse">
-                {unreadNotificationsCount}
-              </span>
-            )}
           </button>
 
           {showPopover && (
@@ -201,18 +135,13 @@ export default function Header() {
               <button
                 type="button"
                 onClick={() => { setIsNotificationsOpen(true); setShowPopover(false); }}
-                className="w-full flex items-center justify-between p-2.5 rounded-xl text-left hover:bg-orange-50 transition-colors group"
+                className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-orange-50 transition-colors"
               >
-                <div className="flex items-center gap-3">
-                  <Bell className="w-4 h-4 text-[#FFB10A]" />
-                  <span className="text-[11px] font-black text-[#0c1e56]">Notificações</span>
-                </div>
-                {unreadNotificationsCount > 0 && (
-                  <span className="bg-red-500 text-white font-black text-[9px] px-2 py-0.5 rounded-full flex items-center justify-center min-w-[20px] h-5">
-                    {unreadNotificationsCount}
-                  </span>
-                )}
+                <Bell className="w-4 h-4 text-[#FFB10A]" />
+                <span className="text-[11px] font-black text-[#0c1e56]">Notificações</span>
               </button>
+
+
 
               <div className="h-px bg-gray-100 my-2" />
 
@@ -244,14 +173,14 @@ export default function Header() {
           )}
         </div>
       </div>
-      <NotificationsModal
-        isOpen={isNotificationsOpen}
-        onClose={() => setIsNotificationsOpen(false)}
-      />
       <AuthModal
         isOpen={isAuthModalOpen}
         initialTab={authModalTab}
         onClose={() => setIsAuthModalOpen(false)}
+      />
+      <NotificationsModal
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
       />
     </header>
   );
