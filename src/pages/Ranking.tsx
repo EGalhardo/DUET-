@@ -869,20 +869,20 @@ export default function Ranking() {
 
         <div className="space-y-8">
           <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden">
-            <div className="bg-[#FFB10A] px-4 md:px-5 py-4.5 text-white font-bold flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-2.5">
-                <Trophy className="w-5.5 h-5.5 text-white shrink-0 fill-amber-200/20" />
+            <div className="bg-[#FFB10A] px-1.5 xs:px-2.5 md:px-5 py-2.5 md:py-4 text-white font-bold flex flex-row flex-nowrap items-center justify-between gap-1 md:gap-4 w-full overflow-x-hidden md:overflow-x-visible">
+              <div className="flex items-center gap-1 shrink-0">
+                <Trophy className="w-4 h-4 text-white shrink-0 fill-amber-200/20 hidden sm:inline" />
                 {/* Dropdown Esporte Customizado e Lindo */}
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setIsSportDropdownOpen(!isSportDropdownOpen)}
-                    className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 border-2 border-white/90 px-4 py-1.5 rounded-full transition-all shrink-0 font-sans font-black text-xs md:text-sm text-white uppercase tracking-tight cursor-pointer select-none shadow-sm"
+                    className="flex items-center gap-0.5 xs:gap-1 bg-white/20 hover:bg-white/30 border-2 border-white/90 px-1.5 xs:px-2.5 py-0.5 xs:py-1 rounded-full transition-all shrink-0 font-sans font-black text-[9px] xs:text-xs md:text-sm text-white uppercase tracking-tight cursor-pointer select-none shadow-sm"
                   >
                     <span>
-                      {selectedSport === "Futebol" ? "⚽ Futebol" : selectedSport === "Basket" ? "🏀 Basket" : "🏎️ F1"}
+                      {selectedSport === "Futebol" ? "Futebol" : selectedSport === "Basket" ? "Basket" : "F1"}
                     </span>
-                    <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", isSportDropdownOpen && "rotate-180")} />
+                    <ChevronDown className={cn("w-2.5 h-2.5 xs:w-3 transition-transform duration-200", isSportDropdownOpen && "rotate-180")} />
                   </button>
 
                   <AnimatePresence>
@@ -931,19 +931,19 @@ export default function Ranking() {
                   </AnimatePresence>
                 </div>
               </div>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-row items-center gap-1 sm:gap-3 flex-nowrap shrink-0">
                 {/* Dropdown com os jogos com borda de 2px e fundo mais destacado */}
-                <div className="flex items-center bg-white/20 hover:bg-white/30 border-2 border-white px-3.5 py-1.5 rounded-full transition-all shrink-0 shadow-sm">
-                  <span className="text-[10px] font-black text-white mr-2 uppercase tracking-tight hidden sm:inline">Jogo:</span>
+                <div className="flex items-center bg-white/20 hover:bg-white/30 border-2 border-white px-1.5 xs:px-2.5 py-0.5 xs:py-1 rounded-full transition-all shrink-0 shadow-sm col-span-1">
+                  <span className="text-[9px] font-black text-white mr-1.5 uppercase tracking-tight hidden sm:inline">Jogo:</span>
                   <select
                     value={selectedBetId}
                     onChange={(e) => setSelectedBetId(e.target.value)}
-                    className="bg-transparent font-sans font-black text-xs text-white outline-none cursor-pointer border-none p-0 pr-4.5 [color-scheme:dark] select-none text-right appearance-none"
+                    className="bg-transparent font-sans font-black text-[9px] xs:text-xs text-white outline-none cursor-pointer border-none p-0 pr-3.5 [color-scheme:dark] select-none text-right appearance-none truncate max-w-[70px] xs:max-w-[120px] sm:max-w-none"
                     style={{
                       backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
                       backgroundRepeat: "no-repeat",
                       backgroundPosition: "right center",
-                      backgroundSize: "9px"
+                      backgroundSize: "6px"
                     }}
                   >
                     {filteredBetsBySport.map((bet) => (
@@ -955,18 +955,18 @@ export default function Ranking() {
                 </div>
 
                 {/* Dropdown de Data com borda de 2px e fundo mais destacado (substituindo o selector de input de data antigo) */}
-                <div className="flex items-center bg-white/20 hover:bg-white/30 border-2 border-white px-3.5 py-1.5 rounded-full transition-all shrink-0 shadow-sm">
-                  <Calendar className="w-3.5 h-3.5 text-white mr-2 shrink-0" />
-                  <span className="text-[10px] font-black text-white mr-2 uppercase tracking-tight hidden sm:inline">Data:</span>
+                <div className="flex items-center bg-white/20 hover:bg-white/30 border-2 border-white px-1.5 xs:px-2.5 py-0.5 xs:py-1 rounded-full transition-all shrink-0 shadow-sm">
+                  <Calendar className="w-3 h-3 text-white mr-1 shrink-0 hidden sm:inline" />
+                  <span className="text-[9px] font-black text-white mr-1.5 uppercase tracking-tight hidden sm:inline">Data:</span>
                   <select
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="bg-transparent font-sans font-black text-xs text-white outline-none cursor-pointer border-none p-0 pr-4.5 [color-scheme:dark] select-none text-right appearance-none"
+                    className="bg-transparent font-sans font-black text-[9px] xs:text-xs text-white outline-none cursor-pointer border-none p-0 pr-3.5 [color-scheme:dark] select-none text-right appearance-none"
                     style={{
                       backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
                       backgroundRepeat: "no-repeat",
                       backgroundPosition: "right center",
-                      backgroundSize: "9px"
+                      backgroundSize: "6px"
                     }}
                   >
                     {availableDates.map((date) => {
@@ -1001,67 +1001,93 @@ export default function Ranking() {
                   </p>
                 </div>
 
-                <div className="w-full bg-white rounded-3xl md:rounded-full p-6 md:p-6 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 relative">
+                <div className="w-full bg-white rounded-3xl md:rounded-full p-4 md:p-6 px-4 md:px-12 flex flex-row items-center justify-between gap-2 sm:gap-4 md:gap-8 relative">
                   {/* Participant 1 */}
-                  <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-4 flex-1 w-full sm:justify-start">
-                    <img
-                      src={activeBet.p1.avatar}
-                      alt={activeBet.p1.name}
-                      className="w-[84px] h-[84px] md:w-[96px] md:h-[96px] rounded-full object-cover border-3 border-[#FFB10A] ring-4 ring-[#FFB10A]/15 hover:scale-110 transition-transform duration-300 shrink-0"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="flex flex-col items-center sm:items-start min-w-0">
-                      <span className="text-sm md:text-base font-black text-[#0c1e56] uppercase tracking-tight truncate">
+                  <div className="flex flex-row items-center gap-2 sm:gap-4 flex-1 min-w-0 justify-start">
+                    <div className="relative shrink-0 animate-fade-in">
+                      <img
+                        src={activeBet.p1.avatar}
+                        alt={activeBet.p1.name}
+                        className="w-[58px] h-[58px] sm:w-16 sm:h-16 md:w-24 md:h-24 rounded-full object-cover border-2 md:border-3 border-[#FFB10A] ring-2 md:ring-4 ring-[#FFB10A]/15 hover:scale-110 transition-transform duration-300 shrink-0"
+                        referrerPolicy="no-referrer"
+                      />
+                      {/* Only visible on mobile, badge overlapping bottom-right of the avatar */}
+                      <img
+                        src={activeBet.p1.betLogo}
+                        alt={activeBet.p1.betOn}
+                        className="absolute bottom-0 right-0 w-6 h-6 object-contain bg-white rounded-full p-0.5 border border-[#FFB10A] shadow-sm filter drop-shadow sm:hidden"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                    <div className="flex flex-col min-w-0 sm:block hidden">
+                      <span className="text-[9px] xs:text-[10px] sm:text-sm md:text-base font-black text-[#0c1e56] uppercase tracking-tight truncate leading-tight">
                         {activeBet.p1.name}
                       </span>
-                      <span className="text-[10px] md:text-xs font-extrabold text-slate-400 uppercase tracking-widest mt-0.5">
-                        Apostou em
-                      </span>
-                      <div className="flex items-center justify-center sm:justify-start gap-2 mt-1 md:mt-1.5">
-                        <img
-                          src={activeBet.p1.betLogo}
-                          alt={activeBet.p1.betOn}
-                          className="w-10 h-10 object-contain filter drop-shadow hover:scale-115 transition-transform duration-200 shrink-0"
-                          referrerPolicy="no-referrer"
-                        />
+                      <div className="flex flex-row items-center gap-0.5 xs:gap-1 flex-wrap">
+                        <span className="text-[7.5px] xs:text-[8px] sm:text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-tight leading-none">
+                          Apostou em
+                        </span>
+                        <span className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] md:text-xs font-black text-[#0c1e56] uppercase tracking-tight truncate max-w-[40px] xs:max-w-[70px] sm:max-w-none">
+                          {activeBet.p1.betOn}
+                        </span>
                       </div>
                     </div>
+                    {/* On desktop and tablet, show the team badge next to the participant details */}
+                    <img
+                      src={activeBet.p1.betLogo}
+                      alt={activeBet.p1.betOn}
+                      className="w-8 h-8 object-contain filter drop-shadow hover:scale-115 transition-transform duration-200 shrink-0 hidden sm:block"
+                      referrerPolicy="no-referrer"
+                    />
                   </div>
 
                   {/* Score */}
-                  <div className="flex flex-col items-center justify-center shrink-0 py-2 md:py-0 px-4">
-                    <span className="text-4xl md:text-5xl font-black text-[#091747] tracking-widest italic leading-none">
+                  <div className="flex flex-col items-center justify-center shrink-0 px-2 py-1">
+                    <span className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black text-[#091747] tracking-widest italic leading-none">
                       {activeBet.score}
                     </span>
-                    <span className="mt-2 text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-650 border border-emerald-100 px-3 py-1 rounded-full">
+                    <span className="mt-1 text-[5.5px] xs:text-[7.5px] sm:text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-650 border border-emerald-100 px-1 xs:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap hidden sm:block">
                       Resultado Final
                     </span>
                   </div>
 
                   {/* Participant 2 */}
-                  <div className="flex flex-col sm:flex-row items-center text-center sm:text-right gap-4 flex-1 w-full sm:justify-end">
-                    <div className="flex flex-col items-center sm:items-end min-w-0">
-                      <span className="text-sm md:text-base font-black text-[#0c1e56] uppercase tracking-tight truncate">
-                        {activeBet.p2.name}
-                      </span>
-                      <span className="text-[10px] md:text-xs font-extrabold text-slate-400 uppercase tracking-widest mt-0.5">
-                        Apostou em
-                      </span>
-                      <div className="flex items-center justify-center sm:justify-end gap-2 mt-1 md:mt-1.5">
-                        <img
-                          src={activeBet.p2.betLogo}
-                          alt={activeBet.p2.betOn}
-                          className="w-10 h-10 object-contain filter drop-shadow hover:scale-115 transition-transform duration-200 shrink-0"
-                          referrerPolicy="no-referrer"
-                        />
-                      </div>
-                    </div>
+                  <div className="flex flex-row items-center gap-2 sm:gap-4 flex-1 min-w-0 justify-end">
+                    {/* On desktop and tablet, show the team badge next to the participant details */}
                     <img
-                      src={activeBet.p2.avatar}
-                      alt={activeBet.p2.name}
-                      className="w-[84px] h-[84px] md:w-[96px] md:h-[96px] rounded-full object-cover border-3 border-slate-200 ring-4 ring-slate-100 hover:scale-110 transition-transform duration-300 order-first sm:order-last shrink-0"
+                      src={activeBet.p2.betLogo}
+                      alt={activeBet.p2.betOn}
+                      className="w-8 h-8 object-contain filter drop-shadow hover:scale-115 transition-transform duration-200 shrink-0 hidden sm:block"
                       referrerPolicy="no-referrer"
                     />
+                    <div className="flex flex-col items-end min-w-0 sm:block hidden">
+                      <span className="text-[9px] xs:text-[10px] sm:text-sm md:text-base font-black text-[#0c1e56] uppercase tracking-tight truncate leading-tight text-right">
+                        {activeBet.p2.name}
+                      </span>
+                      <div className="flex flex-row items-center gap-0.5 xs:gap-1 flex-wrap justify-end">
+                        <span className="text-[7.5px] xs:text-[8px] sm:text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-tight leading-none">
+                          Apostou em
+                        </span>
+                        <span className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] md:text-xs font-black text-[#0c1e56] uppercase tracking-tight truncate max-w-[40px] xs:max-w-[70px] sm:max-w-none">
+                          {activeBet.p2.betOn}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="relative shrink-0 animate-fade-in">
+                      <img
+                        src={activeBet.p2.avatar}
+                        alt={activeBet.p2.name}
+                        className="w-[58px] h-[58px] sm:w-16 sm:h-16 md:w-24 md:h-24 rounded-full object-cover border-2 border-slate-200 ring-2 ring-slate-100 hover:scale-110 transition-transform duration-300 shrink-0"
+                        referrerPolicy="no-referrer"
+                      />
+                      {/* Only visible on mobile, badge overlapping bottom-left of the avatar */}
+                      <img
+                        src={activeBet.p2.betLogo}
+                        alt={activeBet.p2.betOn}
+                        className="absolute bottom-0 left-0 w-6 h-6 object-contain bg-white rounded-full p-0.5 border border-slate-300 shadow-sm filter drop-shadow sm:hidden"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -1118,33 +1144,39 @@ export default function Ranking() {
                   </p>
                 </div>
 
-                <div className="w-full bg-white rounded-3xl md:rounded-full p-6 md:p-6 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 relative">
+                <div className="w-full bg-white rounded-3xl md:rounded-full p-4 md:p-6 px-4 md:px-12 flex flex-row items-center justify-between gap-2 md:gap-8 relative">
                   {/* Team 1 */}
-                  <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-4 flex-1 w-full sm:justify-start">
+                  <div className="flex flex-row items-center gap-2 sm:gap-4 flex-1 min-w-0 justify-start">
                     <img
                       src={activeBet.p1.betLogo}
                       alt={activeBet.p1.betOn}
-                      className="w-[84px] h-[84px] md:w-[96px] md:h-[96px] object-contain hover:scale-110 transition-transform duration-300 shrink-0"
+                      className="w-13 h-13 xs:w-16 xs:h-16 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain hover:scale-110 transition-transform duration-300 shrink-0"
                       referrerPolicy="no-referrer"
                     />
+                    <span className="text-[10px] sm:text-sm md:text-base font-black text-[#0c1e56] uppercase tracking-tight truncate leading-tight hidden sm:block">
+                      {activeBet.p1.betOn}
+                    </span>
                   </div>
 
                   {/* Score */}
-                  <div className="flex flex-col items-center justify-center shrink-0 py-2 md:py-0 px-4">
-                    <span className="text-4xl md:text-5xl font-black text-[#091747] tracking-widest italic leading-none">
+                  <div className="flex flex-col items-center justify-center shrink-0 px-2 py-1">
+                    <span className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black text-[#091747] tracking-widest italic leading-none">
                       {activeBet.score}
                     </span>
-                    <span className="mt-2 text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-650 border border-emerald-100 px-3 py-1 rounded-full">
+                    <span className="mt-1 text-[5.5px] xs:text-[7.5px] sm:text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-650 border border-emerald-100 px-1 xs:px-2 py-0.5 sm:py-1 rounded-full whitespace-nowrap hidden sm:block">
                       Resultado Final
                     </span>
                   </div>
 
                   {/* Team 2 */}
-                  <div className="flex flex-col sm:flex-row items-center text-center sm:text-right gap-4 flex-1 w-full sm:justify-end">
+                  <div className="flex flex-row items-center gap-2 sm:gap-4 flex-1 min-w-0 justify-end">
+                    <span className="text-[10px] sm:text-sm md:text-base font-black text-[#0c1e56] uppercase tracking-tight truncate leading-tight text-right hidden sm:block">
+                      {activeBet.p2.betOn}
+                    </span>
                     <img
                       src={activeBet.p2.betLogo}
                       alt={activeBet.p2.betOn}
-                      className="w-[84px] h-[84px] md:w-[96px] md:h-[96px] object-contain hover:scale-110 transition-transform duration-300 order-first sm:order-last shrink-0"
+                      className="w-13 h-13 xs:w-16 xs:h-16 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain hover:scale-110 transition-transform duration-300 shrink-0"
                       referrerPolicy="no-referrer"
                     />
                   </div>
