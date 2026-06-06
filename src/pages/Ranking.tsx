@@ -1408,14 +1408,14 @@ export default function Ranking() {
                 </div>
 
                 {/* Navigation Tabs (grey background rounded container) */}
-                <div className="flex bg-[#f1f3f9] p-1.5 rounded-[20px] mb-5 gap-1 shrink-0">
+                <div className="flex bg-white border border-slate-200 p-1.5 rounded-[20px] mb-5 gap-1 shrink-0">
                   <button
                     type="button"
                     onClick={() => setActiveModalTab("text")}
                     className={cn(
                       "flex-1 py-2 rounded-xl flex items-center justify-center gap-2 text-[11px] font-black uppercase transition-all duration-300 border-none cursor-pointer",
                       activeModalTab === "text"
-                        ? "bg-white text-[#0c1e56] shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
+                        ? "bg-[#FFB10A] text-white shadow-[0_4px_10px_rgba(255,177,10,0.15)]"
                         : "text-slate-450 bg-transparent hover:text-[#0c1e56]"
                     )}
                   >
@@ -1428,7 +1428,7 @@ export default function Ranking() {
                     className={cn(
                       "flex-1 py-2 rounded-xl flex items-center justify-center gap-2 text-[11px] font-black uppercase transition-all duration-300 border-none cursor-pointer",
                       activeModalTab === "audio"
-                        ? "bg-white text-[#ffb10a] shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
+                        ? "bg-[#FFB10A] text-white shadow-[0_4px_10px_rgba(255,177,10,0.15)]"
                         : "text-slate-450 bg-transparent hover:text-[#0c1e56]"
                     )}
                   >
@@ -1441,7 +1441,7 @@ export default function Ranking() {
                     className={cn(
                       "flex-1 py-2 rounded-xl flex items-center justify-center gap-2 text-[11px] font-black uppercase transition-all duration-300 border-none cursor-pointer",
                       activeModalTab === "imojin"
-                        ? "bg-white text-[#ffb10a] shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
+                        ? "bg-[#FFB10A] text-white shadow-[0_4px_10px_rgba(255,177,10,0.15)]"
                         : "text-slate-450 bg-transparent hover:text-[#0c1e56]"
                     )}
                   >
@@ -1455,23 +1455,23 @@ export default function Ranking() {
                   {activeModalTab === "text" && (
                     <div className="space-y-4">
                       <p className="text-xs font-black uppercase tracking-tight text-[#0c1e56]">
-                        Digite uma provocação amigável ou incentivo:
+                        Selecione uma frase de provocação rápida abaixo:
                       </p>
                       <div className="relative">
                         <textarea
-                          placeholder="Ex: Já não me consegues ver daqui de cima... 🚀"
+                          placeholder="Por favor, selecione uma das frases sugeridas abaixo... 💬"
                           value={writtenMessage}
-                          onChange={(e) => setWrittenMessage(e.target.value)}
+                          readOnly
                           maxLength={120}
                           rows={3}
-                          className="w-full p-4 pb-8 bg-white border-2 border-slate-300 rounded-[20px] text-xs font-bold text-[#0c1e56] outline-none placeholder-slate-400 focus:border-[#FFB10A] focus:ring-1 focus:ring-[#FFB10A] transition-all resize-none shadow-xs"
+                          className="w-full p-4 pb-8 bg-slate-50/50 border border-slate-200 rounded-[20px] text-xs font-bold text-[#0c1e56] outline-none placeholder-slate-400 transition-all resize-none shadow-xs cursor-default"
                         />
                         <span className="absolute bottom-3 right-4 text-[9px] font-black text-slate-400 select-none">
                           {writtenMessage.length}/120
                         </span>
                       </div>
                       <div className="space-y-2">
-                        <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                        <p className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
                           Frases rápidas sugeridas:
                         </p>
                         <div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -1480,7 +1480,7 @@ export default function Ranking() {
                               key={txt}
                               type="button"
                               onClick={() => setWrittenMessage(txt)}
-                              className="bg-white hover:bg-slate-50 border-2 border-slate-300 text-[10px] font-extrabold text-[#0c1e56] px-3.5 py-2 rounded-full transition-all hover:scale-102 hover:border-slate-400 active:scale-95 shadow-xs cursor-pointer text-left truncate leading-tight italic"
+                              className="bg-slate-50 hover:bg-slate-100 border-0 text-[10px] font-extrabold text-[#0c1e56] px-3.5 py-2 rounded-full transition-all hover:scale-102 active:scale-95 shadow-xs cursor-pointer text-left truncate leading-tight italic"
                             >
                               {txt}
                             </button>
@@ -1503,9 +1503,9 @@ export default function Ranking() {
                               key={ae.id}
                               onClick={() => setSelectedAudio(ae.id)}
                               className={cn(
-                                "p-3 rounded-[20px] border-2 cursor-pointer transition-all duration-300 flex items-center justify-between gap-3 shadow-xs relative",
+                                "p-3 rounded-[20px] border cursor-pointer transition-all duration-300 flex items-center justify-between gap-3 shadow-xs relative",
                                 isSelected
-                                  ? "bg-amber-50/20 border-slate-400 shadow-sm"
+                                  ? "bg-[#FFB10A]/5 border-slate-400 shadow-sm"
                                   : "bg-white hover:bg-slate-50 border-slate-200"
                               )}
                             >
@@ -1559,9 +1559,9 @@ export default function Ranking() {
                                     type="button"
                                     onClick={() => setSelectedImojin(emojiObj.emoji)}
                                     className={cn(
-                                      "aspect-square rounded-2xl border-2 flex flex-col items-center justify-center transition-all group shrink-0 relative p-1 pb-1.5",
+                                      "aspect-square rounded-2xl border flex flex-col items-center justify-center transition-all group shrink-0 relative p-1 pb-1.5",
                                       isSelected
-                                        ? "bg-amber-50/20 border-slate-400 scale-102 shadow-sm"
+                                        ? "bg-[#FFB10A]/5 border-slate-400 scale-102 shadow-sm"
                                         : "bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-300"
                                     )}
                                   >
@@ -1592,7 +1592,7 @@ export default function Ranking() {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="flex-1 py-3 text-xs font-black uppercase text-slate-650 hover:bg-slate-50 rounded-2xl border-2 border-slate-300 transition-colors bg-white cursor-pointer active:scale-95 text-center shadow-xs"
+                    className="flex-1 py-3 text-xs font-black uppercase text-slate-650 hover:bg-slate-50 rounded-2xl border border-slate-200 transition-colors bg-white cursor-pointer active:scale-95 text-center shadow-xs"
                   >
                     Cancelar
                   </button>
@@ -1610,7 +1610,7 @@ export default function Ranking() {
                       (activeModalTab === "audio" && !selectedAudio) ||
                       (activeModalTab === "imojin" && !selectedImojin)
                         ? "bg-slate-100 text-slate-350 cursor-not-allowed select-none"
-                        : "bg-[#0c1e56] hover:bg-[#07133a] active:scale-95 shadow-md shadow-slate-900/15"
+                        : "bg-[#FFB10A] hover:bg-amber-500 active:scale-95 shadow-md shadow-amber-950/15"
                     )}
                   >
                     <Send className="w-3.5 h-3.5 stroke-[2.5]" />
