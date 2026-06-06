@@ -50,6 +50,8 @@ const PageLoader = ({ isOverlay = false }: { isOverlay?: boolean }) => (
   </div>
 );
 
+import { startNotificationSimulator, stopNotificationSimulator } from './services/notificationSimulator';
+
 const AppRoutes = () => {
   const location = useLocation();
 
@@ -57,6 +59,12 @@ const AppRoutes = () => {
     // Scroll to top on route change
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  useEffect(() => {
+    // Start active live notification sim loop
+    startNotificationSimulator();
+    return () => stopNotificationSimulator();
+  }, []);
 
   return (
     <>

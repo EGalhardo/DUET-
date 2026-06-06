@@ -1,9 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Bell, Check, Trash2, Clock, AlertCircle } from 'lucide-react';
+import { X, Bell, Check, Trash2, Clock, AlertCircle, Swords, Trophy } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { storageService } from '../../services/storageService';
 import { Notification } from '../../types';
+
+const getNotificationStyles = (type: string) => {
+  switch (type) {
+    case 'Taunt':
+      return {
+        badgeBg: 'bg-rose-50 border border-rose-100/50',
+        iconColor: 'text-rose-500',
+        icon: Swords,
+      };
+    case 'Performance':
+      return {
+        badgeBg: 'bg-emerald-50 border border-emerald-100/50',
+        iconColor: 'text-[#10b981]',
+        icon: Trophy,
+      };
+    default:
+      return {
+        badgeBg: 'bg-amber-50 border border-amber-100/50',
+        iconColor: 'text-amber-500',
+        icon: Bell,
+      };
+  }
+};
 
 interface NotificationsModalProps {
   isOpen: boolean;
@@ -138,6 +161,17 @@ export default function NotificationsModal({ isOpen, onClose }: NotificationsMod
                   </p>
                 </div>
               </div>
+              
+              {notifications.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider bg-rose-50 border border-rose-100/40 text-rose-600 transition-all active:scale-95 hover:bg-rose-100/60 cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Limpar Tudo
+                </button>
+              )}
             </div>
 
             {/* Tabs / Separadores (Highly visible tabs with grey background rounded container) */}
@@ -191,51 +225,67 @@ export default function NotificationsModal({ isOpen, onClose }: NotificationsMod
                   <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-1 font-bold">Estás totalmente em dia!</p>
                 </div>
               ) : (
-                filteredNotifications.map((item) => (
-                  <div
-                    key={item.id}
-                    className={cn(
-                      "py-3.5 border-b border-slate-100 flex items-start gap-3 transition-colors",
-                      !item.isRead ? "text-slate-900" : "text-slate-550"
-                    )}
-                  >
-                    <span className="text-base shrink-0 select-none mt-0.5">{item.emoji || '📢'}</span>
-                    <div className="flex-1 min-w-0 pr-1">
-                      <p className={cn(
-                        "text-xs leading-relaxed break-words",
-                        !item.isRead ? "font-bold text-slate-900" : "font-semibold text-slate-500"
-                      )}>
-                        <span className="font-extrabold uppercase text-[#0c1e56] mr-1.5">
-                          {item.title}:
-                        </span>
-                        {item.message}
-                      </p>
-                      
-                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                        <span className="text-[8px] font-black uppercase text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md">
-                          {item.type || 'Geral'}
-                        </span>
-                        <span className="text-[9px] font-bold text-slate-400 flex items-center gap-1 select-none">
-                          <Clock className="w-2.5 h-2.5 text-slate-400 stroke-[2.5]" />
-                          {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                        {!item.isRead && (
-                          <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
-                        )}
+                filteredNotifications.map((item) => {
+                  const styles = getNotificationStyles(item.type);
+                  const IconComponent = styles.icon;
+                  return (
+                    <div
+                      key={item.id}
+                      className={cn(
+                        "py-4 border-b border-slate-100 flex items-start gap-3.5 transition-colors",
+                        !item.isRead ? "bg-amber-50/10 -mx-2 px-2 rounded-2xl" : "bg-transparent"
+                      )}
+                    >
+                      {/* Left Badge Icon */}
+                      <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-xs", styles.badgeBg)}>
+                        <IconComponent className={cn("w-5 h-5 stroke-[2.25]", styles.iconColor)} />
+                      </div>
+
+                      {/* Content block with full horizontal space */}
+                      <div className="flex-1 min-w-0">
+                        <h4 className={cn(
+                          "text-[11px] font-black uppercase tracking-tight leading-tight mb-1",
+                          !item.isRead ? "text-[#0c1e56]" : "text-slate-500"
+                        )}>
+                          {item.title}
+                        </h4>
+                        <p className={cn(
+                          "text-xs leading-relaxed break-words pr-1.5 font-medium",
+                          !item.isRead ? "text-slate-800" : "text-slate-500"
+                        )}>
+                          {item.message}
+                        </p>
+                        
+                        {/* Footer containing tags and clean "Marcar lida" button */}
+                        <div className="flex items-center justify-between mt-2.5 flex-wrap gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[8px] font-black uppercase text-slate-400 bg-slate-100 border border-slate-200/30 px-1.5 py-0.5 rounded-md">
+                              {item.type || 'Geral'}
+                            </span>
+                            <span className="text-[9px] font-bold text-slate-400 flex items-center gap-1 select-none">
+                              <Clock className="w-2.5 h-2.5 text-slate-400 stroke-[2.5]" />
+                              {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                            {!item.isRead && (
+                              <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
+                            )}
+                          </div>
+                          
+                          {!item.isRead && (
+                            <button
+                              type="button"
+                              onClick={(e) => handleMarkAsRead(item.id, e)}
+                              className="text-[9px] font-black uppercase tracking-wider text-[#ffb10a] hover:text-amber-600 bg-amber-50 hover:bg-amber-100/75 px-3 py-1 rounded-lg transition-all active:scale-[0.93] font-sans border-none shrink-0 cursor-pointer"
+                              title="Marcar como lida"
+                            >
+                              Marcar como lida
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
-
-                    {!item.isRead && (
-                      <button
-                        onClick={(e) => handleMarkAsRead(item.id, e)}
-                        className="text-[9px] font-black uppercase tracking-wider text-[#ffb10a] hover:text-amber-500 bg-transparent border-none py-1 px-2 cursor-pointer self-center shrink-0 active:scale-90 transition-all font-sans"
-                        title="Marcar como lida"
-                      >
-                        Marcar como lida
-                      </button>
-                    )}
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
 

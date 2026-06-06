@@ -12,8 +12,8 @@ const STORAGE_KEYS = {
 
 const DEFAULT_USER: UserProfile = {
   id: 'user_1', // Agregando ID para o sistema de provocações
-  name: 'Utilizador',
-  photo: 'https://i.postimg.cc/mD7Pr65C/Avatar.png',
+  name: 'Edlasio Galhardo',
+  photo: 'https://i.postimg.cc/Nj00CMbd/Foto-Edlasio.png',
   ranking: 'Bronze',
   stats: {
     winRate: 0,
@@ -36,6 +36,14 @@ export const storageService = {
       console.error('Error parsing user profile:', e);
       return DEFAULT_USER;
     }
+  },
+
+  updateUserProfile: (profile: Partial<UserProfile>): UserProfile => {
+    const current = storageService.getUserProfile();
+    const updated = { ...current, ...profile };
+    localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent('userProfileUpdated'));
+    return updated;
   },
 
   getWallet: (): Wallet => {
@@ -204,6 +212,7 @@ export const storageService = {
     const bets = storageService.getBets();
     const updated = bets.map(b => b.id === id ? { ...b, status } : b);
     localStorage.setItem(STORAGE_KEYS.BETS, JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent('betsUpdated'));
     return updated;
   }
 };

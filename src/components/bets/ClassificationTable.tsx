@@ -69,13 +69,13 @@ const ClassificationTable: React.FC<ClassificationTableProps> = ({
         <table className="w-full text-[10px]">
           <thead>
             <tr className="bg-transparent border-b-2 border-gray-200">
-              <th className="px-3 py-4 text-left font-black text-gray-600 uppercase tracking-tighter">#</th>
-              <th className="px-1 py-4 text-left font-black text-gray-600 uppercase tracking-tighter">Equipa</th>
-              <th className="px-1 py-4 text-center font-black text-gray-600 uppercase tracking-tighter">J</th>
-              <th className="px-1 py-4 text-center font-black text-gray-600 uppercase tracking-tighter">V</th>
-              <th className="px-1 py-4 text-center font-black text-gray-600 uppercase tracking-tighter">E</th>
-              <th className="px-1 py-4 text-center font-black text-gray-600 uppercase tracking-tighter">D</th>
-              <th className="px-2 py-4 text-center font-black text-gray-600 uppercase tracking-tighter">Pts</th>
+              <th className="px-3 py-2.5 text-left font-black text-gray-600 uppercase tracking-tighter">#</th>
+              <th className="px-1 py-2.5 text-left font-black text-gray-600 uppercase tracking-tighter">Equipa</th>
+              <th className="px-1 py-2.5 text-center font-black text-gray-600 uppercase tracking-tighter">J</th>
+              <th className="px-1 py-2.5 text-center font-black text-gray-600 uppercase tracking-tighter">V</th>
+              <th className="px-1 py-2.5 text-center font-black text-gray-600 uppercase tracking-tighter">E</th>
+              <th className="px-1 py-2.5 text-center font-black text-gray-600 uppercase tracking-tighter">D</th>
+              <th className="px-2 py-2.5 text-center font-black text-gray-600 uppercase tracking-tighter">Pts</th>
             </tr>
           </thead>
           <tbody>
@@ -86,14 +86,14 @@ const ClassificationTable: React.FC<ClassificationTableProps> = ({
               
               return (
                 <tr key={i} className={cn(
-                  "border-b border-gray-205 transition-all duration-300", 
+                  "border-b border-gray-255 transition-all duration-300", 
                   isMatchTeam ? "bg-[#FFB10A]/12" : "bg-transparent"
                 )}>
                   <td className={cn(
-                    "px-3 py-4 font-black transition-all",
+                    "px-3 py-2 font-black transition-all",
                     isMatchTeam ? "text-[#091747] border-l-4 border-l-[#FFB10A] italic text-[10px]" : "text-[#091747] italic text-[9px]"
                   )}>{row.pos}º</td>
-                  <td className="px-1 py-4 font-bold uppercase tracking-tight text-[9px]">
+                  <td className="px-1 py-2 font-bold uppercase tracking-tight text-[9px]">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className={cn(
                         "truncate max-w-[120px] md:max-w-none transition-all",
@@ -111,11 +111,11 @@ const ClassificationTable: React.FC<ClassificationTableProps> = ({
                       )}
                     </div>
                   </td>
-                  <td className={cn("px-1 py-4 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-500")}>{row.p}</td>
-                  <td className={cn("px-1 py-4 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-600")}>{row.w || 0}</td>
-                  <td className={cn("px-1 py-4 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-600")}>{row.d || 0}</td>
-                  <td className={cn("px-1 py-4 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-600")}>{row.l || 0}</td>
-                  <td className={cn("px-2 py-4 text-center font-black text-[10px]", isMatchTeam ? "text-[#091747] bg-[#FFB10A]/20" : "text-[#091747]")}>{row.pts}</td>
+                  <td className={cn("px-1 py-2 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-500")}>{row.p}</td>
+                  <td className={cn("px-1 py-2 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-600")}>{row.w || 0}</td>
+                  <td className={cn("px-1 py-2 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-600")}>{row.d || 0}</td>
+                  <td className={cn("px-1 py-2 text-center font-bold text-[9px]", isMatchTeam ? "text-[#091747] font-black" : "text-gray-600")}>{row.l || 0}</td>
+                  <td className={cn("px-2 py-2 text-center font-black text-[10px]", isMatchTeam ? "text-[#091747] bg-[#FFB10A]/20" : "text-[#091747]")}>{row.pts}</td>
                 </tr>
               );
             })}

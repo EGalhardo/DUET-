@@ -7,15 +7,24 @@
   --font-audiowide: "Audiowide", sans-serif;
 }
 
-body {
-  @apply font-inter bg-gray-100 text-[#091747] antialiased overflow-x-hidden;
-}
-
 /* Custom styles from original HTML */
 .font-dancing { font-family: 'Dancing Script', cursive; }
 .font-ardestine { font-family: 'Audiowide', sans-serif; }
 
-html { scroll-behavior: smooth; }
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 12.5px; /* Dynamically matches the exact compact proportions and economics of 75% browser zoom */
+  }
+}
+
+body {
+  @apply font-inter bg-gray-100 text-[#091747] antialiased overflow-x-hidden;
+}
 
 /* Scrollbar Hide */
 .scrollbar-hide {

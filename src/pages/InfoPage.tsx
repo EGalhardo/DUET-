@@ -7,7 +7,7 @@ const infoContent: Record<string, { title: string, content: React.ReactNode }> =
     title: 'Política de Privacidade',
     content: (
       <div className="space-y-4 text-sm text-gray-600 leading-relaxed">
-        <p>A presente Política de Privacidade descreve como o DUET Académico recolhe, utiliza e protege os seus dados.</p>
+        <p>A presente Política de Privacidade descreve como o DUET Desportivo recolhe, utiliza e protege os seus dados.</p>
         <h3 className="font-bold text-[#091747]">1. Recolha de Dados</h3>
         <p>Recolhemos dados necessários para a sua participação em torneios e gestão da sua conta.</p>
         <h3 className="font-bold text-[#091747]">2. Uso de Informação</h3>
@@ -19,7 +19,7 @@ const infoContent: Record<string, { title: string, content: React.ReactNode }> =
     title: 'Termos e Condições',
     content: (
       <div className="space-y-4 text-sm text-gray-600 leading-relaxed">
-        <p>Ao utilizar o DUET Académico, você concorda com os nossos termos de serviço.</p>
+        <p>Ao utilizar o DUET Desportivo, você concorda com os nossos termos de serviço.</p>
         <h3 className="font-bold text-[#091747]">1. Elegibilidade</h3>
         <p>Deve ter pelo menos 18 anos para participar nas competições com valor monetário.</p>
       </div>

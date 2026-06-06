@@ -45,6 +45,9 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
   const [error, setError] = React.useState('');
   const [selectedUserView, setSelectedUserView] = React.useState<string>('me');
   const [showTauntSelector, setShowTauntSelector] = React.useState<string | null>(null); // userId to taunt
+  const [simOpponent, setSimOpponent] = React.useState<any | null>(null);
+  const [simTicks, setSimTicks] = React.useState(12);
+  const [copied, setCopied] = React.useState(false);
   const [headerLoaded, setHeaderLoaded] = React.useState(false);
   const userProfile = storageService.getUserProfile();
 
@@ -149,6 +152,74 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       setBetAction(null);
     }
   }, [isOpen]);
+
+  React.useEffect(() => {
+    if (isSuccess && (activeTab === 'Privado' || activeTab === '1 vs 1') && betAction === 'create') {
+      setSimTicks(12);
+      setSimOpponent(null);
+      
+      const interval = setInterval(() => {
+        setSimTicks((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            const avatars = [
+              { name: 'Sandra Morais', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80', rank: 'Prata', winRate: '64%' },
+              { name: 'Fernando Gaspar', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80', rank: 'Ouro', winRate: '71%' },
+              { name: 'Carlos Mendes', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80', rank: 'Elite', winRate: '82%' },
+              { name: 'Sofia Lopes', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80', rank: 'Ouro', winRate: '69%' },
+            ];
+            const chosen = avatars[Math.floor(Math.random() * avatars.length)];
+            setSimOpponent(chosen);
+
+            const opponentBetId = `opponent_bet_${Date.now()}`;
+            
+            // Build random selections consistent with chosen markets
+            const mockPreds = selectedMarketsList.map((m, idx) => {
+              if (!m || m === 'PENDING') return null;
+              const marketObj = currentPrivateMarkets[idx];
+              if (!marketObj) return null;
+              const opts = marketObj.options(match || { id: 0 } as any);
+              return opts[Math.floor(Math.random() * opts.length)].id;
+            });
+
+            // Save opponent bet
+            storageService.saveBet({
+              id: opponentBetId,
+              matchId: match?.id || 1,
+              category: activeTab as any,
+              market: activeTab === '1 vs 1' ? 'Resultado Rival' : 'Predições Rivais',
+              amount: parseInt(betValue) || 1000,
+              status: 'Open',
+              password: createPassword,
+              roomName: roomName,
+              selectedMarkets: activeTab === 'Privado' ? mockPreds : undefined,
+              createdAt: new Date().toISOString()
+            });
+
+            // Dispatch reactive event
+            window.dispatchEvent(new CustomEvent('betsUpdated'));
+
+            // Beautiful notifications in-app
+            storageService.addNotification({
+              id: `notif_opp_joined_${Date.now()}`,
+              type: 'Taunt',
+              title: `Adversário Conectado! ⚔️🛡️`,
+              message: `${chosen.name} (${chosen.rank}) juntou-se à tua sala "${roomName || 'Sem Nome'}" usando o código ${createPassword}!`,
+              emoji: '⚔️',
+              challengeId: opponentBetId,
+              createdAt: new Date().toISOString(),
+              isRead: false
+            });
+
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isSuccess, activeTab, createPassword, roomName, selectedMarketsList, match, betValue, betAction]);
 
   React.useEffect(() => {
     if (isOpen && scrollRef.current) {
@@ -641,22 +712,29 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
     }
 
     if (isSuccess) {
-      const shareText = `Vem jogar no Duet Académico!\nSala: ${roomName || '---'}\nSenha: ${createPassword || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
+      const shareText = `Vem jogar no Duet Desportivo!\nSala: ${roomName || '---'}\nSenha: ${createPassword || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
       const mailUrl = `mailto:?subject=Convite para Desafio Duet&body=${encodeURIComponent(shareText)}`;
 
+      const handleCopyCode = () => {
+        if (!createPassword) return;
+        navigator.clipboard.writeText(createPassword);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      };
+
       return (
-        <div className="flex flex-col items-center py-6">
+        <div className="flex flex-col items-center py-6 px-1">
           <motion.div 
             initial={{ scale: 0.5, opacity: 0 }} 
             animate={{ scale: 1, opacity: 1 }} 
-            className="mb-6 flex justify-center items-center"
+            className="mb-4 flex justify-center items-center"
           >
             {activeTab === '1 vs 1' || activeTab === 'Privado' ? (
               <img 
                 src="https://images.vexels.com/media/users/3/157890/isolated/preview/4f2c005416b7f48b3d6d09c5c6763d87-icone-de-circulo-com-marca-de-verificacao.png" 
                 alt="Sucesso" 
-                className="w-40 h-40 object-contain"
+                className="w-32 h-32 object-contain"
                 referrerPolicy="no-referrer"
               />
             ) : (
@@ -674,16 +752,98 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
           </motion.div>
           
           <h3 className="text-2xl font-black text-[#091747] text-center px-4 uppercase tracking-tighter italic leading-none">
-            {betAction === 'join' ? 'Desafio Aceite!' : 'Rodada Lançada!'}
+            {betAction === 'join' ? 'Desafio Aceite!' : (activeTab === 'Privado' || activeTab === '1 vs 1' ? 'Sala Criada!' : 'Rodada Lançada!')}
           </h3>
-          <p className="text-[10px] text-gray-600 mt-3 font-bold text-center px-10 leading-relaxed uppercase tracking-widest">
+          <p className="text-[10px] text-gray-600 mt-2 font-bold text-center px-10 leading-relaxed uppercase tracking-widest">
             {activeTab === '1 vs 1' && betAction === 'create' 
               ? 'O teu duelo está ativo. Partilha os dados com o teu adversário para começar!'
               : 'Informação registada com sucesso. Acompanha o teu prémio no histórico.'}
           </p>
 
+          {/* EXCLUSIVE CODE DISPLAY & COPY ACTION - SECTOR 3 */}
           {(activeTab === 'Privado' || activeTab === '1 vs 1') && betAction === 'create' && (
-            <div className="mt-6 space-y-4 w-full">
+            <div className="mt-5 w-full bg-slate-50 border-2 border-dashed border-slate-200 rounded-[1.5rem] p-4 flex flex-col gap-3 items-center">
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Código Exclusivo da Sala</span>
+              <div className="flex items-center gap-2 bg-white px-5 py-2.5 rounded-xl border border-slate-200">
+                <Lock className="w-4 h-4 text-[#FFB10A]" />
+                <span className="font-mono text-lg font-black text-[#091747] tracking-wider">{createPassword}</span>
+              </div>
+              <button
+                onClick={handleCopyCode}
+                className={cn(
+                  "flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold uppercase tracking-wider text-[9px] transition-all active:scale-95",
+                  copied 
+                    ? "bg-green-600 text-white shadow-lg shadow-green-500/10" 
+                    : "bg-[#091747] text-white hover:bg-opacity-95 shadow-lg shadow-blue-900/10"
+                )}
+              >
+                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? 'Código Copiado!' : 'Copiar Código'}
+              </button>
+            </div>
+          )}
+
+          {/* LIVE OPPONENT JOINING SIMULATION - SECTOR 4 */}
+          {(activeTab === 'Privado' || activeTab === '1 vs 1') && betAction === 'create' && (
+            <div className="mt-5 w-full bg-white border-2 border-gray-100 rounded-[1.5rem] p-4 shadow-sm">
+              {!simOpponent ? (
+                <div className="flex flex-col items-center py-2 gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <Loader2 className="w-4 h-4 text-[#FFB10A] animate-spin shrink-0" strokeWidth={3} />
+                    <span className="text-[10px] font-black text-gray-700 uppercase tracking-wider animate-pulse">
+                      A aguardar oponente conectar...
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                    <motion.div 
+                      className="bg-[#FFB10A] h-full"
+                      initial={{ width: '0%' }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: 12, ease: 'linear' }}
+                    />
+                  </div>
+                  <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest italic">
+                    Conexão prevista em {simTicks} segundos
+                  </span>
+                </div>
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col gap-3 items-center"
+                >
+                  <div className="flex items-center gap-3 w-full bg-orange-50/65 border border-orange-100 rounded-xl p-3">
+                    <div className="relative">
+                      <img 
+                        src={simOpponent.avatar}
+                        alt="Rival"
+                        className="w-12 h-12 rounded-full object-cover border-2 border-green-500"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute -bottom-1 -right-1 bg-green-500 w-3.5 h-3.5 rounded-full border-2 border-white flex items-center justify-center">
+                        <div className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                      </div>
+                    </div>
+                    <div className="text-left flex-1 min-w-0">
+                      <h4 className="font-black text-[#091747] text-xs uppercase truncate">{simOpponent.name}</h4>
+                      <p className="text-[8px] text-gray-500 font-bold uppercase tracking-widest">
+                        Ranking: <span className="text-[#FFB10A] font-black">{simOpponent.rank}</span> | {simOpponent.winRate} WinRate
+                      </p>
+                    </div>
+                    <span className="bg-green-100 text-green-700 text-[8px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full animate-bounce">
+                      Pronto
+                    </span>
+                  </div>
+                  <p className="text-[9px] text-green-700 font-extrabold uppercase tracking-tight text-center">
+                    🛡️ Adversário aceitou e registou palpites na sala! O desafio agora está ATIVO.
+                  </p>
+                </motion.div>
+              )}
+            </div>
+          )}
+
+          {(activeTab === 'Privado' || activeTab === '1 vs 1') && betAction === 'create' && (
+            <div className="mt-5 space-y-4 w-full">
               <div className="grid grid-cols-2 gap-4">
                 <a 
                   href={whatsappUrl}
@@ -705,16 +865,7 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             </div>
           )}
 
-          <div className="w-full flex flex-col gap-3 mt-8">
-            {activeTab !== '1 vs 1' && activeTab !== 'Privado' && (
-              <Link 
-                to="/historico" 
-                className="w-full bg-[#FFB10A] text-white font-black py-5 rounded-[1.5rem] flex items-center justify-center gap-3 hover:bg-[#FFC000] transition-all uppercase tracking-widest text-xs shadow-lg shadow-[#FFB10A]/30"
-              >
-                <Trophy className="w-5 h-5 text-white" />
-                Ver Histórico
-              </Link>
-            )}
+          <div className="w-full flex flex-col gap-3 mt-6">
             <button 
               onClick={handleClose}
               className="w-full bg-white border-2 border-gray-100 text-gray-600 font-black py-5 rounded-[1.5rem] hover:bg-gray-50 transition-all uppercase tracking-widest text-xs"
@@ -736,8 +887,14 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
             id="criar-sala-btn"
             onClick={() => {
               setBetAction('create');
-              if (activeTab === 'Privado' || activeTab === '1 vs 1') setCreateStep('password');
-              else setCreateStep('details');
+              if (activeTab === 'Privado' || activeTab === '1 vs 1') {
+                const code = `DUET-${Math.floor(1000 + Math.random() * 9000)}`;
+                setCreatePassword(code);
+                setConfirmPassword(code);
+                setCreateStep('password');
+              } else {
+                setCreateStep('details');
+              }
             }}
             className="group flex items-center gap-5 p-6 bg-white border border-gray-200 rounded-[2rem] hover:border-[#FFB10A] transition-all hover:bg-orange-50/50"
           >
@@ -929,8 +1086,8 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       const currentPrivateMarkets = isF1 ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
 
       const shareText = bet.category === 'Nacional'
-        ? `Vem jogar no Duet Académico!\nModo: Nacional\nJogo: ${match.teamA.name} vs ${match.teamB.name}`
-        : `Vem jogar no Duet Académico!\nSala: ${bet.roomName || '---'}\nSenha: ${bet.password || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
+        ? `Vem jogar no Duet Desportivo!\nModo: Nacional\nJogo: ${match.teamA.name} vs ${match.teamB.name}`
+        : `Vem jogar no Duet Desportivo!\nSala: ${bet.roomName || '---'}\nSenha: ${bet.password || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
       const mailUrl = `mailto:?subject=${encodeURIComponent('Convite para Desafio Duet')}&body=${encodeURIComponent(shareText)}`;
 

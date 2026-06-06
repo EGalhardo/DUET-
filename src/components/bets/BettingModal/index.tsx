@@ -304,7 +304,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
     }
 
     if (isSuccess) {
-      const shareText = `Vem jogar no Duet Académico!\nSala: ${roomName || roomNameInput || '---'}\nSenha: ${createPassword || roomCodeInput || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
+      const shareText = `Vem jogar no Duet Desportivo!\nSala: ${roomName || roomNameInput || '---'}\nSenha: ${createPassword || roomCodeInput || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
       return (
         <SuccessView 
           roomCode={createPassword || roomCodeInput || '---'}
@@ -452,7 +452,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
       const isF1 = category === 'f1';
       const currentPrivateMarkets = isF1 ? F1_PRIVATE_MARKETS : (isBasketball ? BASKETBALL_PRIVATE_MARKETS : PRIVATE_MARKETS);
 
-      const shareText = `Vem jogar no Duet Académico!\nSala: ${bet.roomName || '---'}\nSenha: ${bet.password || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
+      const shareText = `Vem jogar no Duet Desportivo!\nSala: ${bet.roomName || '---'}\nSenha: ${bet.password || '---'}\nJogo: ${match.teamA.name} vs ${match.teamB.name}`;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
       const mailUrl = `mailto:?subject=${encodeURIComponent('Convite para Desafio Duet')}&body=${encodeURIComponent(shareText)}`;
 
@@ -537,16 +537,16 @@ const BettingModal: React.FC<BettingModalProps> = ({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 bg-[#25D366] text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] shadow-lg shadow-green-500/20 active:scale-95 transition-all cursor-pointer animate-fade-in"
+              className="flex items-center justify-center gap-2 bg-[#25D366] text-white py-3 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-green-500/10 active:scale-95 transition-all cursor-pointer animate-fade-in"
             >
-              <MessageSquare className="w-5 h-5" />
+              <MessageSquare className="w-4 h-4" />
               WhatsApp
             </a>
             <a 
               href={mailUrl}
-              className="flex items-center justify-center gap-2 bg-[#091747] text-white py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-900/20 active:scale-95 transition-all cursor-pointer animate-fade-in"
+              className="flex items-center justify-center gap-2 bg-[#091747] text-white py-3 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-900/10 active:scale-95 transition-all cursor-pointer animate-fade-in"
             >
-              <Mail className="w-5 h-5" />
+              <Mail className="w-4 h-4" />
               E-mail
             </a>
           </div>
@@ -758,7 +758,7 @@ const BettingModal: React.FC<BettingModalProps> = ({
     <AnimatePresence>
       <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-4 overflow-hidden">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={handleClose} className="absolute inset-0 bg-black/70 backdrop-blur-md" />
-        <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 300, mass: 0.8 }} className="relative w-full max-w-lg bg-white rounded-t-[2.5rem] md:rounded-[3rem] p-4 md:p-8 flex flex-col h-[85vh] md:h-auto md:max-h-[90vh] overflow-hidden border border-gray-200 shadow-xl">
+        <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 300, mass: 0.8 }} className="relative w-full max-w-lg bg-white rounded-t-[2rem] md:rounded-[2rem] p-4 md:p-5 flex flex-col h-[85vh] md:h-[75vh] md:max-h-[600px] overflow-hidden border border-gray-200 shadow-xl">
           <div className="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-400 rounded-full md:hidden" />
           <div className="flex items-center justify-between mb-4 mt-1 shrink-0">
             <div className="flex items-center gap-2">

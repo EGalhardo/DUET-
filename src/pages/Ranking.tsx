@@ -222,6 +222,7 @@ const fullNacional = [...baseNacional, ...extraPlayers].sort(
 const userParticipatedBets = [
   {
     id: "petro_vs_agosto",
+    category: "Futebol",
     matchNickname: "Petro vs 1º de Agosto",
     date: "2026-06-03",
     p1: {
@@ -243,6 +244,7 @@ const userParticipatedBets = [
   },
   {
     id: "interclube_vs_asa",
+    category: "Futebol",
     matchNickname: "GD Interclube vs AS Aviação",
     date: "2026-06-02",
     p1: {
@@ -264,6 +266,7 @@ const userParticipatedBets = [
   },
   {
     id: "vila_clotilde_vs_academia",
+    category: "Basket",
     matchNickname: "Vila Clotilde vs Académica",
     date: "2026-06-01",
     p1: {
@@ -282,6 +285,72 @@ const userParticipatedBets = [
     winnerName: "Marta Costa",
     winnerAvatar: "https://i.pravatar.cc/150?u=5",
     prize: "+8.000 Kz"
+  },
+  {
+    id: "petro_vs_agosto_basket",
+    category: "Basket",
+    matchNickname: "Petro Basket vs 1º de Agosto Basket",
+    date: "2026-06-05",
+    p1: {
+      name: "Daniel Silva",
+      avatar: "https://i.pravatar.cc/150?u=33",
+      betOn: "Petro de Luanda",
+      betLogo: "https://i.postimg.cc/Cnntg6fx/PETRO-LUANDA-ANGOLA.png"
+    },
+    p2: {
+      name: "Fábio Eduardo",
+      avatar: "https://i.pravatar.cc/150?u=34",
+      betOn: "Primeiro de Agosto",
+      betLogo: "https://i.postimg.cc/rRRbkYR7/1-AGOSTO-ANGOLA.png"
+    },
+    score: "78 - 84",
+    winnerName: "Fábio Eduardo",
+    winnerAvatar: "https://i.pravatar.cc/150?u=34",
+    prize: "+14.000 Kz"
+  },
+  {
+    id: "gp_monaco",
+    category: "F1",
+    matchNickname: "GP de Mónaco (Hamilton vs Verstappen)",
+    date: "2026-05-31",
+    p1: {
+      name: "Nuno Alves",
+      avatar: "https://i.pravatar.cc/150?u=24",
+      betOn: "Lewis Hamilton",
+      betLogo: "https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&q=80&w=150"
+    },
+    p2: {
+      name: "Gonçalo Pinheiro",
+      avatar: "https://i.pravatar.cc/150?u=26",
+      betOn: "Max Verstappen",
+      betLogo: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&q=80&w=150"
+    },
+    score: "P1 - P2",
+    winnerName: "Nuno Alves",
+    winnerAvatar: "https://i.pravatar.cc/150?u=24",
+    prize: "+20.000 Kz"
+  },
+  {
+    id: "gp_monza",
+    category: "F1",
+    matchNickname: "GP de Monza (Leclerc vs Norris)",
+    date: "2026-06-07",
+    p1: {
+      name: "Luís Gomes",
+      avatar: "https://i.pravatar.cc/150?u=13",
+      betOn: "Charles Leclerc",
+      betLogo: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&q=80&w=150"
+    },
+    p2: {
+      name: "Beatriz Vaz",
+      avatar: "https://i.pravatar.cc/150?u=25",
+      betOn: "Lando Norris",
+      betLogo: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=150"
+    },
+    score: "P1 - P3",
+    winnerName: "Luís Gomes",
+    winnerAvatar: "https://i.pravatar.cc/150?u=13",
+    prize: "+18.000 Kz"
   }
 ];
 
@@ -291,25 +360,71 @@ export default function Ranking() {
   );
   const [selectedSport, setSelectedSport] = useState<string>("Futebol");
   const [isSportDropdownOpen, setIsSportDropdownOpen] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split("T")[0],
-  );
   const [selectedBetId, setSelectedBetId] = useState<string>("petro_vs_agosto");
+  const [selectedDate, setSelectedDate] = useState<string>("2026-06-03");
 
+  const filteredBetsBySport = React.useMemo(() => {
+    return userParticipatedBets.filter(
+      (bet) => bet.category.toLowerCase() === selectedSport.toLowerCase()
+    );
+  }, [selectedSport]);
+
+  const availableDates = React.useMemo(() => {
+    const matchingBets = userParticipatedBets.filter(
+      (bet) =>
+        bet.category.toLowerCase() === selectedSport.toLowerCase() &&
+        bet.id === selectedBetId
+    );
+    return Array.from(new Set(matchingBets.map((b) => b.date)));
+  }, [selectedSport, selectedBetId]);
+
+  // Sincronizar selectedBetId quando a categoria mudar
   useEffect(() => {
-    const matchingBet = userParticipatedBets.find(b => b.date === selectedDate);
-    if (matchingBet && matchingBet.id !== selectedBetId) {
-      setSelectedBetId(matchingBet.id);
+    const betsForSport = userParticipatedBets.filter(
+      (bet) => bet.category.toLowerCase() === selectedSport.toLowerCase()
+    );
+    if (betsForSport.length > 0) {
+      const currentExists = betsForSport.some((b) => b.id === selectedBetId);
+      if (!currentExists) {
+        setSelectedBetId(betsForSport[0].id);
+      }
+    } else {
+      setSelectedBetId("");
     }
-  }, [selectedDate]);
+  }, [selectedSport]);
+
+  // Sincronizar selectedDate quando selectedBetId ou selectedSport mudar
+  useEffect(() => {
+    const matchingBets = userParticipatedBets.filter(
+      (bet) =>
+        bet.category.toLowerCase() === selectedSport.toLowerCase() &&
+        bet.id === selectedBetId
+    );
+    if (matchingBets.length > 0) {
+      const currentExists = matchingBets.some((b) => b.date === selectedDate);
+      if (!currentExists) {
+        setSelectedDate(matchingBets[0].date);
+      }
+    } else {
+      setSelectedDate("");
+    }
+  }, [selectedBetId, selectedSport]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFavorited, setIsFavorited] = useState(false);
   const favoriteId = "page-ranking";
 
   // User profile and reactive state hooks for "Enviar Imojin"
-  const userProfile = storageService.getUserProfile();
+  const [userProfile, setUserProfile] = useState(() => storageService.getUserProfile());
   const uName = userProfile.name || "Utilizador";
   const uAvatar = userProfile.photo || "https://i.postimg.cc/mD7Pr65C/Avatar.png";
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setUserProfile(storageService.getUserProfile());
+    };
+    window.addEventListener('userProfileUpdated', handleProfileUpdate);
+    return () => window.removeEventListener('userProfileUpdated', handleProfileUpdate);
+  }, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [targetPlayer, setTargetPlayer] = useState<any | null>(null);
@@ -645,7 +760,15 @@ export default function Ranking() {
   const displayedRankings =
     activeTab === "1 vs 1" ? filteredRankings.slice(0, 2) : filteredRankings;
 
-  const activeBet = userParticipatedBets.find(b => b.id === selectedBetId) || userParticipatedBets[0];
+  const activeBet = React.useMemo(() => {
+    const bet = userParticipatedBets.find(
+      (b) =>
+        b.category.toLowerCase() === selectedSport.toLowerCase() &&
+        b.id === selectedBetId &&
+        b.date === selectedDate
+    );
+    return bet || userParticipatedBets.find((b) => b.id === selectedBetId) || userParticipatedBets[0];
+  }, [selectedSport, selectedBetId, selectedDate]);
 
   // Reset search term when switching tabs
   useEffect(() => {
@@ -814,14 +937,7 @@ export default function Ranking() {
                   <span className="text-[10px] font-black text-white mr-2 uppercase tracking-tight hidden sm:inline">Jogo:</span>
                   <select
                     value={selectedBetId}
-                    onChange={(e) => {
-                      const betId = e.target.value;
-                      setSelectedBetId(betId);
-                      const bet = userParticipatedBets.find(b => b.id === betId);
-                      if (bet) {
-                        setSelectedDate(bet.date);
-                      }
-                    }}
+                    onChange={(e) => setSelectedBetId(e.target.value)}
                     className="bg-transparent font-sans font-black text-xs text-white outline-none cursor-pointer border-none p-0 pr-4.5 [color-scheme:dark] select-none text-right appearance-none"
                     style={{
                       backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
@@ -830,7 +946,7 @@ export default function Ranking() {
                       backgroundSize: "9px"
                     }}
                   >
-                    {userParticipatedBets.map((bet) => (
+                    {filteredBetsBySport.map((bet) => (
                       <option key={bet.id} value={bet.id} className="text-slate-800 font-bold text-xs bg-white">
                         {bet.matchNickname}
                       </option>
@@ -838,15 +954,31 @@ export default function Ranking() {
                   </select>
                 </div>
 
-                {/* Seletor de Data também com borda de 2px e fundo mais destacado */}
+                {/* Dropdown de Data com borda de 2px e fundo mais destacado (substituindo o selector de input de data antigo) */}
                 <div className="flex items-center bg-white/20 hover:bg-white/30 border-2 border-white px-3.5 py-1.5 rounded-full transition-all shrink-0 shadow-sm">
                   <Calendar className="w-3.5 h-3.5 text-white mr-2 shrink-0" />
-                  <input
-                    type="date"
+                  <span className="text-[10px] font-black text-white mr-2 uppercase tracking-tight hidden sm:inline">Data:</span>
+                  <select
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="bg-transparent font-sans font-black text-xs text-white outline-none cursor-pointer border-0 p-0 [color-scheme:dark] select-none text-right placeholder-white"
-                  />
+                    className="bg-transparent font-sans font-black text-xs text-white outline-none cursor-pointer border-none p-0 pr-4.5 [color-scheme:dark] select-none text-right appearance-none"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right center",
+                      backgroundSize: "9px"
+                    }}
+                  >
+                    {availableDates.map((date) => {
+                      const parts = date.split("-");
+                      const formattedDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : date;
+                      return (
+                        <option key={date} value={date} className="text-slate-800 font-bold text-xs bg-white">
+                          {formattedDate}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
               </div>
             </div>
