@@ -4,7 +4,7 @@ import { ArrowLeft, CircleDot as Football, Calendar, Trophy, Copy, CheckCircle2,
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 
-import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES, LEAGUE_CLASSIFICATIONS, NBA_MATCHES, UNITEL_BASKET_MATCHES, ACB_MATCHES, VTB_MATCHES, GREEK_BASKET_MATCHES, ITALY_BASKET_MATCHES, JEEP_ELITE_MATCHES, BBL_MATCHES, F1_MATCHES } from '../constants';
+import { MATCH_DATA, COMPETITION_LOGOS, getCompetitionLogo, GIRABOLA_MATCHES, BUNDESLIGA_MATCHES, LALIGA_MATCHES, LIGUE1_MATCHES, EREDIVISIE_MATCHES, PREMIERLEAGUE_MATCHES, SERIEA_MATCHES, LIGANOS_MATCHES, TACADEANGOLA_MATCHES, TACADAALEMANHA_MATCHES, LEAGUE_CLASSIFICATIONS, NBA_MATCHES, UNITEL_BASKET_MATCHES, ACB_MATCHES, VTB_MATCHES, GREEK_BASKET_MATCHES, ITALY_BASKET_MATCHES, JEEP_ELITE_MATCHES, BBL_MATCHES, F1_MATCHES, COPA_DO_MUNDO_MATCHES } from '../constants';
 import { Match, Wallet as WalletType, UserProfile, Bet, FavoriteItem } from '../types';
 import { storageService } from '../services/storageService';
 import ClassificationTable from '../components/bets/ClassificationTable';
@@ -2294,6 +2294,8 @@ export default function Aposta() {
   const topic = searchParams.get('topic');
   const session = searchParams.get('session');
   const [activeTab, setActiveTab] = React.useState('1 vs 1');
+  const [selectedGroup, setSelectedGroup] = React.useState('Todos');
+  const [selectedGameStatus, setSelectedGameStatus] = React.useState('Todos');
   const [selectedMatch, setSelectedMatch] = React.useState<Match | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -2303,7 +2305,7 @@ export default function Aposta() {
   React.useEffect(() => {
     const matchId = searchParams.get('matchId');
     if (matchId) {
-      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES, ...NBA_MATCHES, ...UNITEL_BASKET_MATCHES, ...ACB_MATCHES, ...VTB_MATCHES, ...GREEK_BASKET_MATCHES, ...ITALY_BASKET_MATCHES, ...JEEP_ELITE_MATCHES, ...BBL_MATCHES, ...F1_MATCHES];
+      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES, ...NBA_MATCHES, ...UNITEL_BASKET_MATCHES, ...ACB_MATCHES, ...VTB_MATCHES, ...GREEK_BASKET_MATCHES, ...ITALY_BASKET_MATCHES, ...JEEP_ELITE_MATCHES, ...BBL_MATCHES, ...F1_MATCHES, ...COPA_DO_MUNDO_MATCHES];
       let match = allMatches.find(m => m.id.toString() === matchId);
       if (match) {
         // Apply F1 league update if needed
@@ -2454,12 +2456,16 @@ export default function Aposta() {
       </div>
 
       <div className="max-w-6xl mx-auto w-full px-4 pt-4 md:pt-8">
-        <div className="flex justify-center my-10 lg:my-12">
+        <div className={cn(
+          "flex justify-center my-10 lg:my-12",
+          (topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo') && "bg-white p-4 md:p-6 rounded-2xl md:rounded-3xl max-w-sm md:max-w-md lg:max-w-lg mx-auto"
+        )}>
           <motion.img 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             src={getCompetitionLogo(topic)} 
             alt={topic || 'Angola Girabola'} 
+            referrerPolicy="no-referrer"
             className={cn(
               "h-auto object-contain",
               category === 'basket' || category === 'f1'
@@ -2470,14 +2476,70 @@ export default function Aposta() {
         </div>
       </div>
 
-      <h1 ref={matchesRef} className="font-dancing text-2xl md:text-3xl lg:text-3xl font-bold text-[#FFB10A] text-center border-t border-gray-100 py-8 lg:py-10 tracking-tight">
-        {activeTab === 'Nacional' ? 'Rodada Nacional' : activeTab === 'Privado' ? 'Grupos Privados' : 'Desafios 1 vs 1'}
-      </h1>
+      <div ref={matchesRef} className={cn(
+        "max-w-6xl mx-auto w-full px-4 border-t border-gray-100 py-6 lg:py-8 flex flex-col md:flex-row gap-4 items-center",
+        (topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo') ? "justify-between" : "justify-center"
+      )}>
+        <h1 className={cn(
+          "font-dancing text-2xl md:text-3xl lg:text-3xl font-bold text-[#FFB10A] tracking-tight",
+          !(topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo') && "text-center"
+        )}>
+          {activeTab === 'Nacional' ? 'Rodada Nacional' : activeTab === 'Privado' ? 'Grupos Privados' : 'Desafios 1 vs 1'}
+        </h1>
+
+        {(topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo') && (
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="relative flex items-center gap-2">
+              <span className="text-xs font-black text-gray-500 uppercase tracking-widest italic">Grupo:</span>
+              <div className="relative min-w-[130px]">
+                <select
+                  value={selectedGroup}
+                  onChange={(e) => setSelectedGroup(e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-xl py-2 pl-4 pr-10 text-xs font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all appearance-none tracking-widest shadow-[#0000000a]_0px_10px_20px_0px uppercase italic"
+                >
+                  <option value="Todos">Todos</option>
+                  <option value="Grupo A">Grupo A</option>
+                  <option value="Grupo B">Grupo B</option>
+                  <option value="Grupo C">Grupo C</option>
+                  <option value="Grupo D">Grupo D</option>
+                  <option value="Grupo E">Grupo E</option>
+                  <option value="Grupo F">Grupo F</option>
+                  <option value="Grupo G">Grupo G</option>
+                  <option value="Grupo H">Grupo H</option>
+                  <option value="Grupo I">Grupo I</option>
+                  <option value="Grupo J">Grupo J</option>
+                  <option value="Grupo K">Grupo K</option>
+                  <option value="Grupo L">Grupo L</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" strokeWidth={3} />
+              </div>
+            </div>
+
+            <div className="relative flex items-center gap-2">
+              <span className="text-xs font-black text-gray-500 uppercase tracking-widest italic">Jogos:</span>
+              <div className="relative min-w-[130px]">
+                <select
+                  value={selectedGameStatus}
+                  onChange={(e) => setSelectedGameStatus(e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-xl py-2 pl-4 pr-10 text-xs font-black text-[#091747] outline-none focus:border-[#FFB10A] transition-all appearance-none tracking-widest shadow-[#0000000a]_0px_10px_20px_0px uppercase italic"
+                >
+                  <option value="Todos">Todos</option>
+                  <option value="Breve">Breve</option>
+                  <option value="Ao Vivo">Ao Vivo</option>
+                  <option value="Terminado">Terminado</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" strokeWidth={3} />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="max-w-6xl mx-auto w-full px-4">
         <div className="flex flex-col gap-8 pb-16">
           {(() => {
             const baseMatches = 
+              topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo' ? COPA_DO_MUNDO_MATCHES :
               topic === 'Girabola' || topic === 'Taça de Angola' ? GIRABOLA_MATCHES :
               topic?.toLowerCase() === 'bundesliga' || topic === 'Taça da Alemanha' || topic === 'DFB Pokal' ? BUNDESLIGA_MATCHES :
               topic?.toLowerCase() === 'la liga' || topic === 'Taça de Espanha' || topic === 'Copa del Rey' ? LALIGA_MATCHES :
@@ -2498,13 +2560,29 @@ export default function Aposta() {
               category === 'basket' ? UNITEL_BASKET_MATCHES :
               MATCH_DATA;
 
-            const matches = category === 'f1' ? baseMatches.map(m => {
+            let matches = category === 'f1' ? baseMatches.map(m => {
               const sessionPrefix = session || 'Classificação';
               return {
                 ...m,
                 league: topic ? `${sessionPrefix} ${topic}` : `${sessionPrefix} ${m.league}`
               };
-            }) : baseMatches;
+            }) : (category === 'futebol' ? baseMatches.filter(m => m.league !== 'Unitel Basket' && m.league !== 'NBA' && m.league !== 'Liga ACB' && m.league !== 'VTB United League' && m.league !== 'Basket League' && m.league !== 'Serie A Basket' && m.league !== 'Jeep Elite' && m.league !== 'BBL Alemanha') : baseMatches);
+
+            if ((topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo') && selectedGroup !== 'Todos') {
+              matches = matches.filter(m => m.league?.includes(selectedGroup));
+            }
+
+            if ((topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo') && selectedGameStatus !== 'Todos') {
+              const statusMap: Record<string, string> = {
+                'Ao Vivo': 'ao_vivo',
+                'Breve': 'breve',
+                'Terminado': 'terminou'
+              };
+              const targetStatus = statusMap[selectedGameStatus];
+              if (targetStatus) {
+                matches = matches.filter(m => m.status === targetStatus);
+              }
+            }
 
             const displayMatches = category === 'f1' ? matches.slice(0, 1) : matches;
 

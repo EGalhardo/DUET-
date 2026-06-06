@@ -162,9 +162,9 @@ const MatchCard: React.FC<MatchCardProps> = React.memo(({ match, onClick, catego
             AO VIVO
           </span>
         )}
-        {match.status === 'terminou' && (
+        {(match.status === 'terminou' || match.status === 'terminado') && (
           <span className="bg-gray-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-            TERMINOU
+            TERMINADO
           </span>
         )}
         {match.status === 'breve' && (

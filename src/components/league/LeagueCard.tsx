@@ -41,15 +41,19 @@ const LeagueCard: React.FC<LeagueCardProps> = React.memo(({ card, category, fall
         category === 'f1' 
           ? "aspect-video" 
           : (isDblClickOnly ? "aspect-[1.3/1] md:aspect-[1.6/1]" : "aspect-[1.6/1]"),
-        "rounded-xl md:rounded-3xl border border-gray-200 bg-white overflow-hidden flex flex-col items-center justify-center p-4 group-hover:border-[#FFB10A] transition-all shadow-sm relative"
+        card.title === 'Copa do Mundo' ? "p-1 md:p-2 bg-white" : "p-4 bg-white",
+        "rounded-xl md:rounded-3xl border border-gray-200 overflow-hidden flex flex-col items-center justify-center group-hover:border-[#FFB10A] transition-all shadow-sm relative"
       )}>
         <img 
           src={card.image || fallbackImage} 
           alt={card.title}
           loading="lazy"
+          referrerPolicy="no-referrer"
           className={cn(
             "object-contain group-hover:scale-105 transition-transform",
-            category === 'f1' ? "w-32 h-32 md:w-40 md:h-40" : "w-[55%] h-auto aspect-square max-h-[75%] md:w-28 md:h-28"
+            card.title === 'Copa do Mundo'
+              ? "w-[95%] h-auto aspect-square max-h-[95%] md:w-56 md:h-56"
+              : (category === 'f1' ? "w-32 h-32 md:w-40 md:h-40" : "w-[55%] h-auto aspect-square max-h-[75%] md:w-28 md:h-28")
           )}
         />
         

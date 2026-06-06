@@ -23,7 +23,7 @@ const DEFAULT_USER: UserProfile = {
 };
 
 const DEFAULT_WALLET: Wallet = {
-  balance: 10000, // Saldo inicial para teste
+  balance: 1125, // Saldo inicial para teste
   blocked_balance: 0,
 };
 
@@ -49,7 +49,19 @@ export const storageService = {
   getWallet: (): Wallet => {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.WALLET);
-      return data ? JSON.parse(data) : DEFAULT_WALLET;
+      let wallet = data ? JSON.parse(data) : DEFAULT_WALLET;
+      
+      // Forced migration to ensure the user's active session balance updates to 1125 KZ
+      if (localStorage.getItem('duet_wallet_migrated_v2') !== 'true') {
+        wallet = { ...wallet, balance: 1125 };
+        localStorage.setItem(STORAGE_KEYS.WALLET, JSON.stringify(wallet));
+        localStorage.setItem('duet_wallet_migrated_v2', 'true');
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('walletUpdated'));
+        }, 100);
+      }
+      
+      return wallet;
     } catch (e) {
       console.error('Error parsing wallet:', e);
       return DEFAULT_WALLET;

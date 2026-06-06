@@ -68,7 +68,7 @@ export default function Header() {
           >
             <Wallet className="w-3.5 h-3.5 text-[#FFB10A]" />
             <span className="text-[12px] font-black text-[#091747] tracking-tight whitespace-nowrap">
-              {balance.toLocaleString()} <span className="text-[#FFB10A] text-[9px] font-bold ml-0.5">KZ</span>
+              {balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} <span className="text-[#FFB10A] text-[9px] font-bold ml-0.5">KZ</span>
             </span>
           </Link>
 
