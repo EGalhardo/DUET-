@@ -2,6 +2,7 @@ import React from 'react';
 import { Trophy, ArrowLeft } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { LEAGUE_CLASSIFICATIONS } from '../../constants';
+import { storageService } from '../../services/storageService';
 
 interface ClassificationTableProps {
   league: string;
@@ -36,7 +37,13 @@ const ClassificationTable: React.FC<ClassificationTableProps> = ({
     return false;
   };
 
-  const tableData = LEAGUE_CLASSIFICATIONS[league] || LEAGUE_CLASSIFICATIONS['Girabola'];
+  let tableData = LEAGUE_CLASSIFICATIONS[league] || LEAGUE_CLASSIFICATIONS['Girabola'];
+  if (league?.startsWith('Copa do Mundo')) {
+    const wcTeams = storageService.getWorldCupTeams();
+    if (wcTeams && wcTeams[league]) {
+      tableData = wcTeams[league];
+    }
+  }
 
   return (
     <div className="flex flex-col gap-5 py-4 animate-fade-in">

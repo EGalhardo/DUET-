@@ -365,7 +365,13 @@ export const getCompetitionLogo = (t: string | null) => {
   if (!t) return COMPETITION_LOGOS['Girabola'];
   // Normalização para casos de nomes com variações
   const name = t.trim();
-  if (name.startsWith('Copa do Mundo')) return COMPETITION_LOGOS['Copa do Mundo'];
+  if (name.startsWith('Copa do Mundo')) {
+    if (typeof window !== 'undefined') {
+      const storedImage = localStorage.getItem('duet_world_cup_image');
+      if (storedImage) return storedImage;
+    }
+    return COMPETITION_LOGOS['Copa do Mundo'];
+  }
   if (name === 'PremierLeague' || name === 'Premier League') return COMPETITION_LOGOS['Premier League'];
   if (name === 'BundesLiga' || name === 'Bundesliga') return COMPETITION_LOGOS['Bundesliga'];
   if (name === 'Liga Nos' || name === 'Liga NOS') return COMPETITION_LOGOS['Liga NOS'];

@@ -1,5 +1,6 @@
 
-import { Bet, UserProfile, Wallet, FavoriteItem, Notification, Taunt } from '../types';
+import { Bet, UserProfile, Wallet, FavoriteItem, Notification, Taunt, Match } from '../types';
+import { COPA_DO_MUNDO_MATCHES, COMPETITION_LOGOS, LEAGUE_CLASSIFICATIONS } from '../constants';
 
 const STORAGE_KEYS = {
   USER_PROFILE: 'duet_user_profile',
@@ -8,6 +9,9 @@ const STORAGE_KEYS = {
   FAVORITES: 'duet_favorites',
   NOTIFICATIONS: 'duet_notifications',
   TAUNTS: 'duet_taunts',
+  WORLD_CUP_IMAGE: 'duet_world_cup_image',
+  WORLD_CUP_MATCHES: 'duet_world_cup_matches',
+  WORLD_CUP_TEAMS: 'duet_world_cup_teams',
 };
 
 const DEFAULT_USER: UserProfile = {
@@ -226,5 +230,72 @@ export const storageService = {
     localStorage.setItem(STORAGE_KEYS.BETS, JSON.stringify(updated));
     window.dispatchEvent(new CustomEvent('betsUpdated'));
     return updated;
+  },
+
+  getWorldCupImage: (): string => {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.WORLD_CUP_IMAGE);
+      if (!data) {
+        const defaultImg = COMPETITION_LOGOS['Copa do Mundo'] || '/src/assets/images/copa_2026_clean_logo_1780766662019.png';
+        localStorage.setItem(STORAGE_KEYS.WORLD_CUP_IMAGE, defaultImg);
+        return defaultImg;
+      }
+      return data;
+    } catch (e) {
+      return COMPETITION_LOGOS['Copa do Mundo'] || '/src/assets/images/copa_2026_clean_logo_1780766662019.png';
+    }
+  },
+
+  saveWorldCupImage: (url: string) => {
+    localStorage.setItem(STORAGE_KEYS.WORLD_CUP_IMAGE, url);
+    window.dispatchEvent(new CustomEvent('worldCupUpdated'));
+  },
+
+  getWorldCupMatches: (): Match[] => {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.WORLD_CUP_MATCHES);
+      if (!data) {
+        localStorage.setItem(STORAGE_KEYS.WORLD_CUP_MATCHES, JSON.stringify(COPA_DO_MUNDO_MATCHES));
+        return COPA_DO_MUNDO_MATCHES;
+      }
+      return JSON.parse(data);
+    } catch (e) {
+      return COPA_DO_MUNDO_MATCHES;
+    }
+  },
+
+  saveWorldCupMatches: (matches: Match[]) => {
+    localStorage.setItem(STORAGE_KEYS.WORLD_CUP_MATCHES, JSON.stringify(matches));
+    window.dispatchEvent(new CustomEvent('worldCupUpdated'));
+  },
+
+  getWorldCupTeams: (): Record<string, any[]> => {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.WORLD_CUP_TEAMS);
+      if (!data) {
+        const wcTeams: Record<string, any[]> = {};
+        Object.keys(LEAGUE_CLASSIFICATIONS).forEach(key => {
+          if (key.startsWith('Copa do Mundo')) {
+            wcTeams[key] = LEAGUE_CLASSIFICATIONS[key];
+          }
+        });
+        localStorage.setItem(STORAGE_KEYS.WORLD_CUP_TEAMS, JSON.stringify(wcTeams));
+        return wcTeams;
+      }
+      return JSON.parse(data);
+    } catch (e) {
+      const wcTeams: Record<string, any[]> = {};
+      Object.keys(LEAGUE_CLASSIFICATIONS).forEach(key => {
+        if (key.startsWith('Copa do Mundo')) {
+          wcTeams[key] = LEAGUE_CLASSIFICATIONS[key];
+        }
+      });
+      return wcTeams;
+    }
+  },
+
+  saveWorldCupTeams: (teams: Record<string, any[]>) => {
+    localStorage.setItem(STORAGE_KEYS.WORLD_CUP_TEAMS, JSON.stringify(teams));
+    window.dispatchEvent(new CustomEvent('worldCupUpdated'));
   }
 };

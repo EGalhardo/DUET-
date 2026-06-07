@@ -2299,13 +2299,28 @@ export default function Aposta() {
   const [selectedMatch, setSelectedMatch] = React.useState<Match | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+
+  // Estados da Copa do Mundo persistidos no dispositivo
+  const [wcLogo, setWcLogo] = React.useState<string>('');
+  const [wcMatches, setWcMatches] = React.useState<Match[]>([]);
+  const [wcTeams, setWcTeams] = React.useState<Record<string, any[]>>({});
+  const [showManager, setShowManager] = React.useState(false);
+  const [managerTab, setManagerTab] = React.useState<'logo' | 'matches' | 'teams'>('logo');
+
+  React.useEffect(() => {
+    if (topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo') {
+      setWcLogo(storageService.getWorldCupImage());
+      setWcMatches(storageService.getWorldCupMatches());
+      setWcTeams(storageService.getWorldCupTeams());
+    }
+  }, [topic]);
   const matchesRef = React.useRef<HTMLDivElement>(null);
 
   // Handle matchId from URL to open modal on load
   React.useEffect(() => {
     const matchId = searchParams.get('matchId');
     if (matchId) {
-      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES, ...NBA_MATCHES, ...UNITEL_BASKET_MATCHES, ...ACB_MATCHES, ...VTB_MATCHES, ...GREEK_BASKET_MATCHES, ...ITALY_BASKET_MATCHES, ...JEEP_ELITE_MATCHES, ...BBL_MATCHES, ...F1_MATCHES, ...COPA_DO_MUNDO_MATCHES];
+      const allMatches = [...MATCH_DATA, ...GIRABOLA_MATCHES, ...BUNDESLIGA_MATCHES, ...LALIGA_MATCHES, ...LIGUE1_MATCHES, ...EREDIVISIE_MATCHES, ...PREMIERLEAGUE_MATCHES, ...SERIEA_MATCHES, ...LIGANOS_MATCHES, ...TACADEANGOLA_MATCHES, ...TACADAALEMANHA_MATCHES, ...NBA_MATCHES, ...UNITEL_BASKET_MATCHES, ...ACB_MATCHES, ...VTB_MATCHES, ...GREEK_BASKET_MATCHES, ...ITALY_BASKET_MATCHES, ...JEEP_ELITE_MATCHES, ...BBL_MATCHES, ...F1_MATCHES, ...storageService.getWorldCupMatches()];
       let match = allMatches.find(m => m.id.toString() === matchId);
       if (match) {
         // Apply F1 league update if needed
@@ -2463,7 +2478,7 @@ export default function Aposta() {
           <motion.img 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            src={getCompetitionLogo(topic)} 
+            src={topic?.toLowerCase() === 'copa do mundo' ? wcLogo || getCompetitionLogo(topic) : getCompetitionLogo(topic)} 
             alt={topic || 'Angola Girabola'} 
             referrerPolicy="no-referrer"
             className={cn(
@@ -2536,10 +2551,316 @@ export default function Aposta() {
       </div>
 
       <div className="max-w-6xl mx-auto w-full px-4">
+        {(topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo') && (
+          <div className="bg-white border border-gray-150 rounded-3xl p-5 mb-8 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[#FFB10A]/10 text-[#FFB10A] rounded-xl flex-shrink-0">
+                  <Trophy className="w-5 h-5 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm text-[#091747] uppercase tracking-wider">Gestor da Copa do Mundo 2026</h3>
+                  <p className="text-[10px] text-gray-400">Edite o logotipo, equipas e resultados diretamente na memória do dispositivo</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowManager(!showManager)}
+                className="self-start sm:self-center px-4 py-2 bg-[#091747] text-white text-[11px] font-black uppercase tracking-wider rounded-xl hover:bg-[#FFB10A] hover:text-[#091747] transition-all"
+              >
+                {showManager ? 'Fechar Ajustes' : 'Ajustes da Copa'}
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {showManager && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mt-6 border-t border-gray-100 pt-5 overflow-hidden"
+                >
+                  <div className="flex flex-wrap gap-2 border-b border-gray-100 pb-3 mb-4">
+                    {(['logo', 'matches', 'teams'] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setManagerTab(tab)}
+                        className={cn(
+                          "px-4 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all",
+                          managerTab === tab
+                            ? "bg-[#FFB10A] text-[#091747]"
+                            : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+                        )}
+                      >
+                        {tab === 'logo' ? '🖼️ Logotipo' : tab === 'matches' ? '⚽ Partidas' : '📊 Equipas e Grupos'}
+                      </button>
+                    ))}
+                  </div>
+
+                  {managerTab === 'logo' && (
+                    <div className="space-y-4">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black text-[#091747] uppercase tracking-wider">URL da Imagem / Logo da Copa:</label>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <input
+                            type="text"
+                            value={wcLogo}
+                            onChange={(e) => setWcLogo(e.target.value)}
+                            placeholder="Insira o link da imagem (HTTPS)"
+                            className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-[#091747] outline-none focus:border-[#FFB10A]"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                storageService.saveWorldCupImage(wcLogo);
+                                alert('Logotipo da Copa do Mundo atualizado no dispositivo!');
+                              }}
+                              className="flex-1 sm:flex-none bg-[#091747] hover:bg-opacity-90 text-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all"
+                            >
+                              Salvar
+                            </button>
+                            <button
+                              onClick={() => {
+                                const fallback = '/src/assets/images/copa_2026_clean_logo_1780766662019.png';
+                                setWcLogo(fallback);
+                                storageService.saveWorldCupImage(fallback);
+                                alert('Logotipo restaurado para o padrão!');
+                              }}
+                              className="bg-gray-100 hover:bg-gray-200 text-gray-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all"
+                            >
+                              Reset
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="border border-dashed border-gray-100 rounded-2xl p-4 flex flex-col items-center justify-center bg-gray-50 text-center">
+                        <span className="text-[9px] text-gray-400 uppercase font-black tracking-widest mb-2">Pré-visualização da Imagem</span>
+                        <img
+                          src={wcLogo || '/src/assets/images/copa_2026_clean_logo_1780766662019.png'}
+                          alt="World Cup Preview"
+                          referrerPolicy="no-referrer"
+                          className="h-24 max-w-full object-contain"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://i.postimg.cc/QxK00Q76/placeholder.png';
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {managerTab === 'matches' && (
+                    <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] uppercase font-black text-gray-400 tracking-wider">Partidas Cadastradas ({wcMatches.length})</span>
+                        <button
+                          onClick={() => {
+                            storageService.saveWorldCupMatches(COPA_DO_MUNDO_MATCHES);
+                            setWcMatches(COPA_DO_MUNDO_MATCHES);
+                            alert('Partidas e estatísticas resetadas para o padrão!');
+                          }}
+                          className="text-[10px] text-red-500 font-extrabold uppercase hover:underline"
+                        >
+                          Restaurar Padrão
+                        </button>
+                      </div>
+                      {wcMatches.map((match, idx) => (
+                        <div key={match.id} className="border border-gray-100 rounded-2xl p-4 bg-gray-50/50 space-y-3">
+                          <div className="flex justify-between items-center border-b border-gray-150 pb-2">
+                            <span className="text-[9px] font-black uppercase text-gray-500 tracking-widest">{match.league}</span>
+                            <span className="text-[9px] font-bold text-gray-400">{match.date} às {match.time}</span>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
+                            <div className="flex items-center gap-2">
+                              <img src={match.teamA.logo} alt="" referrerPolicy="no-referrer" className="w-5 h-5 object-contain flex-shrink-0" />
+                              <span className="text-xs font-black text-[#091747]">{match.teamA.name}</span>
+                            </div>
+                            <div className="flex items-center justify-center gap-2">
+                              <input
+                                type="number"
+                                min={0}
+                                value={match.scoreA ?? 0}
+                                onChange={(e) => {
+                                  const updated = [...wcMatches];
+                                  updated[idx] = { ...updated[idx], scoreA: Math.max(0, parseInt(e.target.value) || 0) };
+                                  setWcMatches(updated);
+                                }}
+                                className="w-12 text-center bg-white border border-gray-200 rounded-lg py-1 px-1.5 text-xs font-black text-[#091747]"
+                              />
+                              <span className="text-xs font-bold text-gray-400">X</span>
+                              <input
+                                type="number"
+                                min={0}
+                                value={match.scoreB ?? 0}
+                                onChange={(e) => {
+                                  const updated = [...wcMatches];
+                                  updated[idx] = { ...updated[idx], scoreB: Math.max(0, parseInt(e.target.value) || 0) };
+                                  setWcMatches(updated);
+                                }}
+                                className="w-12 text-center bg-white border border-gray-200 rounded-lg py-1 px-1.5 text-xs font-black text-[#091747]"
+                              />
+                            </div>
+                            <div className="flex items-center gap-2 justify-between md:justify-end">
+                              <span className="text-[9px] font-bold text-gray-400">Status:</span>
+                              <select
+                                value={match.status}
+                                onChange={(e) => {
+                                  const updated = [...wcMatches];
+                                  updated[idx] = { ...updated[idx], status: e.target.value as any };
+                                  setWcMatches(updated);
+                                }}
+                                className="bg-white border border-gray-200 rounded-xl p-1 text-xs font-bold text-[#091747] outline-none"
+                              >
+                                <option value="breve">Breve</option>
+                                <option value="ao_vivo">Ao Vivo</option>
+                                <option value="terminou">Terminado</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="pt-2 flex justify-end">
+                        <button
+                          onClick={() => {
+                            storageService.saveWorldCupMatches(wcMatches);
+                            alert('Partidas e resultados salvos com sucesso!');
+                          }}
+                          className="bg-[#091747] hover:bg-opacity-90 text-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all"
+                        >
+                          Salvar Todas as Partidas
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {managerTab === 'teams' && (
+                    <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] uppercase font-black text-gray-400 tracking-wider">Tabelas de Grupos da Copa Mundos</span>
+                        <button
+                          onClick={() => {
+                            const defaultTeams: Record<string, any[]> = {};
+                            Object.keys(LEAGUE_CLASSIFICATIONS).forEach(key => {
+                              if (key.startsWith('Copa do Mundo')) {
+                                defaultTeams[key] = LEAGUE_CLASSIFICATIONS[key];
+                              }
+                            });
+                            storageService.saveWorldCupTeams(defaultTeams);
+                            setWcTeams(defaultTeams);
+                            alert('Tabelas de grupos restauradas para o original!');
+                          }}
+                          className="text-[10px] text-red-500 font-extrabold uppercase hover:underline"
+                        >
+                          Restaurar Tabelas
+                        </button>
+                      </div>
+                      {Object.keys(wcTeams).sort().map((groupKey) => (
+                        <div key={groupKey} className="border border-gray-150 rounded-2xl p-4 bg-gray-50/50 space-y-3">
+                          <h4 className="text-xs font-black uppercase text-[#091747] tracking-wider border-b border-gray-100 pb-1.5">{groupKey}</h4>
+                          <div className="space-y-3">
+                            {wcTeams[groupKey]?.map((teamRow, tIdx) => (
+                              <div key={tIdx} className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-gray-100/50 pb-2 last:border-none last:pb-0 text-xs">
+                                <span className="font-extrabold text-[#091747] text-xs md:w-1/3">
+                                  #{teamRow.pos} {teamRow.team}
+                                </span>
+                                <div className="flex flex-wrap items-center gap-3 justify-between md:justify-end md:w-2/3">
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-[9px] text-gray-400 font-bold">J:</span>
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      value={teamRow.p}
+                                      onChange={(e) => {
+                                        const updatedTeams = { ...wcTeams };
+                                        updatedTeams[groupKey][tIdx] = { ...teamRow, p: Math.max(0, parseInt(e.target.value) || 0) };
+                                        setWcTeams(updatedTeams);
+                                      }}
+                                      className="w-10 text-center bg-white border border-gray-200 rounded-lg p-0.5 text-xs font-extrabold"
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-[9px] text-gray-400 font-bold">V:</span>
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      value={teamRow.w}
+                                      onChange={(e) => {
+                                        const updatedTeams = { ...wcTeams };
+                                        updatedTeams[groupKey][tIdx] = { ...teamRow, w: Math.max(0, parseInt(e.target.value) || 0) };
+                                        setWcTeams(updatedTeams);
+                                      }}
+                                      className="w-10 text-center bg-white border border-gray-200 rounded-lg p-0.5 text-xs font-extrabold"
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-[9px] text-gray-400 font-bold">E:</span>
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      value={teamRow.d}
+                                      onChange={(e) => {
+                                        const updatedTeams = { ...wcTeams };
+                                        updatedTeams[groupKey][tIdx] = { ...teamRow, d: Math.max(0, parseInt(e.target.value) || 0) };
+                                        setWcTeams(updatedTeams);
+                                      }}
+                                      className="w-10 text-center bg-white border border-gray-200 rounded-lg p-0.5 text-xs font-extrabold"
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-[9px] text-gray-400 font-bold">D:</span>
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      value={teamRow.l}
+                                      onChange={(e) => {
+                                        const updatedTeams = { ...wcTeams };
+                                        updatedTeams[groupKey][tIdx] = { ...teamRow, l: Math.max(0, parseInt(e.target.value) || 0) };
+                                        setWcTeams(updatedTeams);
+                                      }}
+                                      className="w-10 text-center bg-white border border-gray-200 rounded-lg p-0.5 text-xs font-extrabold"
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-[9px] font-black text-amber-500">PTS:</span>
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      value={teamRow.pts}
+                                      onChange={(e) => {
+                                        const updatedTeams = { ...wcTeams };
+                                        updatedTeams[groupKey][tIdx] = { ...teamRow, pts: Math.max(0, parseInt(e.target.value) || 0) };
+                                        setWcTeams(updatedTeams);
+                                      }}
+                                      className="w-10 text-center bg-[#FFB10A]/10 border border-[#FFB10A]/20 text-[#091747] font-black rounded-lg p-0.5 text-xs animate-none"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <div className="pt-2 flex justify-end">
+                        <button
+                          onClick={() => {
+                            storageService.saveWorldCupTeams(wcTeams);
+                            alert('Tabelas de Grupos e Estatísticas de Equipas salvas com sucesso!');
+                          }}
+                          className="bg-[#091747] hover:bg-opacity-90 text-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl transition-all"
+                        >
+                          Salvar Todas as Tabelas de Grupos
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+
         <div className="flex flex-col gap-8 pb-16">
           {(() => {
             const baseMatches = 
-              topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo' ? COPA_DO_MUNDO_MATCHES :
+              topic === 'Copa do Mundo' || topic?.toLowerCase() === 'copa do mundo' ? wcMatches :
               topic === 'Girabola' || topic === 'Taça de Angola' ? GIRABOLA_MATCHES :
               topic?.toLowerCase() === 'bundesliga' || topic === 'Taça da Alemanha' || topic === 'DFB Pokal' ? BUNDESLIGA_MATCHES :
               topic?.toLowerCase() === 'la liga' || topic === 'Taça de Espanha' || topic === 'Copa del Rey' ? LALIGA_MATCHES :
