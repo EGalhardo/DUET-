@@ -1721,19 +1721,19 @@ export default function Ranking() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="relative bg-white w-full max-w-sm sm:max-w-md rounded-[32px] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex flex-col z-10 border border-slate-100 max-h-[90vh]"
+                className="relative bg-white w-full max-w-sm sm:max-w-md rounded-[28px] sm:rounded-[32px] p-4 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex flex-col z-10 border border-slate-100 max-h-[94vh] sm:max-h-[90vh]"
               >
                 {/* Close Button */}
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="absolute top-5 right-5 w-10 h-10 rounded-full bg-slate-50 border border-slate-100 hover:bg-slate-100 hover:scale-105 active:scale-95 flex items-center justify-center text-slate-400 hover:text-[#0c1e56] transition-all duration-200 shadow-sm shrink-0 cursor-pointer"
+                  className="absolute top-4 right-4 sm:top-5 sm:right-5 w-10 h-10 rounded-full bg-slate-50 border border-slate-100 hover:bg-slate-100 hover:scale-105 active:scale-95 flex items-center justify-center text-slate-400 hover:text-[#0c1e56] transition-all duration-200 shadow-sm shrink-0 cursor-pointer"
                 >
                   <X className="w-4 h-4 text-slate-600 stroke-[2.5]" />
                 </button>
 
                 {/* Header Container */}
-                <div className="flex items-center gap-4 pb-5 border-b border-slate-100/80 mb-5 shrink-0">
+                <div className="flex items-center gap-4 pb-3.5 sm:pb-5 border-b border-slate-100/80 mb-4 sm:mb-5 shrink-0">
                   <div className="relative">
                     <img
                       src={targetPlayer.avatar}
@@ -1756,7 +1756,7 @@ export default function Ranking() {
                 </div>
 
                 {/* Navigation Tabs (grey background rounded container) */}
-                <div className="flex border border-slate-200 bg-transparent p-1.5 rounded-[20px] mb-5 gap-1 shrink-0">
+                <div className="flex border border-slate-200 bg-transparent p-1.5 rounded-[20px] mb-4 sm:mb-5 gap-1 shrink-0">
                   <button
                     type="button"
                     onClick={() => setActiveModalTab("text")}
@@ -1799,7 +1799,7 @@ export default function Ranking() {
                 </div>
 
                 {/* Main Contents */}
-                <div className="flex-1 overflow-y-auto mb-5 min-h-[240px] pr-1">
+                <div className="flex-1 overflow-y-auto mb-4 sm:mb-5 min-h-[160px] sm:min-h-[240px] pr-1">
                   {activeModalTab === "text" && (
                      <div className="space-y-4">
                       <p className="text-xs font-black uppercase tracking-tight text-[#0c1e56]">
@@ -1823,7 +1823,7 @@ export default function Ranking() {
                           <span>Frases rápidas sugeridas ({quickTexts.length}):</span>
                           <span className="text-[9px] lowercase italic text-slate-400 font-bold">Rola para ver todas</span>
                         </div>
-                        <div className="max-h-[160px] overflow-y-auto pr-1 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
+                        <div className="max-h-[110px] sm:max-h-[160px] overflow-y-auto pr-1 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
                           {quickTexts.map((txt) => {
                             const isActive = writtenMessage === txt;
                             return (
@@ -1852,7 +1852,7 @@ export default function Ranking() {
                       <p className="text-xs font-black uppercase tracking-tight text-[#0c1e56]">
                         Selecione e ouça os risos e provocações:
                       </p>
-                      <div className="max-h-[300px] overflow-y-auto pr-1 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
+                      <div className="max-h-[180px] xs:max-h-[220px] sm:max-h-[300px] overflow-y-auto pr-1 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
                         {audioEffects.map((ae) => {
                           const isSelected = selectedAudio === ae.id;
                           return (
@@ -1963,7 +1963,7 @@ export default function Ranking() {
                 </div>
 
                 {/* Submit Action Block */}
-                <div className="border-t border-slate-100 pt-4 shrink-0 flex gap-2">
+                <div className="border-t border-slate-100 pt-3 sm:pt-4 shrink-0 flex gap-2">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
