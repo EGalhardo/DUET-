@@ -45,7 +45,13 @@ const LeagueCard: React.FC<LeagueCardProps> = React.memo(({ card, category, fall
         "rounded-xl md:rounded-3xl border border-gray-200 overflow-hidden flex flex-col items-center justify-center group-hover:border-[#FFB10A] transition-all shadow-sm relative"
       )}>
         <img 
-          src={card.title === 'Copa do Mundo' ? (typeof window !== 'undefined' ? localStorage.getItem('duet_world_cup_image') || card.image : card.image) : (card.image || fallbackImage)} 
+          src={
+            card.title === 'Copa do Mundo'
+              ? (typeof window !== 'undefined' && localStorage.getItem('duet_world_cup_image') && !localStorage.getItem('duet_world_cup_image')?.startsWith('/src/assets/')
+                  ? localStorage.getItem('duet_world_cup_image')!
+                  : card.image)
+              : (card.image || fallbackImage)
+          } 
           alt={card.title}
           loading="lazy"
           referrerPolicy="no-referrer"

@@ -235,14 +235,14 @@ export const storageService = {
   getWorldCupImage: (): string => {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.WORLD_CUP_IMAGE);
-      if (!data) {
-        const defaultImg = COMPETITION_LOGOS['Copa do Mundo'] || '/src/assets/images/copa_2026_clean_logo_1780766662019.png';
+      if (!data || data.startsWith('/src/assets/')) {
+        const defaultImg = COMPETITION_LOGOS['Copa do Mundo'];
         localStorage.setItem(STORAGE_KEYS.WORLD_CUP_IMAGE, defaultImg);
         return defaultImg;
       }
       return data;
     } catch (e) {
-      return COMPETITION_LOGOS['Copa do Mundo'] || '/src/assets/images/copa_2026_clean_logo_1780766662019.png';
+      return COMPETITION_LOGOS['Copa do Mundo'];
     }
   },
 

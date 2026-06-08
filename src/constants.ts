@@ -1,4 +1,6 @@
 import { Match, Category, CategoryDetail } from './types';
+// @ts-ignore
+import copaLogo from './assets/images/copa_2026_clean_logo_1780766662019.png';
 
 export const MATCH_DATA: Match[] = [
   {
@@ -185,7 +187,7 @@ export const CATEGORY_DATA: Record<string, CategoryDetail> = {
         { title: 'CAF Confederation Cup', image: 'https://i.postimg.cc/zbnCTSq8/2-Taca-das-confederacoes-Africa.png' },
         { title: 'UEFA Champions League', image: 'https://i.postimg.cc/ZBkP9Dzn/3-Liga-dos-campeoes-Europa.jpg' },
         { title: 'UEFA Europa League', image: 'https://i.postimg.cc/8JhRLBTT/4-Liga-Europa.png' },
-        { title: 'Copa do Mundo', image: '/src/assets/images/copa_2026_clean_logo_1780766662019.png' },
+        { title: 'Copa do Mundo', image: copaLogo },
       ]
     }
   },
@@ -291,7 +293,7 @@ export const CATEGORY_DATA: Record<string, CategoryDetail> = {
 };
 
 export const COMPETITION_LOGOS: Record<string, string> = {
-  'Copa do Mundo': '/src/assets/images/copa_2026_clean_logo_1780766662019.png',
+  'Copa do Mundo': copaLogo,
   'Girabola': 'https://i.postimg.cc/qRvHdhGG/Angola-Girabola-54.gif',
   'Taça de Angola': 'https://i.postimg.cc/RZ7k6QsQ/Angola-Taca-de-Angola.gif',
   'Bundesliga': 'https://i.postimg.cc/qgfFgz2S/Alemanha-Bundes-Liga.gif',
@@ -368,7 +370,7 @@ export const getCompetitionLogo = (t: string | null) => {
   if (name.startsWith('Copa do Mundo')) {
     if (typeof window !== 'undefined') {
       const storedImage = localStorage.getItem('duet_world_cup_image');
-      if (storedImage) return storedImage;
+      if (storedImage && !storedImage.startsWith('/src/assets/')) return storedImage;
     }
     return COMPETITION_LOGOS['Copa do Mundo'];
   }

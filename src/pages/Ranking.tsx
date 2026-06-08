@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Trophy, Flag, Heart, Search, Smile, MessageSquare, Volume2, X, Send, Play, Sparkles, AlertCircle, Headphones, Calendar, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
@@ -6,19 +6,45 @@ import { cn } from "../lib/utils";
 import { storageService } from "../services/storageService";
 
 const quickTexts = [
-  "Vemo-nos no topo! 🚀",
-  "Tenta alcançar-me se fores capaz! 😎",
+  "Vemo-nos no topo! 🚀 Tenta alcançar-me se fores capaz! 😎",
   "Mais sorte na próxima jornada! 🍀",
   "Freguês do DUET! 😄",
   "Estás quase lá, continua a tentar! 💪",
-  "Grande duelo! Boa sorte! 🧡"
+  "Hoje o pódio tem dono! 🏆",
+  "A vista daqui de cima é fantástica! 😎",
+  "Não te preocupes, um dia chegas aqui! 🚀",
+  "A competição foi boa, mas eu fui melhor! 😏",
+  "Obrigado pelos pontos extras! 😄",
+  "Treina mais um pouco e voltamos a falar! 💪",
+  "O topo é confortável, recomendo! 👑",
+  "Ainda estás a aquecer? 🔥",
+  "Foi uma vitória limpa e elegante! ✨",
+  "O campeão passou por aqui! 🏅",
+  "Hoje não havia concorrência! 😎",
+  "Fiquei à tua espera, mas não chegaste! 😂",
+  "Missão cumprida. Próximo desafio! 🎯",
+  "A lenda continua! 🚀",
+  "Nem o GPS te ajuda a encontrar-me! 🗺️😄",
+  "Estou a colecionar vitórias! 🏆",
+  "Boa tentativa, quase me assustaste! 😅",
+  "O primeiro lugar já conhece o meu nome! 👑",
+  "Continua a perseguir os teus sonhos... e a mim! 😎",
+  "O segredo é simples: jogar e vencer! 🎮",
+  "Hoje fui imparável! ⚡",
+  "Fica tranquilo, há espaço para todos no ranking! 😄",
+  "Mais uma vitória para a coleção! 🏅",
+  "O desafio era difícil... para ti! 😂",
+  "O topo ligou, disse que sente a minha falta quando saio! 🚀",
+  "Até à próxima derrota... quero dizer, partida! 😜"
 ];
 
 const audioEffects = [
-  { id: 'whistle', label: 'Apito do árbitro', desc: 'Som clássico de apito do árbitro (falta/atenção).', icon: '⚽' },
-  { id: 'cheer', label: 'Golo / Claque', desc: 'Clamor de um estádio cheio a festejar um golo.', icon: '🥅' },
-  { id: 'laugh', label: 'Riso de provocação', desc: 'Um riso divertido para brincar com o adversário.', icon: '😜' },
-  { id: 'fanfare', label: 'Cânticos da vitória', desc: 'Sons alegres de triunfo e celebração.', icon: '🏆' },
+  { id: 'riso01', label: 'Riso 01 (Anexado)', desc: 'Áudio Riso01 personalizado.', icon: '😆' },
+  { id: 'riso02', label: 'Riso 02 (Anexado)', desc: 'Áudio Riso02 personalizado.', icon: '🤣' },
+  { id: 'riso03', label: 'Riso 03 (Anexado)', desc: 'Áudio Riso03 personalizado.', icon: '😂' },
+  { id: 'riso04', label: 'Riso 04 (Anexado)', desc: 'Áudio Riso04 personalizado.', icon: '😹' },
+  { id: 'riso05', label: 'Riso 05 (Anexado)', desc: 'Áudio Riso05 personalizado.', icon: '🤭' },
+  { id: 'riso06', label: 'Riso 06 (Anexado)', desc: 'Áudio Riso06 personalizado.', icon: '😏' },
 ];
 
 const imojinCategories = [
@@ -442,12 +468,41 @@ export default function Ranking() {
 
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
+  const playingAudioRef = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
     if (toastMsg) {
       const t = setTimeout(() => setToastMsg(null), 3500);
       return () => clearTimeout(t);
     }
   }, [toastMsg]);
+
+  // Stop playing audio when modal closes or active tab changes
+  useEffect(() => {
+    if (!isModalOpen || activeModalTab !== 'audio') {
+      if (playingAudioRef.current) {
+        try {
+          playingAudioRef.current.pause();
+          playingAudioRef.current.currentTime = 0;
+        } catch (e) {
+          // ignore
+        }
+        playingAudioRef.current = null;
+      }
+    }
+  }, [isModalOpen, activeModalTab]);
+
+  useEffect(() => {
+    return () => {
+      if (playingAudioRef.current) {
+        try {
+          playingAudioRef.current.pause();
+        } catch (e) {
+          // ignore
+        }
+      }
+    };
+  }, []);
 
   // Dynamic sound generator using Web Audio API (100% reliable)
   const playSynthesizedSound = (soundType: string) => {
@@ -554,9 +609,302 @@ export default function Ranking() {
           osc.start(now + start);
           osc.stop(now + start + duration);
         });
+      } else if (soundType === 'horn') {
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(220, now);
+        osc2.type = 'sawtooth';
+        osc2.frequency.setValueAtTime(225, now);
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(0.2, now + 0.05);
+        gainNode.gain.setValueAtTime(0.2, now + 0.6);
+        gainNode.gain.linearRampToValueAtTime(0, now + 0.7);
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.7);
+        osc2.stop(now + 0.7);
+      } else if (soundType === 'applause') {
+        const now = ctx.currentTime;
+        const bufferSize = ctx.sampleRate * 1.5;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(900, now);
+        
+        const gainNode = ctx.createGain();
+        gainNode.gain.setValueAtTime(0.12, now);
+        for (let t = 0; t < 1.5; t += 0.08) {
+          gainNode.gain.setValueAtTime(0.08 + Math.random() * 0.1, now + t);
+        }
+        gainNode.gain.linearRampToValueAtTime(0, now + 1.5);
+        
+        noise.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        noise.start(now);
+      } else if (soundType === 'boo') {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.linearRampToValueAtTime(100, now + 0.8);
+        
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(0.15, now + 0.15);
+        gainNode.gain.setValueAtTime(0.15, now + 0.6);
+        gainNode.gain.linearRampToValueAtTime(0, now + 0.8);
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(250, now);
+        
+        osc.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        osc.start(now);
+        osc.stop(now + 0.8);
+      } else if (soundType === 'drumroll') {
+        const now = ctx.currentTime;
+        for (let i = 0; i < 12; i++) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(110 + Math.random() * 20, now + i * 0.05);
+          gain.gain.setValueAtTime(0.15 - (i * 0.005), now + i * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.05 + 0.04);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + i * 0.05);
+          osc.stop(now + i * 0.05 + 0.04);
+        }
+      } else if (soundType === 'whistle_triple') {
+        const now = ctx.currentTime;
+        [0, 0.25, 0.5].forEach((delay) => {
+          const osc = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1200, now + delay);
+          gainNode.gain.setValueAtTime(0, now + delay);
+          gainNode.gain.linearRampToValueAtTime(0.2, now + delay + 0.02);
+          gainNode.gain.setValueAtTime(0.2, now + delay + 0.12);
+          gainNode.gain.linearRampToValueAtTime(0, now + delay + 0.15);
+          osc.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          osc.start(now + delay);
+          osc.stop(now + delay + 0.15);
+        });
+      } else if (soundType === 'stadium_chant') {
+        const now = ctx.currentTime;
+        [150, 155, 160].forEach((freq) => {
+          const osc = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+          gainNode.gain.setValueAtTime(0, now);
+          gainNode.gain.linearRampToValueAtTime(0.1, now + 0.2);
+          gainNode.gain.setValueAtTime(0.1, now + 1.2);
+          gainNode.gain.linearRampToValueAtTime(0, now + 1.5);
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(300, now);
+          osc.connect(filter);
+          filter.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 1.5);
+        });
+      } else if (soundType === 'applause_rhythm') {
+        const now = ctx.currentTime;
+        [0, 0.2, 0.4, 0.6, 0.8, 1.0].forEach((delay) => {
+          const bufferSize = ctx.sampleRate * 0.08;
+          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+          }
+          const noise = ctx.createBufferSource();
+          noise.buffer = buffer;
+          const filter = ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(1000, now + delay);
+          const gainNode = ctx.createGain();
+          gainNode.gain.setValueAtTime(0.15, now + delay);
+          gainNode.gain.linearRampToValueAtTime(0, now + delay + 0.08);
+          noise.connect(filter);
+          filter.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          noise.start(now + delay);
+        });
+      } else if (soundType === 'bell_winner') {
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(880, now);
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(1200, now);
+        gainNode.gain.setValueAtTime(0.25, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 1.2);
+        osc2.stop(now + 1.2);
+      } else if (soundType === 'laughter_giggle' || soundType.startsWith('riso')) {
+         const now = ctx.currentTime;
+         [0, 0.1, 0.2, 0.3].forEach((delay, idx) => {
+           const osc = ctx.createOscillator();
+           const gainNode = ctx.createGain();
+           osc.type = 'sine';
+           osc.frequency.setValueAtTime(350 + idx * 30, now + delay);
+           osc.frequency.exponentialRampToValueAtTime(200, now + delay + 0.07);
+           gainNode.gain.setValueAtTime(0.12, now + delay);
+           gainNode.gain.linearRampToValueAtTime(0, now + delay + 0.07);
+           osc.connect(gainNode);
+           gainNode.connect(ctx.destination);
+           osc.start(now + delay);
+           osc.stop(now + delay + 0.08);
+         });
+      } else if (soundType === 'fail') {
+        const now = ctx.currentTime;
+        const notes = [
+          { freq: 220, start: 0, duration: 0.25 },
+          { freq: 207, start: 0.28, duration: 0.25 },
+          { freq: 196, start: 0.56, duration: 0.25 },
+          { freq: 174, start: 0.84, duration: 0.6 }
+        ];
+        notes.forEach(({ freq, start, duration }) => {
+          const osc = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + start);
+          if (start === 0.84) {
+            osc.frequency.linearRampToValueAtTime(freq - 15, now + start + duration);
+          }
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(400, now + start);
+          filter.frequency.exponentialRampToValueAtTime(800, now + start + 0.1);
+          filter.frequency.exponentialRampToValueAtTime(300, now + start + duration);
+          gainNode.gain.setValueAtTime(0, now + start);
+          gainNode.gain.linearRampToValueAtTime(0.15, now + start + 0.05);
+          gainNode.gain.linearRampToValueAtTime(0, now + start + duration);
+          osc.connect(filter);
+          filter.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          osc.start(now + start);
+          osc.stop(now + start + duration);
+        });
       }
     } catch (e) {
       console.warn("Áudio não suportado no ambiente actual: ", e);
+    }
+  };
+
+  // Play real high-quality .mp3 audio effects with robust fallback to synthesis
+  const playAudioEffect = (soundType: string) => {
+    try {
+      // Stop previously playing audio
+      if (playingAudioRef.current) {
+        try {
+          playingAudioRef.current.pause();
+          playingAudioRef.current.currentTime = 0;
+        } catch (e) {
+          // ignore
+        }
+        playingAudioRef.current = null;
+      }
+
+      const urls: Record<string, string> = {
+        whistle: 'https://www.soundjay.com/misc/sounds/referee-whistle-01.mp3',
+        whistle_triple: 'https://www.soundjay.com/misc/sounds/referee-whistle-01.mp3',
+        cheer: 'https://www.soundjay.com/human/sounds/crowd-cheer-02.mp3',
+        stadium_chant: 'https://www.soundjay.com/human/sounds/crowd-cheer-01.mp3',
+        laugh: 'https://www.soundjay.com/human/sounds/laughter-02.mp3',
+        laughter_giggle: 'https://www.soundjay.com/human/sounds/laughter-01.mp3',
+        fanfare: 'https://www.soundjay.com/misc/sounds/bell-ringing-04.mp3',
+        horn: 'https://www.soundjay.com/misc/sounds/air-horn-01.mp3',
+        applause: 'https://www.soundjay.com/human/sounds/applause-01.mp3',
+        applause_rhythm: 'https://www.soundjay.com/human/sounds/applause-03.mp3',
+        boo: 'https://www.soundjay.com/human/sounds/boo-01.mp3',
+        drumroll: 'https://www.soundjay.com/misc/sounds/drum-roll-01.mp3',
+        bell_winner: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3',
+        fail: 'https://www.soundjay.com/misc/sounds/fail-trumpet-01.mp3',
+        riso01: '/audio/Riso01.mp3',
+        riso02: '/audio/Riso02.mp3',
+        riso03: '/audio/Riso03.mp3',
+        riso04: '/audio/Riso04.mp3',
+        riso05: '/audio/Riso05.mp3',
+        riso06: '/audio/Riso06.mp3',
+      };
+
+      const fallbackUrls: Record<string, string> = {
+        riso01: 'https://www.soundjay.com/human/sounds/laughter-01.mp3',
+        riso02: 'https://www.soundjay.com/human/sounds/laughter-02.mp3',
+        riso03: 'https://www.soundjay.com/human/sounds/laughter-01.mp3',
+        riso04: 'https://www.soundjay.com/human/sounds/laughter-02.mp3',
+        riso05: 'https://www.soundjay.com/human/sounds/laughter-01.mp3',
+        riso06: 'https://www.soundjay.com/human/sounds/laughter-02.mp3',
+      };
+
+      if (soundType === 'whistle_triple') {
+        const playOne = (delay: number) => {
+          setTimeout(() => {
+            const audio = new Audio(urls.whistle);
+            audio.volume = 0.55;
+            audio.play().catch(() => {
+              if (delay === 0) playSynthesizedSound('whistle_triple');
+            });
+          }, delay);
+        };
+        playOne(0);
+        playOne(250);
+        playOne(500);
+        return;
+      }
+
+      const audioUrl = urls[soundType];
+      if (audioUrl) {
+        const audio = new Audio(audioUrl);
+        playingAudioRef.current = audio;
+        audio.volume = 0.55;
+        audio.play().catch((err) => {
+          const fallbackUrl = fallbackUrls[soundType];
+          if (fallbackUrl) {
+            const fallbackAudio = new Audio(fallbackUrl);
+            playingAudioRef.current = fallbackAudio;
+            fallbackAudio.volume = 0.55;
+            fallbackAudio.play().catch(() => {
+              playSynthesizedSound(soundType);
+            });
+          } else {
+            console.warn("Permissão de áudio pendente ou falha de rede; reproduzindo áudio sintetizado:", err);
+            playSynthesizedSound(soundType);
+          }
+        });
+      } else {
+        playSynthesizedSound(soundType);
+      }
+    } catch (e) {
+      console.warn("Reprodução HTML5 Audio não suportada; usando áudio sintetizado como fallback:", e);
+      playSynthesizedSound(soundType);
     }
   };
 
@@ -564,11 +912,11 @@ export default function Ranking() {
     if (!targetPlayer) return;
     
     if (activeModalTab === 'audio' && selectedAudio) {
-      playSynthesizedSound(selectedAudio);
+      playAudioEffect(selectedAudio);
     } else if (activeModalTab === 'imojin') {
-      playSynthesizedSound('fanfare');
+      playAudioEffect('fanfare');
     } else {
-      playSynthesizedSound('whistle');
+      playAudioEffect('laughter_giggle');
     }
     
     let successMsg = "";
@@ -1408,14 +1756,14 @@ export default function Ranking() {
                 </div>
 
                 {/* Navigation Tabs (grey background rounded container) */}
-                <div className="flex bg-[#f1f3f9] p-1.5 rounded-[20px] mb-5 gap-1 shrink-0">
+                <div className="flex border border-slate-200 bg-transparent p-1.5 rounded-[20px] mb-5 gap-1 shrink-0">
                   <button
                     type="button"
                     onClick={() => setActiveModalTab("text")}
                     className={cn(
                       "flex-1 py-2 rounded-xl flex items-center justify-center gap-2 text-[11px] font-black uppercase transition-all duration-300 border-none cursor-pointer",
                       activeModalTab === "text"
-                        ? "bg-white text-[#0c1e56] shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
+                        ? "bg-[#FFB10A] text-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
                         : "text-slate-450 bg-transparent hover:text-[#0c1e56]"
                     )}
                   >
@@ -1428,7 +1776,7 @@ export default function Ranking() {
                     className={cn(
                       "flex-1 py-2 rounded-xl flex items-center justify-center gap-2 text-[11px] font-black uppercase transition-all duration-300 border-none cursor-pointer",
                       activeModalTab === "audio"
-                        ? "bg-white text-[#ffb10a] shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
+                        ? "bg-[#FFB10A] text-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
                         : "text-slate-450 bg-transparent hover:text-[#0c1e56]"
                     )}
                   >
@@ -1441,7 +1789,7 @@ export default function Ranking() {
                     className={cn(
                       "flex-1 py-2 rounded-xl flex items-center justify-center gap-2 text-[11px] font-black uppercase transition-all duration-300 border-none cursor-pointer",
                       activeModalTab === "imojin"
-                        ? "bg-white text-[#ffb10a] shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
+                        ? "bg-[#FFB10A] text-white shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
                         : "text-slate-450 bg-transparent hover:text-[#0c1e56]"
                     )}
                   >
@@ -1453,7 +1801,7 @@ export default function Ranking() {
                 {/* Main Contents */}
                 <div className="flex-1 overflow-y-auto mb-5 min-h-[240px] pr-1">
                   {activeModalTab === "text" && (
-                    <div className="space-y-4">
+                     <div className="space-y-4">
                       <p className="text-xs font-black uppercase tracking-tight text-[#0c1e56]">
                         Digite uma provocação amigável ou incentivo:
                       </p>
@@ -1471,20 +1819,29 @@ export default function Ranking() {
                         </span>
                       </div>
                       <div className="space-y-2">
-                        <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
-                          Frases rápidas sugeridas:
-                        </p>
-                        <div className="flex flex-wrap gap-1.5 pt-0.5">
-                          {quickTexts.map((txt) => (
-                            <button
-                              key={txt}
-                              type="button"
-                              onClick={() => setWrittenMessage(txt)}
-                              className="bg-white hover:bg-slate-50 border-2 border-slate-300 text-[10px] font-extrabold text-[#0c1e56] px-3.5 py-2 rounded-full transition-all hover:scale-102 hover:border-slate-400 active:scale-95 shadow-xs cursor-pointer text-left truncate leading-tight italic"
-                            >
-                              {txt}
-                            </button>
-                          ))}
+                        <div className="flex justify-between items-center text-[10px] font-black text-slate-450 uppercase tracking-wider">
+                          <span>Frases rápidas sugeridas ({quickTexts.length}):</span>
+                          <span className="text-[9px] lowercase italic text-slate-400 font-bold">Rola para ver todas</span>
+                        </div>
+                        <div className="max-h-[160px] overflow-y-auto pr-1 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
+                          {quickTexts.map((txt) => {
+                            const isActive = writtenMessage === txt;
+                            return (
+                              <button
+                                key={txt}
+                                type="button"
+                                onClick={() => setWrittenMessage(txt)}
+                                className={cn(
+                                  "w-full text-[11px] font-bold px-3.5 py-2.5 rounded-xl transition-all duration-150 cursor-pointer text-left leading-relaxed break-words block active:scale-[0.99] hover:translate-x-0.5",
+                                  isActive
+                                    ? "bg-[#FFB10A] text-white border border-[#FFB10A] shadow-sm"
+                                    : "bg-transparent text-slate-700 hover:text-[#0c1e56] border border-slate-200 hover:border-slate-350 hover:bg-slate-50/20"
+                                )}
+                              >
+                                {txt}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -1493,9 +1850,9 @@ export default function Ranking() {
                   {activeModalTab === "audio" && (
                     <div className="space-y-4">
                       <p className="text-xs font-black uppercase tracking-tight text-[#0c1e56]">
-                        Selecione e ouça o som de futebol:
+                        Selecione e ouça os risos e provocações:
                       </p>
-                      <div className="space-y-2.5">
+                      <div className="max-h-[300px] overflow-y-auto pr-1 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-200">
                         {audioEffects.map((ae) => {
                           const isSelected = selectedAudio === ae.id;
                           return (
@@ -1503,19 +1860,30 @@ export default function Ranking() {
                               key={ae.id}
                               onClick={() => setSelectedAudio(ae.id)}
                               className={cn(
-                                "p-3 rounded-[20px] border-2 cursor-pointer transition-all duration-300 flex items-center justify-between gap-3 shadow-xs relative",
+                                "w-full text-left p-3 rounded-xl transition-all duration-150 cursor-pointer flex items-center justify-between gap-3 active:scale-[0.99] hover:translate-x-0.5 border",
                                 isSelected
-                                  ? "bg-amber-50/20 border-slate-400 shadow-sm"
-                                  : "bg-white hover:bg-slate-50 border-slate-200"
+                                  ? "bg-[#FFB10A] text-white border-[#FFB10A] shadow-sm"
+                                  : "bg-transparent text-slate-700 hover:text-[#0c1e56] border-slate-200 hover:border-slate-350 hover:bg-slate-50/20"
                               )}
                             >
-                              <div className="flex items-center gap-3">
-                                <span className="text-2xl shrink-0 p-1.5 bg-slate-50 rounded-xl select-none">{ae.icon}</span>
-                                <div>
-                                  <p className="text-[11px] font-black text-[#0c1e56] uppercase leading-tight tracking-tight">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <span className={cn(
+                                  "text-lg shrink-0 p-1 rounded-lg select-none",
+                                  isSelected ? "bg-amber-600/30 text-white" : "bg-slate-50 text-[#0c1e56]"
+                                )}>
+                                  {ae.icon}
+                                </span>
+                                <div className="min-w-0">
+                                  <p className={cn(
+                                    "text-[11px] font-black uppercase leading-tight tracking-tight",
+                                    isSelected ? "text-white" : "text-[#0c1e56]"
+                                  )}>
                                     {ae.label}
                                   </p>
-                                  <p className="text-[9.5px] leading-normal text-slate-400 font-bold mt-1 max-w-[180px] sm:max-w-[220px]">
+                                  <p className={cn(
+                                    "text-[10px] leading-normal font-bold mt-0.5 max-w-[200px] sm:max-w-[280px] truncate",
+                                    isSelected ? "text-amber-100" : "text-slate-400"
+                                  )}>
                                     {ae.desc}
                                   </p>
                                 </div>
@@ -1525,12 +1893,19 @@ export default function Ranking() {
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  playSynthesizedSound(ae.id);
+                                  playAudioEffect(ae.id);
                                 }}
-                                className="w-9 h-9 rounded-full bg-[#ffb10a] hover:bg-amber-500 hover:scale-105 active:scale-90 text-white flex items-center justify-center p-0 transition-all border-none shrink-0 shadow-[0_3px_8px_rgba(255,177,10,0.25)] cursor-pointer"
+                                className={cn(
+                                  "w-7 h-7 rounded-full flex items-center justify-center p-0 transition-all border-none shrink-0 cursor-pointer",
+                                  isSelected
+                                    ? "bg-white text-[#ffb10a] hover:scale-110 active:scale-95"
+                                    : "bg-[#ffb10a] hover:bg-amber-500 hover:scale-110 active:scale-95 text-white shadow-[0_2px_5px_rgba(255,177,10,0.2)]"
+                                )}
                                 title="Testar som"
                               >
-                                <Play className="w-3.5 h-3.5 fill-current text-white stroke-[3] translate-x-[1px]" />
+                                <Play className={cn("w-3 h-3 fill-current stroke-[3] translate-x-[0.5px]",
+                                  isSelected ? "text-[#ffb10a]" : "text-white"
+                                )} />
                               </button>
                             </div>
                           );
