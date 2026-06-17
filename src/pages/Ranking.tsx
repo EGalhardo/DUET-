@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "../lib/utils";
 import { storageService } from "../services/storageService";
+import { duetStore } from "../services/store";
 
 const quickTexts = [
   "Vemo-nos no topo! 🚀 Tenta alcançar-me se fores capaz! 😎",
@@ -962,151 +963,29 @@ export default function Ranking() {
     setSelectedImojin("");
   };
 
-  const rankingData = {
-    "1 vs 1": [
-      {
-        id: 1,
-        name: "Edlasio",
-        score: 9850,
-        avatar: "https://i.postimg.cc/Nj00CMbd/Foto-Edlasio.png",
-      },
-      {
-        id: 2,
-        name: "Carlos Mendes",
-        score: 9420,
-        avatar: "https://i.pravatar.cc/150?u=2",
-      },
-      {
-        id: 3,
-        name: "Sofia Lopes",
-        score: 8990,
-        avatar: "https://i.pravatar.cc/150?u=3",
-      },
-      {
-        id: 4,
-        name: "Rui Santos",
-        score: 8540,
-        avatar: "https://i.pravatar.cc/150?u=4",
-      },
-      {
-        id: 5,
-        name: "Marta Costa",
-        score: 8100,
-        avatar: "https://i.pravatar.cc/150?u=5",
-      },
-      {
-        id: 6,
-        name: "Hugo Brás",
-        score: 7800,
-        avatar: "https://i.pravatar.cc/150?u=6",
-      },
-      {
-        id: 7,
-        name: "Inês Caldeira",
-        score: 7600,
-        avatar: "https://i.pravatar.cc/150?u=7",
-      },
-      {
-        id: 8,
-        name: "David Lucas",
-        score: 7400,
-        avatar: "https://i.pravatar.cc/150?u=8",
-      },
-      {
-        id: 9,
-        name: "Soraia Lima",
-        score: 7200,
-        avatar: "https://i.pravatar.cc/150?u=9",
-      },
-      {
-        id: 10,
-        name: "Bruno Alves",
-        score: 7000,
-        avatar: "https://i.pravatar.cc/150?u=10",
-      },
-    ],
-    Privado: [
-      {
-        id: 13,
-        name: "Luís Gomes",
-        score: 13800,
-        avatar: "https://i.pravatar.cc/150?u=13",
-      },
-      {
-        id: 14,
-        name: "Isabel Rocha",
-        score: 12500,
-        avatar: "https://i.pravatar.cc/150?u=14",
-      },
-      {
-        id: 15,
-        name: "Jorge Lima",
-        score: 11900,
-        avatar: "https://i.pravatar.cc/150?u=15",
-      },
-      {
-        id: 16,
-        name: "Filipa Melo",
-        score: 11500,
-        avatar: "https://i.pravatar.cc/150?u=16",
-      },
-      {
-        id: 17,
-        name: "Vítor Paiva",
-        score: 11100,
-        avatar: "https://i.pravatar.cc/17",
-      },
-      {
-        id: 18,
-        name: "Lia Duarte",
-        score: 10800,
-        avatar: "https://i.pravatar.cc/150?u=18",
-      },
-      {
-        id: 19,
-        name: "Samuel Neto",
-        score: 10500,
-        avatar: "https://i.pravatar.cc/150?u=19",
-      },
-      {
-        id: 20,
-        name: "Cláudia Reis",
-        score: 10200,
-        avatar: "https://i.pravatar.cc/150?u=20",
-      },
-    ],
-    Nacional: fullNacional,
-  };
-
-  const currentRankingsRaw = rankingData[activeTab];
-
   const currentRankings = React.useMemo(() => {
-    // Add user with fixed ranking score to list
-    const userScore = activeTab === "1 vs 1" ? 9500 : activeTab === "Privado" ? 14000 : 126000;
-    
-    const list = [...currentRankingsRaw].map(p => ({ ...p, isCurrentUser: false }));
-    if (!list.some(p => p.id === 999999)) {
-       const isFernandoTab = activeTab === "1 vs 1" || activeTab === "Privado";
-       list.push({
-        id: 999999,
-        name: isFernandoTab ? "Fernando" : uName,
-        score: userScore,
-        avatar: isFernandoTab 
-          ? "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"
-          : uAvatar,
-        isCurrentUser: true
-      });
-    }
-    return list.sort((a, b) => b.score - a.score);
-  }, [activeTab, uName, uAvatar, currentRankingsRaw]);
+    const rawRankings = duetStore.getRankings(activeTab);
+    return rawRankings.map((u, idx) => ({
+      id: u.id === 'user_1' ? 999999 : (typeof u.id === 'number' ? u.id : parseInt(u.id.replace('user_', '')) || (idx + 100)),
+      name: u.name,
+      score: u.id === 'user_1' 
+        ? (activeTab === "1 vs 1"
+          ? 5000 + (u.stats.totalWon * 150) - (u.stats.totalLost * 50) + Math.floor(u.stats.winRate * 25)
+          : activeTab === "Privado"
+            ? 10000 + (u.stats.totalWon * 350) - (u.stats.totalLost * 100)
+            : u.score)
+        : u.score,
+      avatar: u.avatar || u.photo || "https://i.postimg.cc/mD7Pr65C/Avatar.png",
+      isCurrentUser: u.id === 'user_1'
+    })).sort((a, b) => b.score - a.score);
+  }, [activeTab, userProfile]);
 
   // Filter rankings based on search term (case-insensitive)
   const filteredRankings = currentRankings.filter((player) =>
     player.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const displayedRankings =
-    activeTab === "1 vs 1" ? filteredRankings.slice(0, 2) : filteredRankings;
+  const displayedRankings = filteredRankings;
 
   const activeBet = React.useMemo(() => {
     const bet = userParticipatedBets.find(
@@ -1706,7 +1585,7 @@ export default function Ranking() {
         {/* Modal / Popup "Enviar Imojin" */}
         <AnimatePresence>
           {isModalOpen && targetPlayer && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
               {/* Backdrop Blur overlay */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -1718,10 +1597,11 @@ export default function Ranking() {
 
               {/* Modal Box */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="relative bg-white w-full max-w-sm sm:max-w-md rounded-[28px] sm:rounded-[32px] p-4 sm:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex flex-col z-10 border border-slate-100 max-h-[94vh] sm:max-h-[90vh]"
+                initial={{ opacity: 0, y: "100%" }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 220 }}
+                className="relative bg-white w-full rounded-t-[32px] rounded-b-none sm:rounded-[32px] p-5 sm:p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.12)] sm:shadow-[0_20px_50px_rgba(0,0,0,0.15)] flex flex-col z-10 border border-slate-100 h-[88vh] sm:h-auto max-h-[88vh] sm:max-h-[90vh] sm:max-w-md pb-10 sm:pb-6"
               >
                 {/* Close Button */}
                 <button
@@ -1858,7 +1738,10 @@ export default function Ranking() {
                           return (
                             <div
                               key={ae.id}
-                              onClick={() => setSelectedAudio(ae.id)}
+                              onClick={() => {
+                                setSelectedAudio(ae.id);
+                                playAudioEffect(ae.id);
+                              }}
                               className={cn(
                                 "w-full text-left p-3 rounded-xl transition-all duration-150 cursor-pointer flex items-center justify-between gap-3 active:scale-[0.99] hover:translate-x-0.5 border",
                                 isSelected

@@ -3,6 +3,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CreditCard, HandCoins, Users, ShieldCheck, ChevronDown, Coins, Info } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { storageService } from '../services/storageService';
+import { duetStore } from '../services/store';
 
 export default function TransactionPage() {
   const location = useLocation();
@@ -95,6 +96,15 @@ export default function TransactionPage() {
         createdAt: new Date().toISOString(),
         isRead: false
       });
+
+      duetStore.saveTransaction({
+        userId: 'user_1',
+        type: 'deposit',
+        amount: numericAmount,
+        method: method === 'ref_multicaixa' ? 'Referência MCX' : method === 'transferencia' ? 'IBAN' : 'Multicaixa Express',
+        destination: 'Carteira Duet',
+        status: 'Completed'
+      });
     } else if (type === 'levantar') {
       storageService.updateWallet({ balance: wallet.balance - numericAmount });
 
@@ -108,6 +118,15 @@ export default function TransactionPage() {
         createdAt: new Date().toISOString(),
         isRead: false
       });
+
+      duetStore.saveTransaction({
+        userId: 'user_1',
+        type: 'withdraw',
+        amount: numericAmount,
+        method: 'Levantamento de Dinheiro',
+        destination: `IBAN ${iban.substring(0, 10)}...`,
+        status: 'Completed'
+      });
     } else if (type === 'transferir') {
       storageService.updateWallet({ balance: wallet.balance - numericAmount });
 
@@ -120,6 +139,15 @@ export default function TransactionPage() {
         challengeId: '',
         createdAt: new Date().toISOString(),
         isRead: false
+      });
+
+      duetStore.saveTransaction({
+        userId: 'user_1',
+        type: 'transfer',
+        amount: numericAmount,
+        method: 'Duelo Direto',
+        destination: destTarget,
+        status: 'Completed'
       });
     }
 

@@ -51,6 +51,24 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
   const [headerLoaded, setHeaderLoaded] = React.useState(false);
   const userProfile = storageService.getUserProfile();
 
+  const getSelectedOdds = (): number => {
+    if (!match || !match.odds) return 1.85;
+    const marketStr = String(selectedMarket || '').toLowerCase();
+    const teamALower = String(match.teamA?.name || '').toLowerCase();
+    const teamBLower = String(match.teamB?.name || '').toLowerCase();
+    
+    if (marketStr.includes(teamALower) || marketStr === 'vence casa' || marketStr === '1' || marketStr === teamALower) {
+      return match.odds.winA || 1.85;
+    }
+    if (marketStr.includes(teamBLower) || marketStr === 'vence fora' || marketStr === '2' || marketStr === teamBLower) {
+      return match.odds.winB || 1.85;
+    }
+    if (marketStr.includes('empate') || marketStr === 'x' || marketStr.includes('empate') || marketStr.includes('draw')) {
+      return match.odds.draw || 1.85;
+    }
+    return 1.85;
+  };
+
   React.useEffect(() => {
     if (category === 'f1') {
       const img = new Image();
@@ -610,9 +628,12 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
         blocked_balance: wallet.blocked_balance + amountToJoin
       });
 
+      const joinOddsSelected = getSelectedOdds();
       storageService.saveBet({
         id: Date.now().toString(),
         matchId: match.id,
+        userId: 'user_1',
+        odds: joinOddsSelected,
         category: activeTab as any,
         market: activeTab === '1 vs 1' ? selectedMarket : joiningBet.market,
         amount: amountToJoin,
@@ -665,9 +686,12 @@ const BettingModal = ({ isOpen, onClose, match, activeTab, category }: BettingMo
       ? selectedMarketsList.map(s => s === '' ? null : s)
       : undefined;
 
+    const createOddsSelected = getSelectedOdds();
     storageService.saveBet({
       id: Date.now().toString(),
       matchId: match.id,
+      userId: 'user_1',
+      odds: createOddsSelected,
       category: activeTab as any,
       market: activeTab === 'Nacional' ? 'Predição 10 Mercados' : (category === 'f1' && !selectedMarket ? 'Classificação' : selectedMarket),
       marketType: activeTab === '1 vs 1' ? marketType : undefined,

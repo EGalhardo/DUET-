@@ -53,6 +53,9 @@ export interface Wallet {
 export interface Bet {
   id: string;
   matchId: number;
+  userId?: string;
+  odds?: number;
+  marketId?: string;
   category: '1 vs 1' | 'Privado' | 'Nacional';
   market: string;
   amount: number;

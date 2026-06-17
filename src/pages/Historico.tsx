@@ -6,6 +6,7 @@ import { storageService } from '../services/storageService';
 import { MATCH_DATA } from '../constants';
 import { Bet } from '../types';
 import { cn } from '../lib/utils';
+import { PageHeader } from '../components/UIComponents';
 
 interface BetCardProps {
   bet: Bet;
@@ -135,26 +136,24 @@ export default function Historico() {
 
   const wins = bets.filter(b => b.status === 'Won');
   const losses = bets.filter(b => b.status === 'Lost');
-  const totalWonAmount = wins.reduce((sum, b) => sum + (b.amount * 1.8), 0); // Mocking 1.8x payout
+  const totalWonAmount = wins.reduce((sum, b) => sum + (b.amount * (b.odds || 1.85)), 0);
   const totalLostAmount = losses.reduce((sum, b) => sum + b.amount, 0);
 
   return (
     <div className="flex flex-col flex-1">
-      {/* NAV LINE */}
-      <div className="h-[46px] bg-white border-b border-gray-200 px-4 md:px-8">
-        <div className="h-full flex items-center justify-between max-w-5xl mx-auto">
-          <Link to="/" className="text-black transition-colors duration-300 hover:text-[#FFB10A]">
-            <ArrowLeft className="w-6 h-6 md:w-7 md:h-7" />
-          </Link>
-          <h2 className="text-base md:text-lg lg:text-xl font-semibold text-center">Histórico</h2>
+      <PageHeader 
+        title="Histórico" 
+        to="/" 
+        rightAction={
           <button 
             onClick={toggleFavorite}
-            className={cn("transition-colors duration-300", isFavorited ? "text-[#FFB10A]" : "text-black hover:text-[#FFB10A]")}
+            className={cn("transition-colors duration-300 cursor-pointer", isFavorited ? "text-[#FFB10A]" : "text-black hover:text-[#FFB10A]")}
+            title="Favoritar histórico"
           >
             <Heart className={cn("w-6 h-6 md:w-7 md:h-7", isFavorited && "fill-current")} />
           </button>
-        </div>
-      </div>
+        }
+      />
 
       <div className="max-w-4xl mx-auto w-full px-4 pt-16 pb-12">
         <div className="text-center mb-16">

@@ -1,66 +1,86 @@
 import React from 'react';
-import { ArrowLeft, Shield, KeyRound, LogIn, ShieldAlert } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Shield, KeyRound, LogIn, ShieldAlert } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { PageHeader, Panel, Button } from '../components/UIComponents';
 
 export default function Seguranca() {
   const navigate = useNavigate();
 
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Salva silenciosamente sem window.alert()
+    navigate('/perfil');
+  };
+
   return (
     <div className="flex flex-col flex-1">
-      {/* NAV LINE */}
-      <div className="h-[46px] bg-white border-b border-gray-200 px-4 md:px-8">
-        <div className="h-full flex items-center justify-between max-w-4xl mx-auto">
-          <Link to="/perfil" className="text-black transition-colors duration-300 hover:text-[#FFB10A]">
-            <ArrowLeft className="w-6 h-6 md:w-7 md:h-7" />
-          </Link>
-          <h2 className="text-base md:text-lg lg:text-xl font-semibold text-center">Segurança</h2>
-          <div className="w-6 h-6 md:w-7 md:h-7" />
-        </div>
-      </div>
+      <PageHeader title="Segurança" to="/perfil" />
 
       <div className="max-w-xl mx-auto w-full px-4 pt-8 pb-12">
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <KeyRound className="w-6 h-6 text-[#FFC000]" />
-              <h3 className="text-[#091747] font-bold">Alterar Palavra-passe</h3>
-            </div>
-            
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Senha alterada!'); }}>
+          <Panel
+            variant="bordered"
+            title={
+              <div className="flex items-center gap-3">
+                <KeyRound className="w-5 h-5 text-[#FFB10A]" />
+                <span className="text-[#091747] font-black uppercase tracking-tight">Alterar Palavra-passe</span>
+              </div>
+            }
+            bodyClassName="p-6 md:p-8"
+          >
+            <form className="space-y-4" onSubmit={handlePasswordSubmit}>
               <div>
                 <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Palavra-passe atual</label>
-                <input type="password" placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#FFB10A] outline-none font-semibold transition-all" />
+                <input 
+                  type="password" 
+                  placeholder="••••••••" 
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#FFB10A] outline-none font-semibold transition-all text-sm" 
+                />
               </div>
               <div>
                 <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Nova palavra-passe</label>
-                <input type="password" placeholder="Mínimo 6 caracteres" className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#FFB10A] outline-none font-semibold transition-all" />
+                <input 
+                  type="password" 
+                  placeholder="Mínimo 6 caracteres" 
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-[#FFB10A] outline-none font-semibold transition-all text-sm" 
+                />
               </div>
-              <button type="submit" className="w-full py-4 rounded-xl bg-orange-50 text-[#FFB10A] font-bold hover:bg-orange-100 transition-all">
+              <Button 
+                type="submit" 
+                variant="primary" 
+                fullWidth
+              >
                 Salvar Nova Senha
-              </button>
+              </Button>
             </form>
-          </div>
+          </Panel>
 
-          <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <LogIn className="w-6 h-6 text-[#FFC000]" />
-              <h3 className="text-[#091747] font-bold">Sessões</h3>
-            </div>
-            
+          <Panel
+            variant="bordered"
+            title={
+              <div className="flex items-center gap-3">
+                <LogIn className="w-5 h-5 text-[#FFB10A]" />
+                <span className="text-[#091747] font-black uppercase tracking-tight">Sessões</span>
+              </div>
+            }
+            bodyClassName="p-6"
+          >
             <div className="space-y-4">
-               <div className="flex items-center justify-between p-4 rounded-2xl bg-transparent border-2 border-gray-200">
-                  <div>
-                    <p className="text-sm font-bold text-[#091747]">Este dispositivo</p>
-                    <p className="text-[10px] text-green-600 font-bold uppercase tracking-widest">Ativo agora</p>
-                  </div>
-                  <button className="text-xs font-bold text-red-500 hover:bg-red-50 px-3 py-1 rounded-lg transition-colors">Terminar</button>
-               </div>
-               
-               <button className="w-full py-4 text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-[#091747] transition-colors">
-                 Terminar em todos os dispositivos
-               </button>
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-transparent border-2 border-gray-200">
+                <div>
+                  <p className="text-sm font-bold text-[#091747]">Este dispositivo</p>
+                  <p className="text-[10px] text-green-600 font-bold uppercase tracking-widest">Ativo agora</p>
+                </div>
+                <button className="text-xs font-black text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors cursor-pointer">
+                  Terminar
+                </button>
+              </div>
+              
+              <button className="w-full py-4 text-xs font-black text-gray-500 uppercase tracking-wider hover:text-[#091747] transition-all cursor-pointer">
+                Terminar em todos os dispositivos
+              </button>
             </div>
-          </div>
+          </Panel>
         </div>
       </div>
     </div>

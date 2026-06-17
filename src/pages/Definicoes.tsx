@@ -1,37 +1,37 @@
 import React from 'react';
-import { ArrowLeft, SlidersHorizontal, Bell, Save } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { SlidersHorizontal, Bell } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '../lib/utils';
+import { PageHeader, Panel, Button } from '../components/UIComponents';
 
 export default function Definicoes() {
   const navigate = useNavigate();
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Salva silenciosamente e navega para perfil sem alert()
+    navigate('/perfil');
+  };
+
   return (
     <div className="flex flex-col flex-1">
-      {/* NAV LINE */}
-      <div className="h-[46px] bg-white border-b border-gray-200 px-4 md:px-8">
-        <div className="h-full flex items-center justify-between max-w-4xl mx-auto">
-          <Link to="/perfil" className="text-black transition-colors duration-300 hover:text-[#FFB10A]">
-            <ArrowLeft className="w-6 h-6 md:w-7 md:h-7" />
-          </Link>
-          <h2 className="text-base md:text-lg lg:text-xl font-semibold text-center">Definições</h2>
-          <div className="w-6 h-6 md:w-7 md:h-7" />
-        </div>
-      </div>
+      <PageHeader title="Definições" to="/perfil" />
 
       <div className="max-w-xl mx-auto w-full px-4 pt-8 pb-12">
-        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between bg-[#FFC000]">
-            <div className="flex items-center gap-2 text-white font-semibold">
-              <SlidersHorizontal className="w-5 h-5" />
+        <Panel
+          variant="bordered"
+          title={
+            <div className="flex items-center gap-2">
+              <SlidersHorizontal className="w-5 h-5 text-[#FFB10A]" />
               <span>Preferências e Notificações</span>
             </div>
-          </div>
-
-          <form className="p-6 space-y-6" onSubmit={(e) => { e.preventDefault(); alert('Definições guardadas!'); navigate('/perfil'); }}>
+          }
+          bodyClassName="p-6 space-y-6"
+        >
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <h3 className="text-[#091747] font-bold flex items-center gap-2">
-                <SlidersHorizontal className="w-5 h-5 text-[#FFC000]" />
+                <SlidersHorizontal className="w-4 h-4 text-[#FFB10A]" />
                 Preferências
               </h3>
               
@@ -43,7 +43,7 @@ export default function Definicoes() {
                   <p className="text-sm font-bold text-[#091747]">Modo Offline</p>
                   <p className="text-[10px] text-[#FFB10A] font-bold">Ativado (Imagens Guardadas)</p>
                 </div>
-                <div className="w-11 h-6 rounded-full bg-[#FFC000] flex items-center px-1">
+                <div className="w-11 h-6 rounded-full bg-[#FFB10A] flex items-center px-1">
                   <div className="w-4 h-4 bg-white rounded-full translate-x-5" />
                 </div>
               </div>
@@ -53,7 +53,7 @@ export default function Definicoes() {
 
             <div className="space-y-4">
               <h3 className="text-[#091747] font-bold flex items-center gap-2">
-                <Bell className="w-5 h-5 text-[#FFC000]" />
+                <Bell className="w-4 h-4 text-[#FFB10A]" />
                 Notificações
               </h3>
               
@@ -63,22 +63,23 @@ export default function Definicoes() {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <button 
-                type="button"
+              <Button 
+                variant="outline"
+                className="flex-1"
                 onClick={() => navigate(-1)}
-                className="flex-1 py-4 rounded-2xl border-2 border-gray-200 font-bold text-gray-500 hover:bg-gray-50 transition-all"
               >
                 Cancelar
-              </button>
-              <button 
+              </Button>
+              <Button 
                 type="submit"
-                className="flex-1 py-4 rounded-2xl bg-[#FFB10A] text-white font-bold hover:bg-[#FFC000] transition-all"
+                variant="primary"
+                className="flex-1"
               >
                 Guardar
-              </button>
+              </Button>
             </div>
           </form>
-        </div>
+        </Panel>
       </div>
     </div>
   );
@@ -97,8 +98,8 @@ function ToggleItem({ label, sub, defaultChecked = false }: { label: string, sub
         type="button"
         onClick={() => setChecked(!checked)}
         className={cn(
-          "relative w-11 h-6 rounded-full transition-colors duration-200 outline-none",
-          checked ? "bg-[#FFC000]" : "bg-gray-200"
+          "relative w-11 h-6 rounded-full transition-colors duration-200 outline-none cursor-pointer",
+          checked ? "bg-[#FFB10A]" : "bg-gray-200"
         )}
       >
         <div className={cn(

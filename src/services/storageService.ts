@@ -1,154 +1,103 @@
-
-import { Bet, UserProfile, Wallet, FavoriteItem, Notification, Taunt, Match } from '../types';
+import { duetStore, STORE_EVENTS } from './store';
+import { UserProfile, Wallet, FavoriteItem, Notification, Taunt, Match, Bet } from '../types';
 import { COPA_DO_MUNDO_MATCHES, COMPETITION_LOGOS, LEAGUE_CLASSIFICATIONS } from '../constants';
 
 const STORAGE_KEYS = {
-  USER_PROFILE: 'duet_user_profile',
-  WALLET: 'duet_wallet',
-  BETS: 'duet_bets',
-  FAVORITES: 'duet_favorites',
-  NOTIFICATIONS: 'duet_notifications',
-  TAUNTS: 'duet_taunts',
   WORLD_CUP_IMAGE: 'duet_world_cup_image',
   WORLD_CUP_MATCHES: 'duet_world_cup_matches',
   WORLD_CUP_TEAMS: 'duet_world_cup_teams',
 };
 
-const DEFAULT_USER: UserProfile = {
-  id: 'user_1', // Agregando ID para o sistema de provocações
-  name: 'Edlasio Galhardo',
-  photo: 'https://i.postimg.cc/Nj00CMbd/Foto-Edlasio.png',
-  ranking: 'Bronze',
-  stats: {
-    winRate: 0,
-    totalWon: 0,
-    totalLost: 0,
-  }
-};
-
-const DEFAULT_WALLET: Wallet = {
-  balance: 1125, // Saldo inicial para teste
-  blocked_balance: 0,
-};
-
+// This wrapper bridges the previous Storage Service architecture to the new unified, relation-consistent duetStore data layer.
 export const storageService = {
   getUserProfile: (): UserProfile => {
-    try {
-      const data = localStorage.getItem(STORAGE_KEYS.USER_PROFILE);
-      return data ? JSON.parse(data) : DEFAULT_USER;
-    } catch (e) {
-      console.error('Error parsing user profile:', e);
-      return DEFAULT_USER;
-    }
+    const user = duetStore.getCurrentUser();
+    return {
+      id: user.id,
+      name: user.name,
+      photo: user.avatar || user.photo || 'https://i.postimg.cc/Nj00CMbd/Foto-Edlasio.png',
+      ranking: user.ranking as any,
+      stats: {
+        winRate: user.stats.winRate,
+        totalWon: user.stats.totalWon,
+        totalLost: user.stats.totalLost
+      }
+    };
   },
 
   updateUserProfile: (profile: Partial<UserProfile>): UserProfile => {
-    const current = storageService.getUserProfile();
-    const updated = { ...current, ...profile };
-    localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(updated));
-    window.dispatchEvent(new CustomEvent('userProfileUpdated'));
-    return updated;
+    const updates: any = {};
+    if (profile.name !== undefined) updates.name = profile.name;
+    if (profile.photo !== undefined) {
+      updates.avatar = profile.photo;
+      updates.photo = profile.photo;
+    }
+    if (profile.ranking !== undefined) updates.ranking = profile.ranking;
+    if (profile.stats !== undefined) {
+      updates.stats = {
+        ...duetStore.getCurrentUser().stats,
+        ...profile.stats
+      };
+    }
+    const updated = duetStore.updateUserProfile(updates);
+    return {
+      id: updated.id,
+      name: updated.name,
+      photo: updated.avatar || updated.photo || 'https://i.postimg.cc/Nj00CMbd/Foto-Edlasio.png',
+      ranking: updated.ranking as any,
+      stats: {
+        winRate: updated.stats.winRate,
+        totalWon: updated.stats.totalWon,
+        totalLost: updated.stats.totalLost
+      }
+    };
   },
 
   getWallet: (): Wallet => {
-    try {
-      const data = localStorage.getItem(STORAGE_KEYS.WALLET);
-      let wallet = data ? JSON.parse(data) : DEFAULT_WALLET;
-      
-      // Forced migration to ensure the user's active session balance updates to 1125 KZ
-      if (localStorage.getItem('duet_wallet_migrated_v2') !== 'true') {
-        wallet = { ...wallet, balance: 1125 };
-        localStorage.setItem(STORAGE_KEYS.WALLET, JSON.stringify(wallet));
-        localStorage.setItem('duet_wallet_migrated_v2', 'true');
-        setTimeout(() => {
-          window.dispatchEvent(new CustomEvent('walletUpdated'));
-        }, 100);
-      }
-      
-      return wallet;
-    } catch (e) {
-      console.error('Error parsing wallet:', e);
-      return DEFAULT_WALLET;
-    }
+    return duetStore.getWallet();
   },
 
   updateWallet: (data: Partial<Wallet>) => {
-    const current = storageService.getWallet();
-    const updated = { ...current, ...data };
-    localStorage.setItem(STORAGE_KEYS.WALLET, JSON.stringify(updated));
-    try {
-      window.dispatchEvent(new CustomEvent('walletUpdated'));
-    } catch (e) {
-      const event = document.createEvent('Event');
-      event.initEvent('walletUpdated', true, true);
-      window.dispatchEvent(event);
-    }
-    return updated;
+    return duetStore.updateWallet(data);
   },
 
   getBets: (): Bet[] => {
-    try {
-      const data = localStorage.getItem(STORAGE_KEYS.BETS);
-      return data ? JSON.parse(data) : [];
-    } catch (e) {
-      console.error('Error parsing bets:', e);
-      return [];
-    }
+    return duetStore.getBets() as any[];
   },
 
   saveBet: (bet: Bet) => {
-    const bets = storageService.getBets();
-    const updated = [bet, ...bets];
-    localStorage.setItem(STORAGE_KEYS.BETS, JSON.stringify(updated));
-    return updated;
+    // Inject userId properly to be consistent
+    const saved = duetStore.saveBet({
+      id: bet.id,
+      matchId: bet.matchId,
+      odds: bet.odds || 1.85,
+      marketId: bet.marketId || `mk${bet.matchId}_1`,
+      market: bet.market,
+      amount: bet.amount,
+      category: bet.category as any,
+      status: bet.status,
+      roomName: bet.roomName,
+      password: bet.password,
+      createdAt: bet.createdAt || new Date().toISOString()
+    });
+    return duetStore.getBets() as any[];
   },
 
   deleteBet: (id: string, refund: boolean = false) => {
-    const bets = storageService.getBets();
-    const betToDelete = bets.find(b => b.id === id);
-    const updated = bets.filter(b => b.id !== id);
-    localStorage.setItem(STORAGE_KEYS.BETS, JSON.stringify(updated));
-
-    if (refund && betToDelete && betToDelete.status === 'Open') {
-      const wallet = storageService.getWallet();
-      storageService.updateWallet({
-        blocked_balance: Math.max(0, wallet.blocked_balance - betToDelete.amount),
-        balance: wallet.balance + betToDelete.amount
-      });
-    }
-
-    return updated;
+    duetStore.deleteBet(id, refund);
+    return duetStore.getBets() as any[];
   },
 
   getFavorites: (): FavoriteItem[] => {
-    try {
-      const data = localStorage.getItem(STORAGE_KEYS.FAVORITES);
-      return data ? JSON.parse(data) : [
-        { id: 'liga-futebol', title: 'Futebol', sub: 'Abrir liga', type: 'league', path: '/liga/futebol' },
-        { id: 'fav-girabola', title: 'Girabola', sub: 'Duelos 1 vs 1', type: 'league', path: '/aposta/futebol?topic=Girabola' },
-      ];
-    } catch (e) {
-      console.error('Error parsing favorites:', e);
-      return [];
-    }
+    return duetStore.getFavorites();
   },
 
   saveFavorite: (favorite: FavoriteItem) => {
-    const favorites = storageService.getFavorites();
-    const updated = [favorite, ...favorites.filter(f => f.id !== favorite.id)];
-    localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(updated));
-    try {
-      window.dispatchEvent(new CustomEvent('favoritesUpdated'));
-    } catch (e) {
-      const event = document.createEvent('Event');
-      event.initEvent('favoritesUpdated', true, true);
-      window.dispatchEvent(event);
-    }
-    return updated;
+    return duetStore.saveFavorite(favorite);
   },
 
   updateFavorites: (favorites: FavoriteItem[]) => {
-    localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(favorites));
+    localStorage.setItem('duet_favorites', JSON.stringify(favorites));
     try {
       window.dispatchEvent(new CustomEvent('favoritesUpdated'));
     } catch (e) {
@@ -160,51 +109,36 @@ export const storageService = {
   },
 
   deleteFavorite: (id: string | number) => {
-    const favorites = storageService.getFavorites();
-    const updated = favorites.filter(f => f.id !== id);
-    localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(updated));
-    try {
-      window.dispatchEvent(new CustomEvent('favoritesUpdated'));
-    } catch (e) {
-      const event = document.createEvent('Event');
-      event.initEvent('favoritesUpdated', true, true);
-      window.dispatchEvent(event);
-    }
-    return updated;
+    return duetStore.deleteFavorite(id);
   },
 
   getNotifications: (): Notification[] => {
-    try {
-      const data = localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS);
-      return data ? JSON.parse(data) : [];
-    } catch (e) {
-      console.error('Error parsing notifications:', e);
-      return [];
-    }
+    return duetStore.getNotifications() as any[];
   },
 
   addNotification: (notification: Notification) => {
-    const notifications = storageService.getNotifications();
-    const updated = [notification, ...notifications];
-    localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(updated));
-    window.dispatchEvent(new CustomEvent('notificationsUpdated'));
-    return updated;
+    duetStore.addNotification({
+      userId: 'user_1',
+      type: ((notification.type as string) === 'Challenge' || notification.type === 'Taunt') ? 'Taunt' : 'Performance',
+      title: notification.title,
+      message: notification.message || '',
+      emoji: notification.emoji || '🔔',
+      entityType: notification.challengeId ? 'challenge' : 'general',
+      entityId: notification.challengeId || undefined
+    });
+    return duetStore.getNotifications() as any[];
   },
 
   markNotificationAsRead: (id: string) => {
-    const notifications = storageService.getNotifications();
-    const updated = notifications.map(n => n.id === id ? { ...n, isRead: true } : n);
-    localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(updated));
-    window.dispatchEvent(new CustomEvent('notificationsUpdated'));
-    return updated;
+    duetStore.markNotificationAsRead(id);
+    return duetStore.getNotifications() as any[];
   },
 
   getTaunts: (): Taunt[] => {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.TAUNTS);
+      const data = localStorage.getItem('duet_taunts');
       return data ? JSON.parse(data) : [];
     } catch (e) {
-      console.error('Error parsing taunts:', e);
       return [];
     }
   },
@@ -216,20 +150,27 @@ export const storageService = {
       id: `taunt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       createdAt: new Date().toISOString()
     };
-
     const updated = [newTaunt, ...taunts];
-    localStorage.setItem(STORAGE_KEYS.TAUNTS, JSON.stringify(updated));
+    localStorage.setItem('duet_taunts', JSON.stringify(updated));
     
-    window.dispatchEvent(new CustomEvent('tauntsUpdated'));
+    // Auto-create a synced centralized notification for consistency
+    duetStore.addNotification({
+      userId: taunt.toUserId || 'user_2',
+      type: 'Taunt',
+      title: 'Provocação Enviada! 🎭⚡',
+      message: `Enviou uma provocação (Sticker: ${taunt.stickerId}) para o utilizador.`,
+      emoji: '⚡'
+    });
+
+    try {
+      window.dispatchEvent(new CustomEvent('tauntsUpdated'));
+    } catch (e) {}
     return updated;
   },
 
   updateBetStatus: (id: string, status: Bet['status']) => {
-    const bets = storageService.getBets();
-    const updated = bets.map(b => b.id === id ? { ...b, status } : b);
-    localStorage.setItem(STORAGE_KEYS.BETS, JSON.stringify(updated));
-    window.dispatchEvent(new CustomEvent('betsUpdated'));
-    return updated;
+    duetStore.updateBetStatus(id, status as any);
+    return duetStore.getBets() as any[];
   },
 
   getWorldCupImage: (): string => {

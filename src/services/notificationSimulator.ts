@@ -62,7 +62,7 @@ const checkAndResolveBets = () => {
         const wallet = storageService.getWallet();
 
         if (won) {
-          const odds = 1.8 + Math.random() * 0.8; // ODDS de 1.8 a 2.6
+          const odds = bet.odds || (1.85 + Math.random() * 0.75);
           const wonAmount = Math.round(bet.amount * odds);
 
           // Atualizar carteira
